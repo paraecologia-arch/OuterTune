@@ -55,12 +55,11 @@ object YTPlayerUtils {
      * Clients used for fallback streams in case the streams of the main client do not work.
      */
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
-        // Could not parse deobfuscation function
-//        WEB_REMIX,
-//        ANDROID,
-//        TVHTML5,
-//        TVHTML5_SIMPLY_EMBEDDED_PLAYER,
-        IOS, // recent api changes produce error 403 after 30 seconds
+        WEB_REMIX,
+        ANDROID,
+        TVHTML5,
+        TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+        IOS,
     )
 
 
@@ -151,6 +150,11 @@ object YTPlayerUtils {
                 streamPlayerResponse =
                     YouTube.player(videoId, playlistId, client, signatureTimestamp, webPlayerPot)
                         .getOrNull()
+                        .also {
+                            if (it == null) {
+                                Log.w(TAG, "[$videoId] [${client.clientName}] player request failed")
+                            }
+                        }
             }
 
             Log.d(TAG, "[$videoId] stream client: ${client.clientName}, " +
@@ -160,30 +164,37 @@ object YTPlayerUtils {
 
             // process current client response
             if (streamPlayerResponse?.playabilityStatus?.status == "OK") {
+                val streamingData = streamPlayerResponse.streamingData
+                if (streamingData == null || streamingData.adaptiveFormats.isEmpty()) {
+                    Log.w(TAG, "[$videoId] [${client.clientName}] missing streamingData")
+                    continue
+                }
+
                 format =
                     findFormat(
                         streamPlayerResponse,
                         audioQuality,
                         connectivityManager,
                     ) ?: continue
-                streamUrl = findUrlOrNull(format, videoId) ?: continue
-                streamExpiresInSeconds =
-                    streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
+
+                streamUrl = findUrlOrNull(format, videoId)
+                if (streamUrl == null) {
+                    Log.w(TAG, "[$videoId] [${client.clientName}] signature/stream decipher failed")
+                    continue
+                }
+                streamExpiresInSeconds = streamingData.expiresInSeconds
 
                 if (client.useWebPoTokens && webStreamingPot != null) {
-                    streamUrl += "&pot=$webStreamingPot";
+                    streamUrl += "&pot=$webStreamingPot"
                 }
 
-                if (clientIndex == STREAM_FALLBACK_CLIENTS.size - 1) {
-                    /** skip [validateStatus] for last client */
-                    break
-                }
                 if (validateStatus(streamUrl)) {
                     // working stream found
                     Log.i(TAG, "[$videoId] [${client.clientName}] found working stream")
                     break
                 } else {
-                    Log.w(TAG, "[$videoId] [${client.clientName}] got bad http status code")
+                    Log.w(TAG, "[$videoId] [${client.clientName}] stream failed HTTP probe")
+                    streamUrl = null
                 }
             }
         }
@@ -208,7 +219,7 @@ object YTPlayerUtils {
             throw Exception("Could not find stream url")
         }
 
-        Log.d(TAG, "[$videoId] stream url: $streamUrl")
+        Log.d(TAG, "[$videoId] stream ready: itag=${format.itag}, bitrate=${format.bitrate}")
 
         PlaybackData(
             audioConfig,
@@ -252,11 +263,14 @@ object YTPlayerUtils {
      */
     private fun validateStatus(url: String): Boolean {
         try {
-            val requestBuilder = okhttp3.Request.Builder()
-                .head()
+            val request = okhttp3.Request.Builder()
                 .url(url)
-            val response = httpClient.newCall(requestBuilder.build()).execute()
-            return response.isSuccessful
+                .header("Range", "bytes=0-0")
+                .build()
+            httpClient.newCall(request).execute().use { response ->
+                Log.d(TAG, "Stream HTTP probe: ${response.code}")
+                return response.code in 200..299
+            }
         } catch (e: Exception) {
             reportException(e)
         }

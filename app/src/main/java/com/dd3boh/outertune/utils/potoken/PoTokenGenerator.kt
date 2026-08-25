@@ -89,7 +89,7 @@ class PoTokenGenerator {
             }
         }
 
-        Log.d(TAG, "[$videoId] playerPot=$playerPot, streamingPot=$streamingPot")
+        Log.d(TAG, "[$videoId] poToken obtained")
 
         return PoTokenResult(playerPot, streamingPot)
     }
