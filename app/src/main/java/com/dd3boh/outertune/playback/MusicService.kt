@@ -760,7 +760,10 @@ class MusicService : MediaLibraryService(),
 
             songUrlCache[mediaId] =
                 streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
-            dataSpec.withUri(streamUrl.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            dataSpec
+                .withUri(streamUrl.toUri())
+                .withRequestHeaders(playbackData.mediaHeaders)
+                .subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
         }
     }
 

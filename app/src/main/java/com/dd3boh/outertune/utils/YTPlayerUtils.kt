@@ -70,6 +70,8 @@ object YTPlayerUtils {
         val format: PlayerResponse.StreamingData.Format,
         val streamUrl: String,
         val streamExpiresInSeconds: Int,
+        val clientName: String,
+        val mediaHeaders: Map<String, String>,
     )
 
     /**
@@ -122,6 +124,7 @@ object YTPlayerUtils {
         var format: PlayerResponse.StreamingData.Format? = null
         var streamUrl: String? = null
         var streamExpiresInSeconds: Int? = null
+        var streamClient: YouTubeClient? = null
 
         var streamPlayerResponse: PlayerResponse? = null
         for (clientIndex in (-1 until STREAM_FALLBACK_CLIENTS.size)) {
@@ -129,6 +132,7 @@ object YTPlayerUtils {
             format = null
             streamUrl = null
             streamExpiresInSeconds = null
+            streamClient = null
 
             // decide which client to use for streams and load its player response
             val client: YouTubeClient
@@ -188,8 +192,9 @@ object YTPlayerUtils {
                     streamUrl += "&pot=$webStreamingPot"
                 }
 
-                if (validateStatus(streamUrl)) {
+                if (validateStatus(streamUrl, client)) {
                     // working stream found
+                    streamClient = client
                     Log.i(TAG, "[$videoId] [${client.clientName}] found working stream")
                     break
                 } else {
@@ -221,6 +226,8 @@ object YTPlayerUtils {
 
         Log.d(TAG, "[$videoId] stream ready: itag=${format.itag}, bitrate=${format.bitrate}")
 
+        val chosenClient = streamClient ?: throw Exception("Could not determine stream client")
+
         PlaybackData(
             audioConfig,
             videoDetails,
@@ -228,6 +235,8 @@ object YTPlayerUtils {
             format,
             streamUrl,
             streamExpiresInSeconds,
+            chosenClient.clientName,
+            mediaHeadersForClient(chosenClient),
         )
     }
 
@@ -261,14 +270,22 @@ object YTPlayerUtils {
      * If this returns true the url is likely to work.
      * If this returns false the url might cause an error during playback.
      */
-    private fun validateStatus(url: String): Boolean {
+    private fun validateStatus(url: String, client: YouTubeClient): Boolean {
         try {
-            val request = okhttp3.Request.Builder()
+            val requestBuilder = okhttp3.Request.Builder()
                 .url(url)
                 .header("Range", "bytes=0-0")
-                .build()
-            httpClient.newCall(request).execute().use { response ->
-                Log.d(TAG, "Stream HTTP probe: ${response.code}")
+                .header("User-Agent", client.userAgent)
+            if (isWebClient(client)) {
+                requestBuilder
+                    .header("Origin", YouTubeClient.ORIGIN_YOUTUBE_MUSIC)
+                    .header("Referer", YouTubeClient.REFERER_YOUTUBE_MUSIC)
+            }
+            httpClient.newCall(requestBuilder.build()).execute().use { response ->
+                Log.d(TAG, "[${client.clientName}] Stream HTTP probe: ${response.code}")
+                if (response.code == 403) {
+                    Log.w(TAG, "[${client.clientName}] Stream HTTP probe returned 403")
+                }
                 return response.code in 200..299
             }
         } catch (e: Exception) {
@@ -276,6 +293,23 @@ object YTPlayerUtils {
         }
         return false
     }
+
+    /**
+     * Headers that must accompany the googlevideo media request so that the server accepts it
+     * together with the client that originally produced the URL.
+     */
+    private fun mediaHeadersForClient(client: YouTubeClient): Map<String, String> {
+        val headers = LinkedHashMap<String, String>()
+        headers["User-Agent"] = client.userAgent
+        if (isWebClient(client)) {
+            headers["Origin"] = YouTubeClient.ORIGIN_YOUTUBE_MUSIC
+            headers["Referer"] = YouTubeClient.REFERER_YOUTUBE_MUSIC
+        }
+        return headers
+    }
+
+    private fun isWebClient(client: YouTubeClient): Boolean =
+        client.clientName == "WEB" || client.clientName == "WEB_REMIX"
 
     /**
      * Wrapper around the [NewPipeUtils.getSignatureTimestamp] function which reports exceptions

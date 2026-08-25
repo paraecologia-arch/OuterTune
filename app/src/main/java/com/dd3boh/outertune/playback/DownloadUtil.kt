@@ -133,7 +133,9 @@ class DownloadUtil @Inject constructor(
         }
 
         songUrlCache[mediaId] = streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
-        dataSpec.withUri(streamUrl.toUri())
+        dataSpec
+            .withUri(streamUrl.toUri())
+            .withRequestHeaders(playbackData.mediaHeaders)
     }
     val downloadNotificationHelper = DownloadNotificationHelper(context, ExoDownloadService.CHANNEL_ID)
     val downloadManager: DownloadManager =
