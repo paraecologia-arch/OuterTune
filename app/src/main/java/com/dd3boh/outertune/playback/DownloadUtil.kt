@@ -35,7 +35,9 @@ import com.dd3boh.outertune.playback.DownloadUtil.Companion.STATE_INVALID
 import com.dd3boh.outertune.playback.downloadManager.DownloadDirectoryManagerOt
 import com.dd3boh.outertune.playback.downloadManager.DownloadManagerOt
 import com.dd3boh.outertune.playback.stream.LegacyOuterTuneResolver
+import com.dd3boh.outertune.playback.stream.ResolvedStream
 import com.dd3boh.outertune.playback.stream.StreamResolver
+import com.dd3boh.outertune.playback.stream.isStreamExpired
 import com.dd3boh.outertune.utils.dataStore
 import com.dd3boh.outertune.utils.dlCoroutine
 import com.dd3boh.outertune.utils.enumPreference
@@ -82,7 +84,7 @@ class DownloadUtil @Inject constructor(
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
     private val streamResolver: StreamResolver = LegacyOuterTuneResolver()
-    private val songUrlCache = HashMap<String, Pair<String, Long>>()
+    private val songUrlCache = HashMap<String, ResolvedStream>()
     private val dataSourceFactory = ResolvingDataSource.Factory(
         CacheDataSource.Factory()
             .setCache(playerCache)
@@ -100,8 +102,18 @@ class DownloadUtil @Inject constructor(
             return@Factory dataSpec
         }
 
-        songUrlCache[mediaId]?.takeIf { it.second > System.currentTimeMillis() }?.let {
-            return@Factory dataSpec.withUri(it.first.toUri())
+        val cachedStream = songUrlCache[mediaId]
+        if (cachedStream != null && !isStreamExpired(cachedStream.expiresAtEpochMs, System.currentTimeMillis())) {
+            val cachedUrl = cachedStream.url.let {
+                // Specify range to avoid YouTube's throttling
+                "${it}&range=0-${cachedStream.format.contentLength ?: 10000000}"
+            }
+            return@Factory dataSpec
+                .withUri(cachedUrl.toUri())
+                .withRequestHeaders(cachedStream.headers)
+        }
+        if (cachedStream != null) {
+            songUrlCache.remove(mediaId)
         }
 
         val resolvedStream = runBlocking(Dispatchers.IO) {
@@ -134,7 +146,7 @@ class DownloadUtil @Inject constructor(
             "${it}&range=0-${format.contentLength ?: 10000000}"
         }
 
-        songUrlCache[mediaId] = streamUrl to resolvedStream.expiresAtEpochMs
+        songUrlCache[mediaId] = resolvedStream
         dataSpec
             .withUri(streamUrl.toUri())
             .withRequestHeaders(resolvedStream.headers)

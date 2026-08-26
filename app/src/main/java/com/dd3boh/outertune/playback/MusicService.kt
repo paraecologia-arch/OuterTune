@@ -111,7 +111,10 @@ import com.dd3boh.outertune.playback.queues.Queue
 import com.dd3boh.outertune.playback.queues.YouTubeQueue
 import com.dd3boh.outertune.playback.stream.LegacyOuterTuneResolver
 import com.dd3boh.outertune.playback.stream.RangePolicy
+import com.dd3boh.outertune.playback.stream.ResolvedStream
 import com.dd3boh.outertune.playback.stream.StreamResolver
+import com.dd3boh.outertune.playback.stream.isStreamExpired
+import com.dd3boh.outertune.playback.stream.withResolvedStream
 import com.dd3boh.outertune.utils.CoilBitmapLoader
 import com.dd3boh.outertune.utils.NetworkConnectivityObserver
 import com.dd3boh.outertune.utils.SyncUtils
@@ -659,7 +662,7 @@ class MusicService : MediaLibraryService(),
     }
 
     private fun createDataSourceFactory(): DataSource.Factory {
-        val songUrlCache = HashMap<String, Pair<String, Long>>()
+        val songUrlCache = HashMap<String, ResolvedStream>()
         return ResolvingDataSource.Factory(createCacheDataSource()) { dataSpec ->
             val mediaId = dataSpec.key ?: error("No media id")
             Log.d(TAG, "PLAYING: song id = $mediaId")
@@ -700,10 +703,23 @@ class MusicService : MediaLibraryService(),
                 return@Factory dataSpec
             }
 
-            songUrlCache[mediaId]?.takeIf { it.second > System.currentTimeMillis() }?.let {
+            val cachedStream = songUrlCache[mediaId]
+            if (cachedStream != null && !isStreamExpired(cachedStream.expiresAtEpochMs, System.currentTimeMillis())) {
                 Log.d(TAG, "PLAYING: remote song (temp cache)")
                 offloadScope.launch { recoverSong(mediaId) }
-                return@Factory dataSpec.withUri(it.first.toUri())
+                val cachedDataSpec = dataSpec.withResolvedStream(cachedStream)
+                Log.d(
+                    TAG,
+                    "STREAM mediaId=$mediaId cacheHit=true client=${cachedStream.clientName} " +
+                        "position=${dataSpec.position} uriPositionOffset=${dataSpec.uriPositionOffset} " +
+                        "resultPosition=${cachedDataSpec.position} resultLength=${cachedDataSpec.length} " +
+                        "headersPresent=${cachedStream.headers.isNotEmpty()}",
+                )
+                return@Factory cachedDataSpec
+            }
+            if (cachedStream != null) {
+                Log.d(TAG, "STREAM mediaId=$mediaId cacheHit=true expired=true")
+                songUrlCache.remove(mediaId)
             }
 
             Log.d(TAG, "PLAYING: remote song (online fetch)")
@@ -761,13 +777,16 @@ class MusicService : MediaLibraryService(),
             }
             offloadScope.launch { recoverSong(mediaId, resolvedStream.videoLengthSeconds) }
 
-            val streamUrl = resolvedStream.url
-
-            songUrlCache[mediaId] = streamUrl to resolvedStream.expiresAtEpochMs
-            dataSpec
-                .withUri(streamUrl.toUri())
-                .withRequestHeaders(resolvedStream.headers)
-                .subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            songUrlCache[mediaId] = resolvedStream
+            val resolvedDataSpec = dataSpec.withResolvedStream(resolvedStream)
+            Log.d(
+                TAG,
+                "STREAM mediaId=$mediaId cacheHit=false client=${resolvedStream.clientName} " +
+                    "position=${dataSpec.position} uriPositionOffset=${dataSpec.uriPositionOffset} " +
+                    "resultPosition=${resolvedDataSpec.position} resultLength=${resolvedDataSpec.length} " +
+                    "headersPresent=${resolvedStream.headers.isNotEmpty()}",
+            )
+            resolvedDataSpec
         }
     }
 
