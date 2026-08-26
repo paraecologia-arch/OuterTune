@@ -264,6 +264,8 @@ dependencies {
     // sdk24 support
     // Support for N is officially unsupported even it the app should still work. Leave this outside of the version catalog.
     implementation("androidx.webkit:webkit:1.14.0")
+
+    testImplementation(libs.junit)
 }
 
 afterEvaluate {

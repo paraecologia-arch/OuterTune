@@ -8,7 +8,6 @@
 
 package com.dd3boh.outertune.utils
 
-import android.net.ConnectivityManager
 import android.util.Log
 import androidx.media3.common.PlaybackException
 import com.dd3boh.outertune.constants.AudioQuality
@@ -83,7 +82,7 @@ object YTPlayerUtils {
         videoId: String,
         playlistId: String? = null,
         audioQuality: AudioQuality,
-        connectivityManager: ConnectivityManager,
+        isActiveNetworkMetered: Boolean,
     ): Result<PlaybackData> = runCatching {
         Log.d(TAG, "Playback info requested: $videoId")
 
@@ -178,7 +177,7 @@ object YTPlayerUtils {
                     findFormat(
                         streamPlayerResponse,
                         audioQuality,
-                        connectivityManager,
+                        isActiveNetworkMetered,
                     ) ?: continue
 
                 streamUrl = findUrlOrNull(format, videoId)
@@ -253,13 +252,13 @@ object YTPlayerUtils {
     private fun findFormat(
         playerResponse: PlayerResponse,
         audioQuality: AudioQuality,
-        connectivityManager: ConnectivityManager,
+        isActiveNetworkMetered: Boolean,
     ): PlayerResponse.StreamingData.Format? =
         playerResponse.streamingData?.adaptiveFormats
             ?.filter { it.isAudio }
             ?.maxByOrNull {
                 it.bitrate * when (audioQuality) {
-                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                    AudioQuality.AUTO -> if (isActiveNetworkMetered) -1 else 1
                     AudioQuality.HIGH -> 1
                     AudioQuality.LOW -> -1
                 } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream

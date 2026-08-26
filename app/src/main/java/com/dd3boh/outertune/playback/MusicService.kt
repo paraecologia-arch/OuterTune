@@ -109,6 +109,9 @@ import com.dd3boh.outertune.models.toMediaMetadata
 import com.dd3boh.outertune.playback.queues.ListQueue
 import com.dd3boh.outertune.playback.queues.Queue
 import com.dd3boh.outertune.playback.queues.YouTubeQueue
+import com.dd3boh.outertune.playback.stream.LegacyOuterTuneResolver
+import com.dd3boh.outertune.playback.stream.RangePolicy
+import com.dd3boh.outertune.playback.stream.StreamResolver
 import com.dd3boh.outertune.utils.CoilBitmapLoader
 import com.dd3boh.outertune.utils.NetworkConnectivityObserver
 import com.dd3boh.outertune.utils.SyncUtils
@@ -157,6 +160,8 @@ class MusicService : MediaLibraryService(),
     Player.Listener,
     PlaybackStatsListener.Callback {
     val TAG = MusicService::class.simpleName.toString()
+
+    private val streamResolver: StreamResolver = LegacyOuterTuneResolver()
 
     @Inject
     lateinit var database: MusicDatabase
@@ -369,15 +374,15 @@ class MusicService : MediaLibraryService(),
 
 // Library functions
 
-    private suspend fun recoverSong(mediaId: String, playbackData: YTPlayerUtils.PlaybackData? = null) {
+    private suspend fun recoverSong(mediaId: String, videoLengthSeconds: String? = null) {
         val song = database.song(mediaId).first()
         val mediaMetadata = withContext(Dispatchers.Main) {
             player.findNextMediaItemById(mediaId)?.metadata
         } ?: return
         val duration = song?.song?.duration?.takeIf { it != -1 }
             ?: mediaMetadata.duration.takeIf { it != -1 }
-            ?: (playbackData?.videoDetails ?: YTPlayerUtils.playerResponseForMetadata(mediaId)
-                .getOrNull()?.videoDetails)?.lengthSeconds?.toInt()
+            ?: (videoLengthSeconds ?: YTPlayerUtils.playerResponseForMetadata(mediaId)
+                .getOrNull()?.videoDetails?.lengthSeconds)?.toInt()
             ?: -1
         database.query {
             if (song == null) insert(mediaMetadata.copy(duration = duration))
@@ -703,12 +708,12 @@ class MusicService : MediaLibraryService(),
 
             Log.d(TAG, "PLAYING: remote song (online fetch)")
 
-            val playbackData = runBlocking(Dispatchers.IO) {
+            val resolvedStream = runBlocking(Dispatchers.IO) {
                 val audioQuality by enumPreference(this@MusicService, AudioQualityKey, AudioQuality.AUTO)
-                YTPlayerUtils.playerResponseForPlayback(
-                    mediaId,
+                streamResolver.resolve(
+                    videoId = mediaId,
                     audioQuality = audioQuality,
-                    connectivityManager = connectivityManager,
+                    isActiveNetworkMetered = connectivityManager.isActiveNetworkMetered,
                 )
             }.getOrElse { throwable ->
                 when (throwable) {
@@ -737,32 +742,31 @@ class MusicService : MediaLibraryService(),
                     )
                 }
             }
-            val format = playbackData.format
+            val format = resolvedStream.format
 
             database.query {
                 upsert(
                     FormatEntity(
                         id = mediaId,
                         itag = format.itag,
-                        mimeType = format.mimeType.split(";")[0],
-                        codecs = format.mimeType.split("codecs=")[1].removeSurrounding("\""),
+                        mimeType = format.mimeType,
+                        codecs = format.codecs,
                         bitrate = format.bitrate,
-                        sampleRate = format.audioSampleRate,
+                        sampleRate = format.sampleRate,
                         contentLength = format.contentLength!!,
-                        loudnessDb = playbackData.audioConfig?.loudnessDb,
-                        playbackTrackingUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                        loudnessDb = format.loudnessDb,
+                        playbackTrackingUrl = resolvedStream.playbackTrackingUrl
                     )
                 )
             }
-            offloadScope.launch { recoverSong(mediaId, playbackData) }
+            offloadScope.launch { recoverSong(mediaId, resolvedStream.videoLengthSeconds) }
 
-            val streamUrl = playbackData.streamUrl
+            val streamUrl = resolvedStream.url
 
-            songUrlCache[mediaId] =
-                streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
+            songUrlCache[mediaId] = streamUrl to resolvedStream.expiresAtEpochMs
             dataSpec
                 .withUri(streamUrl.toUri())
-                .withRequestHeaders(playbackData.mediaHeaders)
+                .withRequestHeaders(resolvedStream.headers)
                 .subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
         }
     }
@@ -1124,7 +1128,7 @@ class MusicService : MediaLibraryService(),
         const val CHANNEL_NAME = "fgs_workaround"
         const val NOTIFICATION_ID = 888
         const val ERROR_CODE_NO_STREAM = 1000001
-        const val CHUNK_LENGTH = 512 * 1024L
+        const val CHUNK_LENGTH = RangePolicy.LEGACY_CHUNK_SIZE_BYTES
 
         const val COMMAND_GET_BINDER = "GET_BINDER"
     }

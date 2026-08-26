@@ -34,7 +34,8 @@ import com.dd3boh.outertune.playback.DownloadUtil.Companion.STATE_DOWNLOADING
 import com.dd3boh.outertune.playback.DownloadUtil.Companion.STATE_INVALID
 import com.dd3boh.outertune.playback.downloadManager.DownloadDirectoryManagerOt
 import com.dd3boh.outertune.playback.downloadManager.DownloadManagerOt
-import com.dd3boh.outertune.utils.YTPlayerUtils
+import com.dd3boh.outertune.playback.stream.LegacyOuterTuneResolver
+import com.dd3boh.outertune.playback.stream.StreamResolver
 import com.dd3boh.outertune.utils.dataStore
 import com.dd3boh.outertune.utils.dlCoroutine
 import com.dd3boh.outertune.utils.enumPreference
@@ -80,6 +81,7 @@ class DownloadUtil @Inject constructor(
 
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
+    private val streamResolver: StreamResolver = LegacyOuterTuneResolver()
     private val songUrlCache = HashMap<String, Pair<String, Long>>()
     private val dataSourceFactory = ResolvingDataSource.Factory(
         CacheDataSource.Factory()
@@ -102,40 +104,40 @@ class DownloadUtil @Inject constructor(
             return@Factory dataSpec.withUri(it.first.toUri())
         }
 
-        val playbackData = runBlocking(Dispatchers.IO) {
-            YTPlayerUtils.playerResponseForPlayback(
-                mediaId,
+        val resolvedStream = runBlocking(Dispatchers.IO) {
+            streamResolver.resolve(
+                videoId = mediaId,
                 audioQuality = audioQuality,
-                connectivityManager = connectivityManager,
+                isActiveNetworkMetered = connectivityManager.isActiveNetworkMetered,
             )
         }.getOrThrow()
-        val format = playbackData.format
+        val format = resolvedStream.format
 
         database.query {
             upsert(
                 FormatEntity(
                     id = mediaId,
                     itag = format.itag,
-                    mimeType = format.mimeType.split(";")[0],
-                    codecs = format.mimeType.split("codecs=")[1].removeSurrounding("\""),
+                    mimeType = format.mimeType,
+                    codecs = format.codecs,
                     bitrate = format.bitrate,
-                    sampleRate = format.audioSampleRate,
+                    sampleRate = format.sampleRate,
                     contentLength = format.contentLength!!,
-                    loudnessDb = playbackData.audioConfig?.loudnessDb,
-                    playbackTrackingUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                    loudnessDb = format.loudnessDb,
+                    playbackTrackingUrl = resolvedStream.playbackTrackingUrl
                 )
             )
         }
 
-        val streamUrl = playbackData.streamUrl.let {
+        val streamUrl = resolvedStream.url.let {
             // Specify range to avoid YouTube's throttling
             "${it}&range=0-${format.contentLength ?: 10000000}"
         }
 
-        songUrlCache[mediaId] = streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
+        songUrlCache[mediaId] = streamUrl to resolvedStream.expiresAtEpochMs
         dataSpec
             .withUri(streamUrl.toUri())
-            .withRequestHeaders(playbackData.mediaHeaders)
+            .withRequestHeaders(resolvedStream.headers)
     }
     val downloadNotificationHelper = DownloadNotificationHelper(context, ExoDownloadService.CHANNEL_ID)
     val downloadManager: DownloadManager =
