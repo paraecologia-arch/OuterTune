@@ -22,7 +22,12 @@ class StreamDataSpecTest {
         position: Long = 0L,
         length: Long = C.LENGTH_UNSET.toLong(),
         headers: Map<String, String> = emptyMap(),
-    ) = DataSpec(uri, position, length, null, 0, headers)
+    ) = DataSpec.Builder()
+        .setUri(uri)
+        .setPosition(position)
+        .setLength(length)
+        .setHttpRequestHeaders(headers)
+        .build()
 
     private fun stream(
         headers: Map<String, String>,
