@@ -24,11 +24,27 @@ data class ResolvedFormat(
 
 /**
  * Describes how Media3 should request bytes from the resolved stream.
- *
- * Currently only models the existing legacy behavior (a fixed chunk size); richer policies such as
- * bounded ranges will be added in later phases.
  */
 sealed interface RangePolicy {
+
+    /**
+     * No byte-range restriction: Media3 keeps its own position/length unchanged.
+     */
+    data object None : RangePolicy
+
+    /**
+     * Requests must be bounded to [maxBytes].
+     */
+    data class Bounded(val maxBytes: Long) : RangePolicy
+
+    /**
+     * Requests must be split into chunks of at most [chunkSizeBytes].
+     */
+    data class Chunked(val chunkSizeBytes: Long) : RangePolicy
+
+    /**
+     * Legacy OuterTune fixed chunk policy.
+     */
     data class LegacyChunked(val chunkSizeBytes: Long) : RangePolicy
 
     companion object {
@@ -37,4 +53,14 @@ sealed interface RangePolicy {
          */
         const val LEGACY_CHUNK_SIZE_BYTES = 512 * 1024L
     }
+}
+
+/**
+ * Returns the byte length cap this policy imposes, or null when no restriction applies.
+ */
+fun RangePolicy.boundedBytes(): Long? = when (this) {
+    is RangePolicy.None -> null
+    is RangePolicy.Bounded -> maxBytes
+    is RangePolicy.Chunked -> chunkSizeBytes
+    is RangePolicy.LegacyChunked -> chunkSizeBytes
 }
