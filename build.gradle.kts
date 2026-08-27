@@ -20,7 +20,15 @@ tasks.register<Delete>("Clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
+val kotlinVersion = libs.versions.kotlin.get()
+
 subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
+        }
+    }
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {
             if (project.findProperty("enableComposeCompilerReports") == "true") {
