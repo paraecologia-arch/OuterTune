@@ -8,7 +8,6 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.media3.database.DatabaseProvider
-import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheSpan
 import androidx.media3.datasource.cache.SimpleCache
@@ -34,8 +33,11 @@ import com.dd3boh.outertune.playback.DownloadUtil.Companion.STATE_DOWNLOADING
 import com.dd3boh.outertune.playback.DownloadUtil.Companion.STATE_INVALID
 import com.dd3boh.outertune.playback.downloadManager.DownloadDirectoryManagerOt
 import com.dd3boh.outertune.playback.downloadManager.DownloadManagerOt
-import com.dd3boh.outertune.playback.stream.LegacyOuterTuneResolver
+import com.dd3boh.outertune.playback.stream.DownloadRangeDataSource
+import com.dd3boh.outertune.playback.stream.InnerTubeXResolver
+import com.dd3boh.outertune.playback.stream.ResolvedStream
 import com.dd3boh.outertune.playback.stream.StreamResolver
+import com.dd3boh.outertune.playback.stream.parseContentRangeTotalBytes
 import com.dd3boh.outertune.utils.dataStore
 import com.dd3boh.outertune.utils.dlCoroutine
 import com.dd3boh.outertune.utils.enumPreference
@@ -58,6 +60,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -65,6 +68,7 @@ import java.io.IOException
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executor
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -81,27 +85,51 @@ class DownloadUtil @Inject constructor(
 
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
-    private val streamResolver: StreamResolver = LegacyOuterTuneResolver()
-    private val songUrlCache = HashMap<String, Pair<String, Long>>()
-    private val dataSourceFactory = ResolvingDataSource.Factory(
+    private val streamResolver: StreamResolver = InnerTubeXResolver()
+    private val resolvedStreamCache = ConcurrentHashMap<String, ResolvedStream>()
+    private val downloadHttpClient = OkHttpClient.Builder()
+        .proxy(YouTube.proxy)
+        .build()
+    private val dataSourceFactory = DownloadRangeDataSource.Factory(
         CacheDataSource.Factory()
             .setCache(playerCache)
-            .setUpstreamDataSourceFactory(
-                OkHttpDataSource.Factory(
-                    OkHttpClient.Builder()
-                        .proxy(YouTube.proxy)
-                        .build()
-                )
-            )
-    ) { dataSpec ->
-        val mediaId = dataSpec.key ?: error("No media id")
-        val length = if (dataSpec.length >= 0) dataSpec.length else 1
-        if (playerCache.isCached(mediaId, dataSpec.position, length)) {
-            return@Factory dataSpec
-        }
+            .setUpstreamDataSourceFactory(OkHttpDataSource.Factory(downloadHttpClient)),
+        ::resolveDownloadStream,
+    )
 
-        songUrlCache[mediaId]?.takeIf { it.second > System.currentTimeMillis() }?.let {
-            return@Factory dataSpec.withUri(it.first.toUri())
+    private fun discoverContentLength(resolvedStream: ResolvedStream): Long? {
+        val request = Request.Builder()
+            .url(resolvedStream.url)
+            .apply {
+                resolvedStream.headers.forEach { (name, value) ->
+                    header(name, value)
+                }
+            }
+            .header("Range", "bytes=0-0")
+            .build()
+
+        return downloadHttpClient.newCall(request).execute().use { response ->
+            Log.d(TAG, "DOWNLOAD HTTP status=${response.code}")
+            when (response.code) {
+                200 -> response.body?.contentLength()?.takeIf { it >= 0 }
+                206 -> response.header("Content-Range")?.let(::parseContentRangeTotalBytes)
+                else -> null
+            }
+        }
+    }
+
+    private fun resolveDownloadStream(mediaId: String): ResolvedStream {
+        val cachedStream = resolvedStreamCache[mediaId]
+        if (cachedStream != null && cachedStream.expiresAtEpochMs > System.currentTimeMillis()) {
+            Log.d(
+                TAG,
+                "DOWNLOAD resolve mediaId=$mediaId cacheHit=true " +
+                    "client=${cachedStream.clientName} rangePolicy=${cachedStream.rangePolicy}",
+            )
+            return cachedStream
+        }
+        if (cachedStream != null) {
+            resolvedStreamCache.remove(mediaId)
         }
 
         val resolvedStream = runBlocking(Dispatchers.IO) {
@@ -112,32 +140,43 @@ class DownloadUtil @Inject constructor(
             )
         }.getOrThrow()
         val format = resolvedStream.format
+        val contentLength = format.contentLength
+            ?: runBlocking(Dispatchers.IO) {
+                runCatching { discoverContentLength(resolvedStream) }.getOrNull()
+            }
 
-        database.query {
-            upsert(
-                FormatEntity(
-                    id = mediaId,
-                    itag = format.itag,
-                    mimeType = format.mimeType,
-                    codecs = format.codecs,
-                    bitrate = format.bitrate,
-                    sampleRate = format.sampleRate,
-                    contentLength = format.contentLength!!,
-                    loudnessDb = format.loudnessDb,
-                    playbackTrackingUrl = resolvedStream.playbackTrackingUrl
+        if (contentLength != null) {
+            val streamWithLength = if (format.contentLength == null) {
+                resolvedStream.copy(format = format.copy(contentLength = contentLength))
+            } else {
+                resolvedStream
+            }
+            database.query {
+                upsert(
+                    FormatEntity(
+                        id = mediaId,
+                        itag = format.itag,
+                        mimeType = format.mimeType,
+                        codecs = format.codecs,
+                        bitrate = format.bitrate,
+                        sampleRate = format.sampleRate,
+                        contentLength = contentLength,
+                        loudnessDb = format.loudnessDb,
+                        playbackTrackingUrl = streamWithLength.playbackTrackingUrl,
+                    )
                 )
-            )
+            }
+            resolvedStreamCache[mediaId] = streamWithLength
+        } else {
+            resolvedStreamCache[mediaId] = resolvedStream
         }
 
-        val streamUrl = resolvedStream.url.let {
-            // Specify range to avoid YouTube's throttling
-            "${it}&range=0-${format.contentLength ?: 10000000}"
-        }
-
-        songUrlCache[mediaId] = streamUrl to resolvedStream.expiresAtEpochMs
-        dataSpec
-            .withUri(streamUrl.toUri())
-            .withRequestHeaders(resolvedStream.headers)
+        Log.d(
+            TAG,
+            "DOWNLOAD resolve mediaId=$mediaId cacheHit=false " +
+                "client=${resolvedStream.clientName} rangePolicy=${resolvedStream.rangePolicy}",
+        )
+        return resolvedStreamCache.getValue(mediaId)
     }
     val downloadNotificationHelper = DownloadNotificationHelper(context, ExoDownloadService.CHANNEL_ID)
     val downloadManager: DownloadManager =
