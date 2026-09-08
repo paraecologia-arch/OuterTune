@@ -68,7 +68,7 @@ class DownloadRangeDataSourceTest {
         dataSource.open(dataSpec(position = 4L, length = 6L))
         val output = dataSource.readAll()
 
-        assertEquals(listOf(4, 5, 6, 7, 8, 9), output.toList())
+        assertEquals(data.copyOfRange(4, 10).toList(), output.toList())
         assertEquals(
             listOf(4L to 4L, 8L to 2L),
             upstream.openedSpecs.map { it.position to it.length },
