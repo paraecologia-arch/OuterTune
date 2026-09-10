@@ -51,6 +51,7 @@ import com.zionhuang.innertube.YouTube
 import com.zionhuang.innertube.models.SongItem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,6 +70,7 @@ import java.io.IOException
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executor
 import javax.inject.Inject
@@ -83,6 +85,9 @@ class DownloadUtil @Inject constructor(
     @PlayerCache val playerCache: SimpleCache,
 ) {
     val TAG = DownloadUtil::class.simpleName.toString()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val downloadStatusWriter = CoroutineScope(Dispatchers.IO.limitedParallelism(1))
 
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
@@ -192,6 +197,8 @@ class DownloadUtil @Inject constructor(
             )
         }
     val downloads = MutableStateFlow<Map<String, LocalDateTime>>(emptyMap())
+    private val pendingDownloadRequests =
+        Collections.newSetFromMap(ConcurrentHashMap<String, Boolean>())
 
     var localMgr = DownloadDirectoryManagerOt(
         context,
@@ -203,30 +210,183 @@ class DownloadUtil @Inject constructor(
 
     fun getDownload(songId: String): Flow<LocalDateTime?> = downloads.map { it[songId] }
 
-    fun download(songs: List<MediaMetadata>) {
-        songs.forEach { song -> downloadSong(song.id, song.title) }
-    }
-
-    fun download(song: MediaMetadata) {
-        downloadSong(song.id, song.title)
-    }
-
-    fun download(song: SongEntity) {
-        downloadSong(song.id, song.title)
-    }
-
-    private fun downloadSong(id: String, title: String) {
-        if (downloads.value[id] != null) return
-        val downloadRequest = DownloadRequest.Builder(id, id.toUri())
-            .setCustomCacheKey(id)
-            .setData(title.toByteArray())
-            .build()
-        DownloadService.sendAddDownload(
-            context,
-            ExoDownloadService::class.java,
-            downloadRequest,
-            false
+    fun download(
+        songs: List<MediaMetadata>,
+        source: DownloadSource = DownloadSource.OTHER,
+    ) {
+        val appStates = songs.map { downloads.value[it.id] }
+        Log.i(
+            TAG,
+            "DOWNLOAD_BATCH total=${songs.size} " +
+                "completed=${appStates.count { it.isCompletedDownload() }} " +
+                "active=${appStates.count { it == STATE_DOWNLOADING }} " +
+                "enqueue=${appStates.count { it == null || it == STATE_INVALID }} " +
+                "failed=${appStates.count { it == STATE_INVALID }}"
         )
+        database.transaction {
+            songs.forEach { song ->
+                insert(song)
+            }
+        }
+        songs.forEach { song ->
+            requestDownload(song.id, song.title, source)
+        }
+    }
+
+    fun download(
+        song: MediaMetadata,
+        source: DownloadSource = DownloadSource.OTHER,
+    ) {
+        database.transaction {
+            insert(song)
+        }
+        requestDownload(song.id, song.title, source)
+    }
+
+    fun download(
+        song: SongEntity,
+        source: DownloadSource = DownloadSource.OTHER,
+    ) {
+        requestDownload(song.id, song.title, source)
+    }
+
+    private fun requestDownload(
+        id: String,
+        title: String,
+        source: DownloadSource,
+    ) {
+        val appState = downloads.value[id]
+        Log.i(
+            TAG,
+            "DOWNLOAD_ENTRY source=$source mediaId=$id " +
+                "state=${appDownloadStateName(appState)}"
+        )
+
+        if (appState.isCompletedDownload()) {
+            Log.i(TAG, "DOWNLOAD_DECISION source=$source mediaId=$id decision=SKIP_COMPLETED")
+            return
+        }
+
+        if (!pendingDownloadRequests.add(id)) {
+            Log.i(TAG, "DOWNLOAD_DECISION source=$source mediaId=$id decision=SKIP_PENDING")
+            return
+        }
+
+        if (appState != STATE_DOWNLOADING) {
+            downloads.update { map ->
+                map.toMutableMap().apply {
+                    set(id, STATE_DOWNLOADING)
+                }
+            }
+        }
+
+        CoroutineScope(dlCoroutine).launch {
+            try {
+            val dbPresent = runCatching {
+                database.song(id).first() != null
+            }.getOrDefault(false)
+            Log.i(TAG, "DOWNLOAD_PREPARE source=$source mediaId=$id dbPresent=$dbPresent")
+
+            val media3Download = runCatching {
+                downloadManager.downloadIndex.getDownload(id)
+            }.getOrNull()
+            val media3State = media3Download?.state
+            Log.i(
+                TAG,
+                "DOWNLOAD_STATE mediaId=$id media3State=${media3StateName(media3State)} " +
+                    "appState=${appDownloadStateName(appState)}"
+            )
+
+            val decision = downloadDecision(appState, media3State)
+            Log.i(TAG, "DOWNLOAD_DECISION source=$source mediaId=$id decision=$decision")
+
+            when (decision) {
+                DownloadDecision.ENQUEUE, DownloadDecision.RETRY, DownloadDecision.RESET_STALE -> {
+                    val downloadRequest = DownloadRequest.Builder(id, id.toUri())
+                        .setCustomCacheKey(id)
+                        .setData(title.toByteArray())
+                        .build()
+
+                    try {
+                        DownloadService.sendAddDownload(
+                            context,
+                            ExoDownloadService::class.java,
+                            downloadRequest,
+                            false
+                        )
+                        downloads.update { map ->
+                            map.toMutableMap().apply {
+                                set(id, STATE_DOWNLOADING)
+                            }
+                        }
+                        downloadStatusWriter.launch {
+                            database.updateDownloadStatus(id, STATE_DOWNLOADING)
+                        }
+                    } catch (e: Exception) {
+                        downloads.update { map ->
+                            map.toMutableMap().apply {
+                                remove(id)
+                            }
+                        }
+                        downloadStatusWriter.launch {
+                            database.updateDownloadStatus(id, null)
+                        }
+                        Log.w(TAG, "DOWNLOAD_DECISION source=$source mediaId=$id decision=ERROR", e)
+                    }
+                }
+
+                DownloadDecision.SKIP_ACTIVE -> {
+                    downloads.update { map ->
+                        map.toMutableMap().apply {
+                            set(id, STATE_DOWNLOADING)
+                        }
+                    }
+                    downloadStatusWriter.launch {
+                        database.updateDownloadStatus(id, STATE_DOWNLOADING)
+                    }
+                }
+
+                DownloadDecision.SKIP_COMPLETED -> {
+                    if (media3Download?.state == Download.STATE_COMPLETED) {
+                        val completedAt = Instant.ofEpochMilli(media3Download.updateTimeMs)
+                            .atZone(ZoneOffset.UTC)
+                            .toLocalDateTime()
+                        downloads.update { map ->
+                            map.toMutableMap().apply {
+                                set(id, completedAt)
+                            }
+                        }
+                        downloadStatusWriter.launch {
+                            database.updateDownloadStatus(id, completedAt)
+                        }
+                    }
+                }
+
+                DownloadDecision.SKIP_REMOVING -> {
+                    downloads.update { map ->
+                        map.toMutableMap().apply {
+                            remove(id)
+                        }
+                    }
+                    downloadStatusWriter.launch {
+                        database.updateDownloadStatus(id, null)
+                    }
+                }
+            }
+            } catch (e: Exception) {
+                downloads.update { map ->
+                    map.toMutableMap().apply {
+                        remove(id)
+                    }
+                }
+                downloadStatusWriter.launch {
+                    database.updateDownloadStatus(id, null)
+                }
+                Log.w(TAG, "DOWNLOAD_REQUEST_FAILED source=$source mediaId=$id", e)
+            } finally {
+                pendingDownloadRequests.remove(id)
+            }
+        }
     }
 
     fun resumeDownloadsOnStart() {
@@ -400,7 +560,10 @@ class DownloadUtil @Inject constructor(
         // new files
         val availableDownloads = dbDownloads.minus(missingFiles)
         availableDownloads.forEach { s ->
-            result[s.song.id] = s.song.dateDownload!! // sql should cover our butts
+            val dateDownload = s.song.dateDownload
+            if (dateDownload != null && dateDownload >= STATE_DOWNLOADING) {
+                result[s.song.id] = dateDownload
+            }
         }
 
         downloads.value = result
@@ -470,42 +633,102 @@ class DownloadUtil @Inject constructor(
         val STATE_INVALID: LocalDateTime = Instant.ofEpochMilli(0).atZone(ZoneOffset.UTC).toLocalDateTime()
     }
 
+    private suspend fun reconcileDownloadStates() {
+        try {
+            val indexedDownloads = mutableMapOf<String, Download>()
+            downloadManager.downloadIndex.getDownloads().use { cursor ->
+                while (cursor.moveToNext()) {
+                    indexedDownloads[cursor.download.request.id] = cursor.download
+                }
+            }
+
+            indexedDownloads.forEach { (id, download) ->
+                applyDownloadState(id, stateToLocalDateTime(download))
+            }
+
+            val staleActiveIds = downloads.value
+                .filterValues { it == STATE_DOWNLOADING }
+                .keys
+                .filterNot { it in indexedDownloads }
+            staleActiveIds.forEach { id ->
+                Log.i(TAG, "DOWNLOAD_STATE mediaId=$id media3State=MISSING appState=STALE")
+                downloads.update { map ->
+                    map.toMutableMap().apply {
+                        remove(id)
+                    }
+                }
+                database.updateDownloadStatus(id, null)
+            }
+
+            downloads.update { map ->
+                map.filterValues { it.isCompletedDownload() || it == STATE_DOWNLOADING }
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to reconcile download states", e)
+        }
+    }
+
+    private fun applyDownloadState(
+        id: String,
+        state: LocalDateTime?,
+    ) {
+        downloads.update { map ->
+            map.toMutableMap().apply {
+                if (state == null || state == STATE_INVALID) {
+                    remove(id)
+                } else {
+                    set(id, state)
+                }
+            }
+        }
+
+        downloadStatusWriter.launch {
+            database.updateDownloadStatus(
+                songId = id,
+                dateDownload = if (state == null || state == STATE_INVALID) null else state,
+            )
+        }
+    }
+
 
     init {
         Log.i(TAG, "DownloadUtil init")
-        // TODO: make sure db is update when download is queued
         CoroutineScope(dlCoroutine).launch {
             rescanDownloads()
         }
 
         downloadManager.addListener(
             object : DownloadManager.Listener {
+                override fun onInitialized(downloadManager: DownloadManager) {
+                    CoroutineScope(dlCoroutine).launch {
+                        reconcileDownloadStates()
+                    }
+                }
+
                 override fun onDownloadChanged(
                     downloadManager: DownloadManager,
                     download: Download,
                     finalException: Exception?
                 ) {
-                    downloads.update { map ->
-                        map.toMutableMap().apply {
-                            val state = stateToLocalDateTime(download)
-                            if (state == STATE_INVALID) {
-                                Log.w(TAG, "Invalid download state for ${download.request.id}. Removing download")
-                                remove(download.request.id)
-                            } else {
-                                set(download.request.id, state)
-                            }
-                        }
-                    }
+                    Log.i(
+                        TAG,
+                        "DOWNLOAD_STATE mediaId=${download.request.id} " +
+                            "media3State=${media3StateName(download.state)} " +
+                            "appState=${appDownloadStateName(stateToLocalDateTime(download))}"
+                    )
+                    applyDownloadState(download.request.id, stateToLocalDateTime(download))
+                }
 
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (download.state == Download.STATE_COMPLETED) {
-                            val updateTime =
-                                Instant.ofEpochMilli(download.updateTimeMs).atZone(ZoneOffset.UTC).toLocalDateTime()
-                            database.updateDownloadStatus(download.request.id, updateTime)
-                        } else {
-                            database.updateDownloadStatus(download.request.id, null)
-                        }
-                    }
+                override fun onDownloadRemoved(
+                    downloadManager: DownloadManager,
+                    download: Download,
+                ) {
+                    Log.i(
+                        TAG,
+                        "DOWNLOAD_STATE mediaId=${download.request.id} " +
+                            "media3State=REMOVED appState=NOT_DOWNLOADED"
+                    )
+                    applyDownloadState(download.request.id, null)
                 }
             }
         )
@@ -518,7 +741,11 @@ fun stateToLocalDateTime(download: Download): LocalDateTime {
             Instant.ofEpochMilli(download.updateTimeMs).atZone(ZoneOffset.UTC).toLocalDateTime()
         }
 
-        Download.STATE_DOWNLOADING, Download.STATE_QUEUED -> STATE_DOWNLOADING
+        Download.STATE_QUEUED,
+        Download.STATE_DOWNLOADING,
+        Download.STATE_RESTARTING,
+        -> STATE_DOWNLOADING
+
         else -> STATE_INVALID
     }
 }

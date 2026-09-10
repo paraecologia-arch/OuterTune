@@ -62,6 +62,7 @@ import com.dd3boh.outertune.db.entities.PlaylistSong
 import com.dd3boh.outertune.db.entities.Song
 import com.dd3boh.outertune.extensions.toMediaItem
 import com.dd3boh.outertune.models.toMediaMetadata
+import com.dd3boh.outertune.playback.DownloadSource
 import com.dd3boh.outertune.playback.ExoDownloadService
 import com.dd3boh.outertune.playback.queues.ListQueue
 import com.dd3boh.outertune.playback.queues.YouTubeQueue
@@ -249,7 +250,10 @@ fun SongMenu(
             DownloadGridMenu(
                 localDateTime = download,
                 onDownload = {
-                    downloadUtil.download(song.toMediaMetadata())
+                    downloadUtil.download(
+                        song.toMediaMetadata(),
+                        DownloadSource.ALBUM_TRACK_MENU,
+                    )
                 },
                 onRemoveDownload = {
                     if (song.song.localPath != null) {

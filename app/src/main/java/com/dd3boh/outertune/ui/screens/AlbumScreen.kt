@@ -91,6 +91,7 @@ import com.dd3boh.outertune.constants.ThumbnailCornerRadius
 import com.dd3boh.outertune.constants.TopBarInsets
 import com.dd3boh.outertune.db.entities.Album
 import com.dd3boh.outertune.models.toMediaMetadata
+import com.dd3boh.outertune.playback.DownloadSource
 import com.dd3boh.outertune.playback.ExoDownloadService
 import com.dd3boh.outertune.playback.queues.ListQueue
 import com.dd3boh.outertune.ui.component.AsyncImageLocal
@@ -330,7 +331,10 @@ fun AlbumScreen(
                                                 onClick = {
                                                     val songs =
                                                         albumWithSongsLocal.songs.map { it.toMediaMetadata() }
-                                                    downloadUtil.download(songs)
+                                                    downloadUtil.download(
+                                                        songs,
+                                                        DownloadSource.ALBUM_BULK,
+                                                    )
                                                 }
                                             ) {
                                                 Icon(

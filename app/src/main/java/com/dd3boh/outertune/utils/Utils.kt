@@ -8,7 +8,6 @@
 
 package com.dd3boh.outertune.utils
 
-import androidx.compose.ui.util.fastAny
 import androidx.media3.exoplayer.offline.Download
 import com.dd3boh.outertune.constants.MAX_COIL_JOBS
 import com.dd3boh.outertune.constants.MAX_DL_JOBS
@@ -75,8 +74,8 @@ fun getDownloadState(localDateTime: LocalDateTime?): Int {
  * Download.STATE_STOPPED otherwise
  */
 fun getDownloadState(localDateTimes: List<LocalDateTime?>): Int {
-    if (localDateTimes.fastAny { it == null }) return Download.STATE_STOPPED
-    if (localDateTimes.all { it!! > DownloadUtil.STATE_DOWNLOADING }) {
+    if (localDateTimes.isEmpty()) return Download.STATE_STOPPED
+    if (localDateTimes.all { it != null && it!! > DownloadUtil.STATE_DOWNLOADING }) {
         return Download.STATE_COMPLETED
     } else if (localDateTimes.any { it == DownloadUtil.STATE_DOWNLOADING }) {
         return Download.STATE_DOWNLOADING
