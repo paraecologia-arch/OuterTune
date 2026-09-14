@@ -36,6 +36,8 @@ The file must not be modified, overwritten, redrawn, reinterpreted, vectorized, 
 | Primary blue | `xenowave_primary_blue` | `#2563EB` |
 | Luminous cyan | `xenowave_luminous_cyan` | `#00D4FF` |
 | Support purple | `xenowave_support_purple` | `#8B5CF6` |
+| Secondary surface | `xenowave_secondary_surface` | `#1E293B` |
+| Primary light text | `xenowave_primary_text` | `#E2E8F0` |
 
 The raw hexadecimal values are centralized in `app/src/main/res/values/xenowave_colors.xml`. Compose screens must consume semantic brand tokens or Material 3 roles rather than duplicating these values.
 
@@ -56,6 +58,7 @@ The raw hexadecimal values are centralized in `app/src/main/res/values/xenowave_
 ## Color behavior
 
 - Dark mode uses `#0B1020` as its base.
+- Dark mode uses `#1E293B` for the high surface container and `#E2E8F0` for primary text.
 - Light mode derives accessible surfaces from the same palette while retaining XENOWAVE hierarchy.
 - Blue is the primary interaction color.
 - Cyan represents signal and controlled emphasis.
@@ -67,7 +70,19 @@ The raw hexadecimal values are centralized in `app/src/main/res/values/xenowave_
 
 ## Typography
 
-No official XENOWAVE typography has been approved. Until an official family is supplied, the existing functional Material typography remains in use. Do not introduce another font speculatively.
+The approved families are:
+
+- **Orbitron:** titles, brand communication, and emphasis elements.
+- **Inter:** interface text, controls, and functional reading.
+
+Technical font integration remains pending. Do not download or embed fonts while that integration is unspecified. Until integration is approved, the existing functional Material typography remains in use. The official logo wordmark must not be reconstructed by typing `XENOWAVE` in Orbitron.
+
+## Verbal identity
+
+- Primary slogan: `Signal received.`
+- Signature: `Explore • Listen • Go further`
+- Approved Portuguese message: `Música sem fronteiras • Além do conhecido • Sempre com você`
+- Secondary atmospheric phrase: `Some songs come from further away.`
 
 ## Shape and spacing
 
@@ -97,6 +112,13 @@ No official XENOWAVE typography has been approved. Until an official family is s
 ### Pending assets
 
 Derivative definitions and exact target files will be decided only after examination and explicit approval of the master reference. Pending asset families include adaptive launcher foreground, monochrome/themed icon, splash artwork, Play Store icon, and Fastlane icon.
+
+Approved visual variations, still pending isolated official files:
+
+- Primary logo on dark background.
+- Light-background version.
+- Monochrome version.
+- Isolated symbol.
 
 ## Splash and launcher
 
@@ -131,7 +153,7 @@ Blind global replacement of `OuterTune` is forbidden.
 3. Reserve cyan for signal, selection, focus, or a single controlled emphasis.
 4. Use purple only as restrained support.
 5. Preserve text contrast and non-color state indicators.
-6. Use existing Material typography.
+6. Orbitron and Inter are the approved families, but their technical integration remains pending; continue using the current Material implementation until approved.
 7. Do not invent logo artwork or substitute an icon.
 8. Keep streaming, download, library, login, navigation, and persistence behavior unchanged.
 

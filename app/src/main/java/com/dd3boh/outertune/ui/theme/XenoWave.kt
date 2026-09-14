@@ -82,6 +82,8 @@ internal fun xenoWaveColors(darkTheme: Boolean): XenoWaveColors {
     val blue = colorResource(R.color.xenowave_primary_blue)
     val cyan = colorResource(R.color.xenowave_luminous_cyan)
     val purple = colorResource(R.color.xenowave_support_purple)
+    val secondarySurface = colorResource(R.color.xenowave_secondary_surface)
+    val primaryText = colorResource(R.color.xenowave_primary_text)
 
     return if (darkTheme) {
         val textSecondary = lerp(Color.White, space, 0.28f)
@@ -89,9 +91,9 @@ internal fun xenoWaveColors(darkTheme: Boolean): XenoWaveColors {
             background = space,
             surface = lerp(space, Color.White, 0.04f),
             surfaceContainer = lerp(space, Color.White, 0.07f),
-            surfaceContainerHigh = lerp(space, Color.White, 0.11f),
+            surfaceContainerHigh = secondarySurface,
             surfaceContainerHighest = lerp(space, Color.White, 0.15f),
-            textPrimary = Color.White,
+            textPrimary = primaryText,
             textSecondary = textSecondary,
             textDisabled = lerp(textSecondary, space, 0.35f),
             primary = blue,

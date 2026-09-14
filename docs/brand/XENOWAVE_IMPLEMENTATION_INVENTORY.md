@@ -24,7 +24,7 @@ The initial invocation without a configured JDK also failed in 0 s with `JAVA_HO
 
 - Canonical brand documentation.
 - Official Master Visual Reference verification and registration.
-- Centralized XML palette tokens.
+- Centralized XML palette tokens, including secondary surface and primary light text.
 - Centralized Compose semantic tokens, metrics, and shapes.
 - XENOWAVE Material 3 light/dark schemes.
 - XENOWAVE as the default app theme.
@@ -33,6 +33,7 @@ The initial invocation without a configured JDK also failed in 0 s with `JAVA_HO
 - Careful visible string migration, preserving technical references and old URLs where required.
  - Fastlane store-description brand names, preserving old OuterTune URLs.
 - Removal of the old OuterTune logo from the About and OOBE screens; only the approved text name is shown while assets are pending.
+- Approved typography and verbal-identity decisions registered; font embedding remains pending.
 
 ## Pending official assets
 
@@ -42,6 +43,8 @@ The initial invocation without a configured JDK also failed in 0 s with `JAVA_HO
 - Splash artwork.
 - Play Store icon.
 - Fastlane icon and store screenshots.
+- Isolated official files for the approved dark-background, light-background, monochrome, and isolated-symbol variations.
+- Orbitron and Inter font integration.
 
 No derivative has been generated. The existing OuterTune launcher is only a temporary non-substitute state while the approved derivatives remain pending.
 

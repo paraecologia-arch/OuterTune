@@ -4,4 +4,6 @@
     <color name="xenowave_primary_blue">#2563EB</color>
     <color name="xenowave_luminous_cyan">#00D4FF</color>
     <color name="xenowave_support_purple">#8B5CF6</color>
+    <color name="xenowave_secondary_surface">#1E293B</color>
+    <color name="xenowave_primary_text">#E2E8F0</color>
 </resources>
