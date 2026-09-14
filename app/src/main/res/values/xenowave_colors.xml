@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="xenowave_space_background">#0B1020</color>
+    <color name="xenowave_primary_blue">#2563EB</color>
+    <color name="xenowave_luminous_cyan">#00D4FF</color>
+    <color name="xenowave_support_purple">#8B5CF6</color>
+</resources>

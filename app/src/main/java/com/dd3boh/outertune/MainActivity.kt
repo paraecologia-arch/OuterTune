@@ -265,7 +265,7 @@ class MainActivity : ComponentActivity() {
             val haptic = LocalHapticFeedback.current
             val snackbarHostState = remember { SnackbarHostState() }
 
-            val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
+            val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = false)
             val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
             val highContrastCompat by rememberPreference(HighContrastKey, defaultValue = false)
             val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
@@ -362,6 +362,7 @@ class MainActivity : ComponentActivity() {
                 darkTheme = useDarkTheme,
                 pureBlack = pureBlack,
                 highContrastCompat = highContrastCompat,
+                dynamicTheme = enableDynamicTheme,
                 themeColor = themeColor
             ) {
                 Log.v(MAIN_TAG, "RC-2.1")

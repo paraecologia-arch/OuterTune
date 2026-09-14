@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
@@ -30,8 +31,7 @@ import com.google.material.color.hct.Hct
 import com.google.material.color.scheme.SchemeTonalSpot
 import com.google.material.color.score.Score
 
-// TODO: support for custom accent
-val DefaultThemeColor = Color(0xFFED5564)
+val DefaultThemeColor = Color.Transparent
 
 @Composable
 fun OuterTuneTheme(
@@ -39,11 +39,24 @@ fun OuterTuneTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     pureBlack: Boolean = false,
     highContrastCompat: Boolean,
+    dynamicTheme: Boolean = false,
     themeColor: Color = DefaultThemeColor,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = remember(darkTheme, pureBlack, themeColor) {
-       if (themeColor == DefaultThemeColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    val brandColors = xenoWaveColors(darkTheme)
+    val colorScheme = remember(
+        darkTheme,
+        pureBlack,
+        highContrastCompat,
+        themeColor,
+        dynamicTheme,
+        brandColors
+    ) {
+       if (
+           dynamicTheme &&
+           themeColor == DefaultThemeColor &&
+           Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+       ) {
             val systemTheme = if (darkTheme) {
                 dynamicDarkColorScheme(context).pureBlack(pureBlack)
             } else {
@@ -55,25 +68,35 @@ fun OuterTuneTheme(
             // secondaryContainer and onSecondaryContainer weirdly in several places in terms of theming so just replace
             // those with shades that make sense
             if (highContrastCompat) {
-                systemTheme.copy(
-                    secondaryContainer = systemTheme.surfaceContainerHigh,
-                    onSecondaryContainer = systemTheme.secondary,
-                )
+                systemTheme.withHighContrastCompat()
             } else {
                 systemTheme
             }
         } else {
-            SchemeTonalSpot(Hct.fromInt(themeColor.toArgb()), darkTheme, 0.0)
-                .toColorScheme()
-                .pureBlack(darkTheme && pureBlack)
+            if (themeColor == DefaultThemeColor) {
+                brandColors.toColorScheme(darkTheme)
+                    .withHighContrastCompat()
+                    .pureBlack(darkTheme && pureBlack)
+            } else {
+                SchemeTonalSpot(Hct.fromInt(themeColor.toArgb()), darkTheme, 0.0)
+                    .toColorScheme()
+                    .withHighContrastCompat()
+                    .pureBlack(darkTheme && pureBlack)
+            }
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = MaterialTheme.typography,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalXenoWaveColors provides brandColors,
+        LocalXenoWaveMetrics provides LocalXenoWaveMetrics.current,
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = MaterialTheme.typography,
+            shapes = XenoWaveShapes,
+            content = content
+        )
+    }
 }
 
 fun Bitmap.extractThemeColor(): Color {
@@ -158,6 +181,11 @@ fun ColorScheme.pureBlack(apply: Boolean) =
         surface = Color.Black,
         background = Color.Black
     ) else this
+
+fun ColorScheme.withHighContrastCompat() = copy(
+    secondaryContainer = surfaceContainerHigh,
+    onSecondaryContainer = secondary,
+)
 
 val ColorSaver = object : Saver<Color, Int> {
     override fun restore(value: Int): Color = Color(value)

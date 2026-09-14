@@ -37,7 +37,7 @@ import com.dd3boh.outertune.utils.rememberPreference
 @Composable
 fun ColumnScope.ThemeAppFrag() {
     val (darkMode, onDarkModeChange) = rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
-    val (dynamicTheme, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = true)
+    val (dynamicTheme, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = false)
     val (highContrastCompat, onHccChange) = rememberPreference(HighContrastKey, defaultValue = false)
 
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
