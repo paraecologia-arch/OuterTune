@@ -4,42 +4,42 @@ import androidx.annotation.DrawableRes
 import com.dd3boh.outertune.R
 
 object XenoActionIcons {
-    @DrawableRes
+    @get:DrawableRes
     val Add: Int get() = R.drawable.xeno_icon_add
-    @DrawableRes
+    @get:DrawableRes
     val AddCircleOutline: Int get() = R.drawable.xeno_icon_add_circle_outline
-    @DrawableRes
+    @get:DrawableRes
     val Check: Int get() = R.drawable.xeno_icon_check
-    @DrawableRes
+    @get:DrawableRes
     val ClearAll: Int get() = R.drawable.xeno_icon_clear_all
-    @DrawableRes
+    @get:DrawableRes
     val Close: Int get() = R.drawable.xeno_icon_close
-    @DrawableRes
+    @get:DrawableRes
     val ContentCut: Int get() = R.drawable.xeno_icon_content_cut
-    @DrawableRes
+    @get:DrawableRes
     val Delete: Int get() = R.drawable.xeno_icon_delete
-    @DrawableRes
+    @get:DrawableRes
     val DragHandle: Int get() = R.drawable.xeno_icon_drag_handle
-    @DrawableRes
+    @get:DrawableRes
     val Edit: Int get() = R.drawable.xeno_icon_edit
-    @DrawableRes
+    @get:DrawableRes
     val EditOff: Int get() = R.drawable.xeno_icon_edit_off
-    @DrawableRes
+    @get:DrawableRes
     val FilterAlt: Int get() = R.drawable.xeno_icon_filter_alt
-    @DrawableRes
+    @get:DrawableRes
     val MoreHoriz: Int get() = R.drawable.xeno_icon_more_horiz
-    @DrawableRes
+    @get:DrawableRes
     val MoreVert: Int get() = R.drawable.xeno_icon_more_vert
-    @DrawableRes
+    @get:DrawableRes
     val RemoveCircleOutline: Int get() = R.drawable.xeno_icon_remove_circle_outline
-    @DrawableRes
+    @get:DrawableRes
     val Reorder: Int get() = R.drawable.xeno_icon_reorder
-    @DrawableRes
+    @get:DrawableRes
     val Share: Int get() = R.drawable.xeno_icon_share
-    @DrawableRes
+    @get:DrawableRes
     val TextFields: Int get() = R.drawable.xeno_icon_text_fields
-    @DrawableRes
+    @get:DrawableRes
     val TextRotationAngledown: Int get() = R.drawable.xeno_icon_text_rotation_angledown
-    @DrawableRes
+    @get:DrawableRes
     val Tune: Int get() = R.drawable.xeno_icon_tune
 }

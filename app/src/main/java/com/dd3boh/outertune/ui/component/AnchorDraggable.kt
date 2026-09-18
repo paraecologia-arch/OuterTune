@@ -43,6 +43,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -268,7 +269,7 @@ fun DragActionIcon(
                     .padding(vertical = 5.dp)
                     .padding(horizontal = 10.dp)
                     .size(50.dp),
-                imageVector = icon,
+                painter = painterResource(icon),
                 contentDescription = null,
                 tint = tint
             )

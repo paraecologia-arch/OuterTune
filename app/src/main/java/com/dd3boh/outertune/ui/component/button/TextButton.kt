@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.dd3boh.outertune.constants.MenuCornerRadius
 
@@ -32,7 +33,7 @@ fun IconLabelButton(
         .clickable { onClick() }
 ) {
     Icon(
-        imageVector = icon,
+        painter = painterResource(icon),
         contentDescription = null,
         tint = tint,
         modifier = Modifier.padding(4.dp)

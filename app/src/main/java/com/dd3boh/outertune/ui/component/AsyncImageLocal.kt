@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.dd3boh.outertune.constants.MAX_COIL_JOBS
 import kotlinx.coroutines.CoroutineScope
@@ -63,7 +64,7 @@ fun AsyncImageLocal(
         if (imageBitmap == null) {
             placeholderIcon?.let {
                 Icon(
-                    it,
+                    painter = painterResource(it),
                     contentDescription = contentDescription,
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = modifier

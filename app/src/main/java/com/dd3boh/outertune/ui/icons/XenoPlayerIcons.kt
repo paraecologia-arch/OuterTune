@@ -4,38 +4,38 @@ import androidx.annotation.DrawableRes
 import com.dd3boh.outertune.R
 
 object XenoPlayerIcons {
-    @DrawableRes
+    @get:DrawableRes
     val Equalizer: Int get() = R.drawable.xeno_icon_equalizer
-    @DrawableRes
+    @get:DrawableRes
     val FastForward: Int get() = R.drawable.xeno_icon_fast_forward
-    @DrawableRes
+    @get:DrawableRes
     val FastRewind: Int get() = R.drawable.xeno_icon_fast_rewind
-    @DrawableRes
+    @get:DrawableRes
     val Favorite: Int get() = R.drawable.xeno_icon_favorite
-    @DrawableRes
+    @get:DrawableRes
     val FavoriteBorder: Int get() = R.drawable.xeno_icon_favorite_border
-    @DrawableRes
+    @get:DrawableRes
     val GraphicEq: Int get() = R.drawable.xeno_icon_graphic_eq
-    @DrawableRes
+    @get:DrawableRes
     val Lyrics: Int get() = R.drawable.xeno_icon_lyrics
-    @DrawableRes
+    @get:DrawableRes
     val Pause: Int get() = R.drawable.xeno_icon_pause
-    @DrawableRes
+    @get:DrawableRes
     val PlayArrow: Int get() = R.drawable.xeno_icon_play_arrow
-    @DrawableRes
+    @get:DrawableRes
     val PlaylistPlay: Int get() = R.drawable.xeno_icon_playlist_play
-    @DrawableRes
+    @get:DrawableRes
     val Radio: Int get() = R.drawable.xeno_icon_radio
-    @DrawableRes
+    @get:DrawableRes
     val Replay: Int get() = R.drawable.xeno_icon_replay
-    @DrawableRes
+    @get:DrawableRes
     val Shuffle: Int get() = R.drawable.xeno_icon_shuffle
-    @DrawableRes
+    @get:DrawableRes
     val SkipNext: Int get() = R.drawable.xeno_icon_skip_next
-    @DrawableRes
+    @get:DrawableRes
     val SkipPrevious: Int get() = R.drawable.xeno_icon_skip_previous
-    @DrawableRes
+    @get:DrawableRes
     val SlowMotionVideo: Int get() = R.drawable.xeno_icon_slow_motion_video
-    @DrawableRes
+    @get:DrawableRes
     val VolumeUp: Int get() = R.drawable.xeno_icon_volume_up
 }

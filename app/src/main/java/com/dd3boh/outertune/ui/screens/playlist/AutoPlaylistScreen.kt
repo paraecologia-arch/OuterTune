@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -347,7 +348,7 @@ fun AutoPlaylistScreen(
                                 )
                         ) {
                             Icon(
-                                imageVector = thumbnail,
+                                painter = painterResource(thumbnail),
                                 contentDescription = null,
                                 tint = LocalContentColor.current.copy(alpha = 0.8f),
                                 modifier = Modifier

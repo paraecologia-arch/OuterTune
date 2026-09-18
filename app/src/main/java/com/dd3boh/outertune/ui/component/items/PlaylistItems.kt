@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,7 @@ fun AutoPlaylistListItem(
                 )
         ) {
             Icon(
-                imageVector = thumbnail,
+                painter = painterResource(thumbnail),
                 contentDescription = null,
                 modifier = Modifier
                     .size(ListThumbnailSize / 2 + 4.dp)
@@ -91,7 +92,7 @@ fun AutoPlaylistGridItem(
                 )
         ) {
             Icon(
-                imageVector = thumbnail,
+                painter = painterResource(thumbnail),
                 contentDescription = null,
                 tint = LocalContentColor.current.copy(alpha = 0.8f),
                 modifier = Modifier

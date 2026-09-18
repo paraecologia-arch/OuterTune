@@ -55,38 +55,3 @@ fun NavigationTile(
         )
     }
 }
-
-@Composable
-fun NavigationTile(
-    title: String,
-    icon: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = modifier.padding(6.dp),
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(56.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-                .clickable(onClick = onClick)
-        ) {
-            Icon(
-                icon,
-                contentDescription = null
-            )
-        }
-
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-}

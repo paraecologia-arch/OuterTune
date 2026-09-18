@@ -4,40 +4,40 @@ import androidx.annotation.DrawableRes
 import com.dd3boh.outertune.R
 
 object XenoLibraryIcons {
-    @DrawableRes
+    @get:DrawableRes
     val AccountTree: Int get() = R.drawable.xeno_icon_account_tree
-    @DrawableRes
+    @get:DrawableRes
     val Album: Int get() = R.drawable.xeno_icon_album
-    @DrawableRes
+    @get:DrawableRes
     val AudioFile: Int get() = R.drawable.xeno_icon_audio_file
-    @DrawableRes
+    @get:DrawableRes
     val Explicit: Int get() = R.drawable.xeno_icon_explicit
-    @DrawableRes
+    @get:DrawableRes
     val Folder: Int get() = R.drawable.xeno_icon_folder
-    @DrawableRes
+    @get:DrawableRes
     val FolderCopy: Int get() = R.drawable.xeno_icon_folder_copy
-    @DrawableRes
+    @get:DrawableRes
     val History: Int get() = R.drawable.xeno_icon_history
-    @DrawableRes
+    @get:DrawableRes
     val Interests: Int get() = R.drawable.xeno_icon_interests
-    @DrawableRes
+    @get:DrawableRes
     val LibraryAdd: Int get() = R.drawable.xeno_icon_library_add
-    @DrawableRes
+    @get:DrawableRes
     val LibraryAddCheck: Int get() = R.drawable.xeno_icon_library_add_check
-    @DrawableRes
+    @get:DrawableRes
     val LibraryBooks: Int get() = R.drawable.xeno_icon_library_books
-    @DrawableRes
+    @get:DrawableRes
     val LibraryMusic: Int get() = R.drawable.xeno_icon_library_music
-    @DrawableRes
+    @get:DrawableRes
     val MusicNote: Int get() = R.drawable.xeno_icon_music_note
-    @DrawableRes
+    @get:DrawableRes
     val OutlinedAlbum: Int get() = R.drawable.xeno_icon_outlined_album
-    @DrawableRes
+    @get:DrawableRes
     val PlaylistAdd: Int get() = R.drawable.xeno_icon_playlist_add
-    @DrawableRes
+    @get:DrawableRes
     val PlaylistRemove: Int get() = R.drawable.xeno_icon_playlist_remove
-    @DrawableRes
+    @get:DrawableRes
     val Queue: Int get() = R.drawable.xeno_icon_queue
-    @DrawableRes
+    @get:DrawableRes
     val QueueMusic: Int get() = R.drawable.xeno_icon_queue_music
 }

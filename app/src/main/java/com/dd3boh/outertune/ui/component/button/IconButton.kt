@@ -60,31 +60,6 @@ fun ResizableIconButton(
 }
 
 @Composable
-fun ResizableIconButton(
-    icon: Int,
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onSurface,
-    enabled: Boolean = true,
-    indication: Indication? = null,
-    onClick: () -> Unit = {},
-) {
-    Image(
-        imageVector = icon,
-        contentDescription = null,
-        colorFilter = ColorFilter.tint(color),
-        modifier = Modifier
-            .clickable(
-                indication = indication ?: ripple(bounded = false),
-                interactionSource = remember { MutableInteractionSource() },
-                enabled = enabled,
-                onClick = onClick
-            )
-            .alpha(if (enabled) 1f else 0.5f)
-            .then(modifier)
-    )
-}
-
-@Composable
 fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -115,7 +90,7 @@ fun IconTextButton(
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(icon, contentDescription = null)
+        Icon(painter = painterResource(icon), contentDescription = null)
         TextButton(
             onClick = onClick
         ) {

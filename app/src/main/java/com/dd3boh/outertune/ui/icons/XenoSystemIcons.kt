@@ -4,114 +4,114 @@ import androidx.annotation.DrawableRes
 import com.dd3boh.outertune.R
 
 object XenoSystemIcons {
-    @DrawableRes
+    @get:DrawableRes
     val AccountCircle: Int get() = R.drawable.xeno_icon_account_circle
-    @DrawableRes
+    @get:DrawableRes
     val Autorenew: Int get() = R.drawable.xeno_icon_autorenew
-    @DrawableRes
+    @get:DrawableRes
     val Backup: Int get() = R.drawable.xeno_icon_backup
-    @DrawableRes
+    @get:DrawableRes
     val Bedtime: Int get() = R.drawable.xeno_icon_bedtime
-    @DrawableRes
+    @get:DrawableRes
     val Block: Int get() = R.drawable.xeno_icon_block
-    @DrawableRes
+    @get:DrawableRes
     val BlurOn: Int get() = R.drawable.xeno_icon_blur_on
-    @DrawableRes
+    @get:DrawableRes
     val Bolt: Int get() = R.drawable.xeno_icon_bolt
-    @DrawableRes
+    @get:DrawableRes
     val Cached: Int get() = R.drawable.xeno_icon_cached
-    @DrawableRes
+    @get:DrawableRes
     val Casino: Int get() = R.drawable.xeno_icon_casino
-    @DrawableRes
+    @get:DrawableRes
     val CheckBox: Int get() = R.drawable.xeno_icon_check_box
-    @DrawableRes
+    @get:DrawableRes
     val CheckBoxOutlineBlank: Int get() = R.drawable.xeno_icon_check_box_outline_blank
-    @DrawableRes
+    @get:DrawableRes
     val CloudDownload: Int get() = R.drawable.xeno_icon_cloud_download
-    @DrawableRes
+    @get:DrawableRes
     val CloudOff: Int get() = R.drawable.xeno_icon_cloud_off
-    @DrawableRes
+    @get:DrawableRes
     val Code: Int get() = R.drawable.xeno_icon_code
-    @DrawableRes
+    @get:DrawableRes
     val ConfirmationNumber: Int get() = R.drawable.xeno_icon_confirmation_number
-    @DrawableRes
+    @get:DrawableRes
     val Contrast: Int get() = R.drawable.xeno_icon_contrast
-    @DrawableRes
+    @get:DrawableRes
     val Coronavirus: Int get() = R.drawable.xeno_icon_coronavirus
-    @DrawableRes
+    @get:DrawableRes
     val DarkMode: Int get() = R.drawable.xeno_icon_dark_mode
-    @DrawableRes
+    @get:DrawableRes
     val Deselect: Int get() = R.drawable.xeno_icon_deselect
-    @DrawableRes
+    @get:DrawableRes
     val DeveloperMode: Int get() = R.drawable.xeno_icon_developer_mode
-    @DrawableRes
+    @get:DrawableRes
     val Devices: Int get() = R.drawable.xeno_icon_devices
-    @DrawableRes
+    @get:DrawableRes
     val Download: Int get() = R.drawable.xeno_icon_download
-    @DrawableRes
+    @get:DrawableRes
     val Downloading: Int get() = R.drawable.xeno_icon_downloading
-    @DrawableRes
+    @get:DrawableRes
     val Error: Int get() = R.drawable.xeno_icon_error
-    @DrawableRes
+    @get:DrawableRes
     val ErrorOutline: Int get() = R.drawable.xeno_icon_error_outline
-    @DrawableRes
+    @get:DrawableRes
     val IndeterminateCheckBox: Int get() = R.drawable.xeno_icon_indeterminate_check_box
-    @DrawableRes
+    @get:DrawableRes
     val Info: Int get() = R.drawable.xeno_icon_info
-    @DrawableRes
+    @get:DrawableRes
     val Language: Int get() = R.drawable.xeno_icon_language
-    @DrawableRes
+    @get:DrawableRes
     val LocationOn: Int get() = R.drawable.xeno_icon_location_on
-    @DrawableRes
+    @get:DrawableRes
     val Lock: Int get() = R.drawable.xeno_icon_lock
-    @DrawableRes
+    @get:DrawableRes
     val LockOpen: Int get() = R.drawable.xeno_icon_lock_open
-    @DrawableRes
+    @get:DrawableRes
     val Logout: Int get() = R.drawable.xeno_icon_logout
-    @DrawableRes
+    @get:DrawableRes
     val MoreTime: Int get() = R.drawable.xeno_icon_more_time
-    @DrawableRes
+    @get:DrawableRes
     val NoCell: Int get() = R.drawable.xeno_icon_no_cell
-    @DrawableRes
+    @get:DrawableRes
     val OfflinePin: Int get() = R.drawable.xeno_icon_offline_pin
-    @DrawableRes
+    @get:DrawableRes
     val OutlinedError: Int get() = R.drawable.xeno_icon_outlined_error
-    @DrawableRes
+    @get:DrawableRes
     val OutlinedInfo: Int get() = R.drawable.xeno_icon_outlined_info
-    @DrawableRes
+    @get:DrawableRes
     val Output: Int get() = R.drawable.xeno_icon_output
-    @DrawableRes
+    @get:DrawableRes
     val Palette: Int get() = R.drawable.xeno_icon_palette
-    @DrawableRes
+    @get:DrawableRes
     val Person: Int get() = R.drawable.xeno_icon_person
-    @DrawableRes
+    @get:DrawableRes
     val RadioButtonChecked: Int get() = R.drawable.xeno_icon_radio_button_checked
-    @DrawableRes
+    @get:DrawableRes
     val RadioButtonUnchecked: Int get() = R.drawable.xeno_icon_radio_button_unchecked
-    @DrawableRes
+    @get:DrawableRes
     val Restore: Int get() = R.drawable.xeno_icon_restore
-    @DrawableRes
+    @get:DrawableRes
     val SdCard: Int get() = R.drawable.xeno_icon_sd_card
-    @DrawableRes
+    @get:DrawableRes
     val SelectAll: Int get() = R.drawable.xeno_icon_select_all
-    @DrawableRes
+    @get:DrawableRes
     val Speed: Int get() = R.drawable.xeno_icon_speed
-    @DrawableRes
+    @get:DrawableRes
     val Storage: Int get() = R.drawable.xeno_icon_storage
-    @DrawableRes
+    @get:DrawableRes
     val Swipe: Int get() = R.drawable.xeno_icon_swipe
-    @DrawableRes
+    @get:DrawableRes
     val Sync: Int get() = R.drawable.xeno_icon_sync
-    @DrawableRes
+    @get:DrawableRes
     val SyncAlt: Int get() = R.drawable.xeno_icon_sync_alt
-    @DrawableRes
+    @get:DrawableRes
     val SyncLock: Int get() = R.drawable.xeno_icon_sync_lock
-    @DrawableRes
+    @get:DrawableRes
     val SyncProblem: Int get() = R.drawable.xeno_icon_sync_problem
-    @DrawableRes
+    @get:DrawableRes
     val Timer: Int get() = R.drawable.xeno_icon_timer
-    @DrawableRes
+    @get:DrawableRes
     val TouchApp: Int get() = R.drawable.xeno_icon_touch_app
-    @DrawableRes
+    @get:DrawableRes
     val WarningAmber: Int get() = R.drawable.xeno_icon_warning_amber
 }

@@ -60,7 +60,6 @@ fun BoxScope.HideOnScrollFAB(
         }
     }
 }
-
 @Composable
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
@@ -95,36 +94,6 @@ fun BoxScope.HideOnScrollFAB(
 @Composable
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
-    lazyListState: LazyGridState,
-    icon: Int,
-    onClick: () -> Unit,
-) {
-    AnimatedVisibility(
-        visible = visible && lazyListState.isScrollingUp(),
-        enter = slideInVertically { it },
-        exit = slideOutVertically { it },
-        modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .windowInsetsPadding(
-                LocalPlayerAwareWindowInsets.current
-                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
-            )
-    ) {
-        FloatingActionButton(
-            modifier = Modifier.padding(16.dp),
-            onClick = onClick
-        ) {
-            Icon(
-                icon,
-                contentDescription = null
-            )
-        }
-    }
-}
-
-@Composable
-fun BoxScope.HideOnScrollFAB(
-    visible: Boolean = true,
     scrollState: ScrollState,
     @DrawableRes icon: Int,
     onClick: () -> Unit,
@@ -146,66 +115,6 @@ fun BoxScope.HideOnScrollFAB(
         ) {
             Icon(
                 painter = painterResource(icon),
-                contentDescription = null
-            )
-        }
-    }
-}
-
-@Composable
-fun BoxScope.HideOnScrollFAB(
-    visible: Boolean = true,
-    lazyListState: LazyListState,
-    icon: Int,
-    onClick: () -> Unit,
-) {
-    AnimatedVisibility(
-        visible = visible && lazyListState.isScrollingUp(),
-        enter = slideInVertically { it },
-        exit = slideOutVertically { it },
-        modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .windowInsetsPadding(
-                LocalPlayerAwareWindowInsets.current
-                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
-            )
-    ) {
-        FloatingActionButton(
-            modifier = Modifier.padding(16.dp),
-            onClick = onClick
-        ) {
-            Icon(
-                icon,
-                contentDescription = null
-            )
-        }
-    }
-}
-
-@Composable
-fun BoxScope.HideOnScrollFAB(
-    visible: Boolean = true,
-    scrollState: ScrollState,
-    icon: Int,
-    onClick: () -> Unit,
-) {
-    AnimatedVisibility(
-        visible = visible && scrollState.isScrollingUp(),
-        enter = slideInVertically { it },
-        exit = slideOutVertically { it },
-        modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .windowInsetsPadding(
-                LocalPlayerAwareWindowInsets.current
-                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
-            )
-    ) {
-        FloatingActionButton(
-            modifier = Modifier.padding(16.dp),
-            onClick = onClick
-        ) {
-            Icon(
-                icon,
                 contentDescription = null
             )
         }

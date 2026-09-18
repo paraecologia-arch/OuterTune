@@ -128,7 +128,7 @@ fun LazyGridScope.GridMenuItem(
     modifier = modifier,
     icon = {
         Icon(
-            imageVector = icon,
+            painter = painterResource(icon),
             tint = tint(),
             contentDescription = null
         )

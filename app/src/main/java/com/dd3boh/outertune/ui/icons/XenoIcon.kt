@@ -29,21 +29,21 @@ object XenoIcons {
 }
 
 object XenoAutoMirroredIcons {
-    @DrawableRes val ArrowBack get() = XenoNavigationIcons.ArrowBack
-    @DrawableRes val ArrowForward get() = XenoNavigationIcons.ArrowForward
-    @DrawableRes val Input get() = XenoNavigationIcons.Input
-    @DrawableRes val LibraryBooks get() = XenoLibraryIcons.LibraryBooks
-    @DrawableRes val List get() = XenoNavigationIcons.List
-    @DrawableRes val Logout get() = XenoSystemIcons.Logout
-    @DrawableRes val ManageSearch get() = XenoNavigationIcons.ManageSearch
-    @DrawableRes val NavigateBefore get() = XenoNavigationIcons.NavigateBefore
-    @DrawableRes val NavigateNext get() = XenoNavigationIcons.NavigateNext
-    @DrawableRes val PlaylistAdd get() = XenoLibraryIcons.PlaylistAdd
-    @DrawableRes val PlaylistPlay get() = XenoPlayerIcons.PlaylistPlay
-    @DrawableRes val QueueMusic get() = XenoLibraryIcons.QueueMusic
-    @DrawableRes val Sort get() = XenoNavigationIcons.Sort
-    @DrawableRes val TrendingUp get() = XenoNavigationIcons.TrendingUp
-    @DrawableRes val VolumeUp get() = XenoPlayerIcons.VolumeUp
+    @get:DrawableRes val ArrowBack get() = XenoNavigationIcons.ArrowBack
+    @get:DrawableRes val ArrowForward get() = XenoNavigationIcons.ArrowForward
+    @get:DrawableRes val Input get() = XenoNavigationIcons.Input
+    @get:DrawableRes val LibraryBooks get() = XenoLibraryIcons.LibraryBooks
+    @get:DrawableRes val List get() = XenoNavigationIcons.List
+    @get:DrawableRes val Logout get() = XenoSystemIcons.Logout
+    @get:DrawableRes val ManageSearch get() = XenoNavigationIcons.ManageSearch
+    @get:DrawableRes val NavigateBefore get() = XenoNavigationIcons.NavigateBefore
+    @get:DrawableRes val NavigateNext get() = XenoNavigationIcons.NavigateNext
+    @get:DrawableRes val PlaylistAdd get() = XenoLibraryIcons.PlaylistAdd
+    @get:DrawableRes val PlaylistPlay get() = XenoPlayerIcons.PlaylistPlay
+    @get:DrawableRes val QueueMusic get() = XenoLibraryIcons.QueueMusic
+    @get:DrawableRes val Sort get() = XenoNavigationIcons.Sort
+    @get:DrawableRes val TrendingUp get() = XenoNavigationIcons.TrendingUp
+    @get:DrawableRes val VolumeUp get() = XenoPlayerIcons.VolumeUp
 }
 
 @Composable
