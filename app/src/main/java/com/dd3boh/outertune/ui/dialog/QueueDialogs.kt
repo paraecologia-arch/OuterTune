@@ -4,10 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -56,10 +51,10 @@ fun AddToQueueDialog(
             ListItem(
                 title = stringResource(R.string.create_queue),
                 thumbnailContent = {
-                    Image(
-                        imageVector = Icons.Rounded.Add,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Add,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                        tint = (MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier.size(ListThumbnailSize)
                     )
                 },
@@ -85,7 +80,7 @@ fun AddToQueueDialog(
 
     if (showCreateQueueDialog) {
         TextFieldDialog(
-            icon = { Icon(imageVector = Icons.Rounded.Add, contentDescription = null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Add, contentDescription = null) },
             title = { Text(text = stringResource(R.string.create_queue)) },
             initialTextFieldValue = TextFieldValue(initialTextFieldValue ?: ""),
             onDismiss = { showCreateQueueDialog = false },
@@ -105,7 +100,7 @@ fun EditQueueDialog(
     val playerConnection = LocalPlayerConnection.current
 
     TextFieldDialog(
-        icon = { Icon(imageVector = Icons.Rounded.Edit, contentDescription = null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit, contentDescription = null) },
         title = { Text(text = stringResource(R.string.edit_playlist)) },
         onDismiss = onDismiss,
         initialTextFieldValue = TextFieldValue(

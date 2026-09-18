@@ -18,13 +18,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FilterAlt
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -209,7 +203,7 @@ fun LibrarySongsScreen(
                         actions = listOf(
                             DropdownItem(
                                 title = stringResource(R.string.library_filter),
-                                leadingIcon = { Icon(Icons.Rounded.FilterAlt, null) },
+                                leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.FilterAlt, contentDescription = null) },
                                 action = {},
                                 secondaryDropdown =
                                     listOf(
@@ -232,7 +226,7 @@ fun LibrarySongsScreen(
                             ),
                             DropdownItem(
                                 title = stringResource(R.string.queue_all_songs),
-                                leadingIcon = { Icon(Icons.Rounded.PlayArrow, null) },
+                                leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow, contentDescription = null) },
                                 action = {
                                     playerConnection.playQueue(
                                         ListQueue(
@@ -245,7 +239,7 @@ fun LibrarySongsScreen(
                             ),
                             DropdownItem(
                                 title = stringResource(R.string.shuffle),
-                                leadingIcon = { Icon(Icons.Rounded.Shuffle, null) },
+                                leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Shuffle, contentDescription = null) },
                                 action = {
                                     playerConnection.playQueue(
                                         ListQueue(
@@ -327,7 +321,7 @@ fun LibrarySongsScreen(
                 if (songs.isEmpty()) {
                     item {
                         EmptyPlaceholder(
-                            icon = Icons.Rounded.MusicNote,
+                            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
                             text = stringResource(R.string.library_song_empty),
                             modifier = Modifier.animateItem()
                         )

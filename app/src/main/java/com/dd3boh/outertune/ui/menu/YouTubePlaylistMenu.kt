@@ -6,17 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.PlaylistRemove
-import androidx.compose.material.icons.rounded.Radio
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,7 +22,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.offline.Download
@@ -148,8 +137,8 @@ fun YouTubePlaylistMenu(
                         }
                     }
                 ) {
-                    Icon(
-                        painter = painterResource(if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = (if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
                         tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                         contentDescription = null
                     )
@@ -170,7 +159,7 @@ fun YouTubePlaylistMenu(
     ) {
         playlist.playEndpoint?.let {
             GridMenuItem(
-                icon = Icons.Rounded.PlayArrow,
+                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
                 title = R.string.play
             ) {
                 playerConnection.playQueue(
@@ -187,7 +176,7 @@ fun YouTubePlaylistMenu(
 
         playlist.shuffleEndpoint?.let { shuffleEndpoint ->
             GridMenuItem(
-                icon = Icons.Rounded.Shuffle,
+                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Shuffle,
                 title = R.string.shuffle
             ) {
                 playerConnection.playQueue(
@@ -204,7 +193,7 @@ fun YouTubePlaylistMenu(
 
         playlist.radioEndpoint?.let { radioEndpoint ->
             GridMenuItem(
-                icon = Icons.Rounded.Radio,
+                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Radio,
                 title = R.string.start_radio
             ) {
                 playerConnection.playQueue(YouTubeQueue(radioEndpoint), isRadio = true)
@@ -213,7 +202,7 @@ fun YouTubePlaylistMenu(
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay,
             title = R.string.play_next
         ) {
             coroutineScope.launch {
@@ -229,14 +218,14 @@ fun YouTubePlaylistMenu(
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.QueueMusic,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
             title = R.string.add_to_queue
         ) {
             showChooseQueueDialog = true
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd,
             title = R.string.add_to_playlist
         ) {
             showChoosePlaylistDialog = true
@@ -256,7 +245,7 @@ fun YouTubePlaylistMenu(
         }
 
         GridMenuItem(
-            icon = Icons.Rounded.Share,
+            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Share,
             title = R.string.share
         ) {
             val intent = Intent().apply {
@@ -269,7 +258,7 @@ fun YouTubePlaylistMenu(
         }
 
         GridMenuItem(
-            icon = Icons.Rounded.PlaylistRemove,
+            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.PlaylistRemove,
             title = R.string.delete
         ) {
             showDeletePlaylistDialog = true

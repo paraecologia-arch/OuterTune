@@ -20,17 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material.icons.rounded.ExpandMore
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Sync
-import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -95,7 +85,7 @@ fun LyricsMenu(
     if (showEditDialog) {
         TextFieldDialog(
             onDismiss = { showEditDialog = false },
-            icon = { Icon(imageVector = Icons.Rounded.Edit, contentDescription = null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit, contentDescription = null) },
             title = { Text(text = mediaMetadataProvider().title) },
             initialTextFieldValue = TextFieldValue(lyricsProvider()?.lyrics.orEmpty()),
             singleLine = false,
@@ -142,7 +132,7 @@ fun LyricsMenu(
         DefaultDialog(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             onDismiss = { showSearchDialog = false },
-            icon = { Icon(imageVector = Icons.Rounded.Search, contentDescription = null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search, contentDescription = null) },
             title = { Text(stringResource(R.string.search_lyrics)) },
             buttons = {
                 TextButton(
@@ -258,8 +248,8 @@ fun LyricsMenu(
                                 maxLines = 1
                             )
                             if (result.lyrics.startsWith("[")) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Sync,
+                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                    icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary,
                                     modifier = Modifier
@@ -275,8 +265,8 @@ fun LyricsMenu(
                             expandedItemIndex = if (expandedItemIndex == index) -1 else index
                         }
                     ) {
-                        Icon(
-                            imageVector = if (index == expandedItemIndex) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = if (index == expandedItemIndex) com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ExpandLess else com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ExpandMore,
                             contentDescription = null
                         )
                     }
@@ -408,20 +398,20 @@ fun LyricsMenu(
         )
     ) {
         GridMenuItem(
-            icon = Icons.Rounded.Edit,
+            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit,
             title = R.string.edit
         ) {
             showEditDialog = true
         }
         GridMenuItem(
-            icon = Icons.Rounded.SyncAlt,
+            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SyncAlt,
             title = R.string.refetch
         ) {
             onDismiss()
             viewModel.refetchLyrics(mediaMetadataProvider()) { onRefreshRequest(it) }
         }
         GridMenuItem(
-            icon = Icons.Rounded.Search,
+            icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
             title = R.string.search,
         ) {
             showSearchDialog = true
@@ -429,7 +419,7 @@ fun LyricsMenu(
         if (lyricsProvider() != null) {
             // TODO: hide this for when lrc exists and lyrics is not in the database
             GridMenuItem(
-                icon = Icons.Rounded.Delete,
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Delete,
                 title = R.string.delete,
             ) {
                 showDeleteLyric = true
@@ -437,7 +427,7 @@ fun LyricsMenu(
         }
 
         GridMenuItem(
-            icon = Icons.Rounded.Settings,
+            icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Settings,
             title = R.string.settings,
         ) {
             showSettings = true

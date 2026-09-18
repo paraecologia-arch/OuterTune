@@ -17,13 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Interests
-import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -89,7 +84,7 @@ fun AppearanceSettings(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.grp_interface)) },
-                icon = { Icon(Icons.Rounded.Interests, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Interests, contentDescription = null) },
                 onClick = { navController.navigate("settings/interface") }
             )
         }
@@ -102,8 +97,8 @@ fun AppearanceSettings(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

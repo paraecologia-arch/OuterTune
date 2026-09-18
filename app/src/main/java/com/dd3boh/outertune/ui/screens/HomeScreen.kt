@@ -31,12 +31,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.TrendingUp
-import androidx.compose.material.icons.rounded.Casino
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.SdCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -381,14 +375,14 @@ fun HomeScreen(
                 ) {
                     NavigationTile(
                         title = stringResource(R.string.history),
-                        icon = Icons.Rounded.History,
+                        icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.History,
                         onClick = { navController.navigate("history") },
                         modifier = Modifier.weight(1f)
                     )
 
                     NavigationTile(
                         title = stringResource(R.string.stats),
-                        icon = Icons.AutoMirrored.Rounded.TrendingUp,
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.TrendingUp,
                         onClick = { navController.navigate("stats") },
                         modifier = Modifier.weight(1f)
                     )
@@ -396,7 +390,7 @@ fun HomeScreen(
                     if (localLibEnable) {
                         NavigationTile(
                             title = stringResource(R.string.scanner_local_title),
-                            icon = Icons.Rounded.SdCard,
+                            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard,
                             onClick = {
                                 navController.navigate("settings/local")
                             },
@@ -406,7 +400,7 @@ fun HomeScreen(
 
                     NavigationTile(
                         title = stringResource(R.string.account),
-                        icon = Icons.Rounded.Person,
+                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Person,
                         onClick = {
                             navController.navigate("account")
                         },
@@ -761,7 +755,7 @@ fun HomeScreen(
         HideOnScrollFAB(
             visible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty(),
             lazyListState = lazylistState,
-            icon = Icons.Rounded.Casino,
+            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Casino,
             onClick = {
                 val local = when {
                     allLocalItems.isNotEmpty() && allYtItems.isNotEmpty() -> Random.nextFloat() < 0.5

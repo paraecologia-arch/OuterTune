@@ -19,18 +19,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.rounded.Backup
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Downloading
-import androidx.compose.material.icons.rounded.FolderCopy
-import androidx.compose.material.icons.rounded.Restore
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -110,7 +101,7 @@ fun ColumnScope.BackupAndRestoreFrag(viewModel: BackupRestoreViewModel) {
     ) {
         PreferenceEntry(
             title = { Text(stringResource(R.string.action_backup)) },
-            icon = { Icon(Icons.Rounded.Backup, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Backup, contentDescription = null) },
             onClick = {
                 val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
                 backupLauncher.launch(
@@ -128,7 +119,7 @@ fun ColumnScope.BackupAndRestoreFrag(viewModel: BackupRestoreViewModel) {
     ) {
         PreferenceEntry(
             title = { Text(stringResource(R.string.action_restore)) },
-            icon = { Icon(Icons.Rounded.Restore, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Restore, contentDescription = null) },
             onClick = {
                 restoreLauncher.launch(arrayOf("application/octet-stream"))
             }
@@ -213,7 +204,7 @@ fun ColumnScope.DownloadsFrag() {
                 ) {
                     Text(stringResource(R.string.dl_calculate_size))
                     ResizableIconButton(
-                        icon = Icons.Outlined.Info,
+                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OutlinedInfo,
                         onClick = { showDlInfoDialog = true },
                     )
                 }
@@ -279,7 +270,7 @@ fun ColumnScope.DownloadsFrag() {
         PreferenceEntry(
             title = { Text(stringResource(R.string.dl_extra_path_title)) },
             description = stringResource(R.string.dl_extra_path_description),
-            icon = { Icon(Icons.Rounded.FolderCopy, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.FolderCopy, contentDescription = null) },
             onClick = {
                 showPathsDialog = true
             },
@@ -297,7 +288,7 @@ fun ColumnScope.DownloadsFrag() {
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     )
                 } else {
-                    Icon(Icons.Rounded.Sync, null)
+                    com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync, contentDescription = null)
                 }
             },
             onClick = {
@@ -317,7 +308,7 @@ fun ColumnScope.DownloadsFrag() {
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     )
                 } else {
-                    Icon(Icons.Rounded.Downloading, null)
+                    com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Downloading, contentDescription = null)
                 }
             },
             onClick = {
@@ -607,8 +598,8 @@ fun ColumnScope.DownloadsFrag() {
                                 tempScanPaths.remove(tmpPath)
                             },
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Close,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                                 contentDescription = null,
                             )
                         }

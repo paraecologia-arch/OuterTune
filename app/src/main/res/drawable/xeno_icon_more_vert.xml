@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M10.45 6.00 C10.45 5.14 11.14 4.45 12.00 4.45 C12.86 4.45 13.55 5.14 13.55 6.00 C13.55 6.86 12.86 7.55 12.00 7.55 C11.14 7.55 10.45 6.86 10.45 6.00 Z"
+        android:fillColor="#E2E8F0"
+        android:strokeColor="#E2E8F0"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M10.45 12.00 C10.45 11.14 11.14 10.45 12.00 10.45 C12.86 10.45 13.55 11.14 13.55 12.00 C13.55 12.86 12.86 13.55 12.00 13.55 C11.14 13.55 10.45 12.86 10.45 12.00 Z"
+        android:fillColor="#E2E8F0"
+        android:strokeColor="#E2E8F0"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M10.45 18.00 C10.45 17.14 11.14 16.45 12.00 16.45 C12.86 16.45 13.55 17.14 13.55 18.00 C13.55 18.86 12.86 19.55 12.00 19.55 C11.14 19.55 10.45 18.86 10.45 18.00 Z"
+        android:fillColor="#E2E8F0"
+        android:strokeColor="#E2E8F0"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

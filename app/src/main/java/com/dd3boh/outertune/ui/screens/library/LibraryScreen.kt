@@ -19,13 +19,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.List
-import androidx.compose.material.icons.rounded.CloudDownload
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -238,11 +232,10 @@ fun LibraryScreen(
                         },
                         modifier = Modifier.padding(end = 6.dp)
                     ) {
-                        Icon(
-                            imageVector =
-                                when (viewType) {
-                                    LibraryViewType.LIST -> Icons.AutoMirrored.Rounded.List
-                                    LibraryViewType.GRID -> Icons.Rounded.GridView
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = when (viewType) {
+                                    LibraryViewType.LIST -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.List
+                                    LibraryViewType.GRID -> com.dd3boh.outertune.ui.icons.XenoNavigationIcons.GridView
                                 },
                             contentDescription = null
                         )
@@ -358,7 +351,7 @@ fun LibraryScreen(
                                 ) {
                                     AutoPlaylistListItem(
                                         playlist = likedPlaylist,
-                                        thumbnail = Icons.Rounded.Favorite,
+                                        thumbnail = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Favorite,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clickable {
@@ -374,7 +367,7 @@ fun LibraryScreen(
                                 ) {
                                     AutoPlaylistListItem(
                                         playlist = downloadedPlaylist,
-                                        thumbnail = Icons.Rounded.CloudDownload,
+                                        thumbnail = com.dd3boh.outertune.ui.icons.XenoSystemIcons.CloudDownload,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clickable {
@@ -389,7 +382,7 @@ fun LibraryScreen(
                                 if (allItems.isEmpty() && !showLikedAndDownloadedPlaylist) {
                                     item {
                                         EmptyPlaceholder(
-                                            icon = Icons.AutoMirrored.Rounded.List,
+                                            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.List,
                                             text = stringResource(R.string.library_empty),
                                             modifier = Modifier.animateItem()
                                         )
@@ -472,7 +465,7 @@ fun LibraryScreen(
                                 ) {
                                     AutoPlaylistGridItem(
                                         playlist = likedPlaylist,
-                                        thumbnail = Icons.Rounded.Favorite,
+                                        thumbnail = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Favorite,
                                         fillMaxWidth = true,
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -489,7 +482,7 @@ fun LibraryScreen(
                                 ) {
                                     AutoPlaylistGridItem(
                                         playlist = downloadedPlaylist,
-                                        thumbnail = Icons.Rounded.CloudDownload,
+                                        thumbnail = com.dd3boh.outertune.ui.icons.XenoSystemIcons.CloudDownload,
                                         fillMaxWidth = true,
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -505,7 +498,7 @@ fun LibraryScreen(
                                 if (allItems.isEmpty() && !showLikedAndDownloadedPlaylist) {
                                     item {
                                         EmptyPlaceholder(
-                                            icon = Icons.AutoMirrored.Rounded.List,
+                                            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.List,
                                             text = stringResource(R.string.library_empty),
                                             modifier = Modifier.animateItem()
                                         )

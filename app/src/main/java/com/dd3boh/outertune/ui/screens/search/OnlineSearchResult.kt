@@ -16,10 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -157,8 +153,8 @@ fun OnlineSearchResult(
                                 }
                             }
                         ) {
-                            Icon(
-                                Icons.Rounded.MoreVert,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                 contentDescription = null
                             )
                         }
@@ -244,7 +240,7 @@ fun OnlineSearchResult(
             if (searchSummary?.summaries?.isEmpty() == true) {
                 item {
                     EmptyPlaceholder(
-                        icon = Icons.Rounded.Search,
+                        icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
                         text = stringResource(R.string.no_results_found),
                         modifier = Modifier.animateItem()
                     )
@@ -271,7 +267,7 @@ fun OnlineSearchResult(
             if (itemsPage?.items?.isEmpty() == true) {
                 item {
                     EmptyPlaceholder(
-                        icon = Icons.Rounded.Search,
+                        icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
                         text = stringResource(R.string.no_results_found),
                         modifier = Modifier.animateItem()
                     )

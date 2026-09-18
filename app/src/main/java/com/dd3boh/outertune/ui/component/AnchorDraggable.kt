@@ -25,9 +25,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
@@ -42,7 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -75,7 +71,7 @@ fun SwipeToQueueBox(
     val playerConnection = LocalPlayerConnection.current
 
     SwipeActionBox(
-        firstAction = Pair(Icons.AutoMirrored.Rounded.PlaylistPlay, {
+        firstAction = Pair(com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay, {
             playerConnection?.enqueueNext(item)
             coroutineScope.launch {
                 snackbarHostState?.showSnackbar(
@@ -88,7 +84,7 @@ fun SwipeToQueueBox(
                 )
             }
         }),
-        secondAction = Pair(Icons.AutoMirrored.Rounded.PlaylistAdd, {
+        secondAction = Pair(com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd, {
             playerConnection?.enqueueEnd(item)
             coroutineScope.launch {
                 val job = launch {
@@ -114,9 +110,9 @@ fun SwipeToQueueBox(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipeActionBox(
-    firstAction: Pair<ImageVector, () -> Unit>,
+    firstAction: Pair<Int, () -> Unit>,
     modifier: Modifier = Modifier,
-    secondAction: Pair<ImageVector, () -> Unit>? = null,
+    secondAction: Pair<Int, () -> Unit>? = null,
     enabled: Boolean = true,
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -257,7 +253,7 @@ fun DragActionIcon(
     modifier: Modifier,
     color: Color,
     tint: Color,
-    icon: ImageVector
+    icon: Int
 ) {
     Box(
         modifier = modifier.background(color),

@@ -5,14 +5,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material.icons.rounded.LibraryAdd
-import androidx.compose.material.icons.rounded.LibraryAddCheck
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -126,7 +118,7 @@ fun SelectionMediaMetadataMenu(
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay,
             title = R.string.play_next,
         ) {
             onDismiss()
@@ -157,7 +149,7 @@ fun SelectionMediaMetadataMenu(
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd,
             title = R.string.add_to_playlist
         ) {
             showChoosePlaylistDialog = true
@@ -166,7 +158,7 @@ fun SelectionMediaMetadataMenu(
         if (!allLocal) {
             if (allInLibrary) {
                 GridMenuItem(
-                    icon = Icons.Rounded.LibraryAddCheck,
+                    icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAddCheck,
                     title = R.string.remove_all_from_library
                 ) {
                     database.transaction {
@@ -177,7 +169,7 @@ fun SelectionMediaMetadataMenu(
                 }
             } else {
                 GridMenuItem(
-                    icon = Icons.Rounded.LibraryAdd,
+                    icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAdd,
                     title = R.string.add_all_to_library
                 ) {
                     database.transaction {
@@ -192,7 +184,7 @@ fun SelectionMediaMetadataMenu(
         }
 
         GridMenuItem(
-            icon = if (allLiked) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+            icon = if (allLiked) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Favorite else com.dd3boh.outertune.ui.icons.XenoPlayerIcons.FavoriteBorder,
             tint = { if (allLiked) MaterialTheme.colorScheme.error else LocalContentColor.current },
             title = if (allLiked) R.string.action_remove_like_all else R.string.action_like_all,
         ) {
@@ -230,7 +222,7 @@ fun SelectionMediaMetadataMenu(
 
         if (onRemoveFromHistory != null) {
             GridMenuItem(
-                icon = Icons.Rounded.Delete,
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Delete,
                 title = R.string.remove_from_history,
             ) {
                 onRemoveFromHistory()

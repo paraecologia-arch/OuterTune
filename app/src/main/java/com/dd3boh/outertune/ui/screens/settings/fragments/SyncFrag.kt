@@ -13,16 +13,9 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Sync
-import androidx.compose.material.icons.rounded.SyncLock
-import androidx.compose.material.icons.rounded.SyncProblem
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
@@ -75,7 +68,7 @@ fun ColumnScope.SyncAutoFrag() {
 
     SwitchPreference(
         title = { Text(stringResource(R.string.ytm_sync)) },
-        icon = { Icon(Icons.Rounded.Sync, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync, contentDescription = null) },
         checked = ytmSync,
         onCheckedChange = onYtmSyncChange,
         isEnabled = isLoggedIn
@@ -109,7 +102,7 @@ fun ColumnScope.SyncManualFrag() {
 
     PreferenceEntry(
         title = { Text(stringResource(R.string.scanner_manual_btn)) },
-        icon = { Icon(Icons.Rounded.Sync, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync, contentDescription = null) },
         onClick = {
             coroutineScope.launch(Dispatchers.Main) {
                 snackbarHostState.showSnackbar(
@@ -195,7 +188,7 @@ fun ColumnScope.SyncParamsFrag() {
 
     EnumListPreference(
         title = { Text(stringResource(R.string.sync_mode)) },
-        icon = { Icon(Icons.Rounded.SyncLock, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SyncLock, contentDescription = null) },
         selectedValue = syncMode,
         onValueSelected = onSyncModeChange,
         valueText = {
@@ -207,7 +200,7 @@ fun ColumnScope.SyncParamsFrag() {
     )
     EnumListPreference(
         title = { Text(stringResource(R.string.sync_conflict_title)) },
-        icon = { Icon(Icons.Rounded.SyncProblem, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SyncProblem, contentDescription = null) },
         selectedValue = syncConflict,
         onValueSelected = onSyncConflictChange,
         valueText = {
@@ -234,7 +227,7 @@ fun ColumnScope.SyncExtrasFrag() {
 
     SwitchPreference(
         title = { Text(stringResource(R.string.pause_remote_listen_history)) },
-        icon = { Icon(Icons.Rounded.History, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.History, contentDescription = null) },
         checked = pauseRemoteListenHistory,
         onCheckedChange = onPauseRemoteListenHistoryChange,
         isEnabled = !pauseListenHistory && isLoggedIn

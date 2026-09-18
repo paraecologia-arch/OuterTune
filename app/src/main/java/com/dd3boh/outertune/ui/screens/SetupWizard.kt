@@ -40,24 +40,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowForward
-import androidx.compose.material.icons.automirrored.rounded.NavigateBefore
-import androidx.compose.material.icons.automirrored.rounded.NavigateNext
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.Autorenew
-import androidx.compose.material.icons.rounded.Block
-import androidx.compose.material.icons.rounded.Cached
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Code
-import androidx.compose.material.icons.rounded.DarkMode
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.LibraryMusic
-import androidx.compose.material.icons.rounded.Lyrics
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.SdCard
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,7 +61,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -203,8 +184,8 @@ fun SetupWizard(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                 )
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.NavigateBefore,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.NavigateBefore,
                     contentDescription = null
                 )
             }
@@ -235,8 +216,8 @@ fun SetupWizard(
                     haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
                 }
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.NavigateNext,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.NavigateNext,
                     contentDescription = null
                 )
                 Text(
@@ -310,25 +291,25 @@ fun SetupWizard(
                             OobeFeatureRow(
                                 title = stringResource(R.string.oobe_ytm_integration),
                                 description = stringResource(R.string.oobe_ytm_integration_description),
-                                icon = Icons.Rounded.MusicNote,
+                                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
                                 MaterialTheme.colorScheme.secondary
                             )
                             OobeFeatureRow(
                                 title = stringResource(R.string.oobe_ad_free_exp),
                                 description = stringResource(R.string.oobe_ad_free_exp_description),
-                                icon = Icons.Rounded.Block,
+                                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Block,
                                 Color.Red
                             )
                             OobeFeatureRow(
                                 title = stringResource(R.string.oobe_cross_platform_sync),
                                 description = stringResource(R.string.oobe_cross_platform_sync_description),
-                                icon = Icons.Rounded.Sync,
+                                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync,
                                 MaterialTheme.colorScheme.tertiary
                             )
                             OobeFeatureRow(
                                 title = stringResource(R.string.oobe_local_music_support),
                                 description = stringResource(R.string.oobe_local_music_support_description),
-                                icon = Icons.Rounded.SdCard,
+                                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard,
                                 MaterialTheme.colorScheme.onSurface
                             )
                         }
@@ -374,8 +355,8 @@ fun SetupWizard(
 
                     // appearance
                     1 -> {
-                        Icon(
-                            imageVector = Icons.Rounded.DarkMode,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.DarkMode,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(80.dp)
@@ -417,8 +398,8 @@ fun SetupWizard(
 
                     // account
                     2 -> {
-                        Icon(
-                            imageVector = Icons.Rounded.AccountCircle,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.AccountCircle,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(80.dp)
@@ -456,7 +437,7 @@ fun SetupWizard(
                         ) {
                             SwitchPreference(
                                 title = { Text(stringResource(R.string.ytm_sync)) },
-                                icon = { Icon(Icons.Rounded.Lyrics, null) },
+                                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Lyrics, contentDescription = null) },
                                 checked = ytmSync,
                                 onCheckedChange = onYtmSyncChange,
                                 isEnabled = isLoggedIn
@@ -466,8 +447,8 @@ fun SetupWizard(
 
                     // local media
                     3 -> {
-                        Icon(
-                            imageVector = Icons.Rounded.LibraryMusic,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryMusic,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(80.dp)
@@ -497,7 +478,7 @@ fun SetupWizard(
                             SwitchPreference(
                                 title = { Text(stringResource(R.string.local_library_enable_title)) },
                                 description = stringResource(R.string.local_library_enable_description),
-                                icon = { Icon(Icons.Rounded.SdCard, null) },
+                                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard, contentDescription = null) },
                                 checked = localLibEnable,
                                 onCheckedChange = onLocalLibEnableChange
                             )
@@ -512,7 +493,7 @@ fun SetupWizard(
                                     SwitchPreference(
                                         title = { Text(stringResource(R.string.auto_scanner_title)) },
                                         description = stringResource(R.string.auto_scanner_description),
-                                        icon = { Icon(Icons.Rounded.Autorenew, null) },
+                                        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Autorenew, contentDescription = null) },
                                         checked = autoScan,
                                         onCheckedChange = onAutoScanChange
                                     )
@@ -548,8 +529,8 @@ fun SetupWizard(
                         }
 
 
-                        Icon(
-                            imageVector = Icons.Rounded.Download,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Download,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(80.dp)
@@ -587,8 +568,8 @@ fun SetupWizard(
                         InfoLabel(stringResource(R.string.dl_oobe_tooltip))
 
                         Spacer(Modifier.height(16.dp))
-                        Icon(
-                            imageVector = Icons.Rounded.Cached,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Cached,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(80.dp)
@@ -756,8 +737,8 @@ fun SetupWizard(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Check,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(80.dp)
@@ -784,14 +765,14 @@ fun SetupWizard(
                             ) {
                                 IconLabelButton(
                                     text = "GitHub",
-                                    icon = Icons.Rounded.Code,
+                                    icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Code,
                                     onClick = { uriHandler.openUri("https://github.com/OuterTune/OuterTune") },
                                     modifier = Modifier.padding(horizontal = 8.dp)
                                 )
 
                                 IconLabelButton(
                                     text = "Wiki",
-                                    icon = Icons.Outlined.Info,
+                                    icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OutlinedInfo,
                                     onClick = { uriHandler.openUri("https://github.com/OuterTune/OuterTune/wiki") },
                                     modifier = Modifier.padding(horizontal = 8.dp)
                                 )
@@ -822,8 +803,8 @@ fun SetupWizard(
                         haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
                     }
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowForward,
                         contentDescription = null
                     )
                 }
@@ -834,7 +815,7 @@ fun SetupWizard(
 
 
 @Composable
-private fun OobeFeatureRow(title: String, description: String?, icon: ImageVector, tint: Color) {
+private fun OobeFeatureRow(title: String, description: String?, icon: Int, tint: Color) {
     val haptic = LocalHapticFeedback.current
 
     ElevatedCard(

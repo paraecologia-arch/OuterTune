@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 
@@ -62,7 +61,7 @@ fun ResizableIconButton(
 
 @Composable
 fun ResizableIconButton(
-    icon: ImageVector,
+    icon: Int,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
@@ -110,7 +109,7 @@ fun IconButton(
 @Composable
 fun IconTextButton(
     text: Int,
-    icon: ImageVector,
+    icon: Int,
     onClick: () -> Unit
 ) {
     Row(

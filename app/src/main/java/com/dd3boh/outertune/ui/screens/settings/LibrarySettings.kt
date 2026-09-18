@@ -16,16 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.rounded.FolderCopy
-import androidx.compose.material.icons.rounded.Lyrics
-import androidx.compose.material.icons.rounded.SdCard
-import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -89,17 +81,17 @@ fun LibrarySettings(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.local_player_settings_title)) },
-                icon = { Icon(Icons.Rounded.SdCard, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard, contentDescription = null) },
                 onClick = { navController.navigate("settings/local") }
             )
             PreferenceEntry(
                 title = { Text(stringResource(R.string.lyrics_settings_title)) },
-                icon = { Icon(Icons.Rounded.Lyrics, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Lyrics, contentDescription = null) },
                 onClick = { navController.navigate("settings/library/lyrics") }
             )
             PreferenceEntry(
                 title = { Text(stringResource(R.string.storage)) },
-                icon = { Icon(Icons.Rounded.Storage, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Storage, contentDescription = null) },
                 onClick = { navController.navigate("settings/storage") }
             )
         }
@@ -138,7 +130,7 @@ fun LibrarySettings(
             ) {
                 SwitchPreference(
                     title = { Text(stringResource(R.string.show_liked_and_downloaded_playlist)) },
-                    icon = { Icon(Icons.AutoMirrored.Rounded.PlaylistPlay, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay, contentDescription = null) },
                     checked = showLikedAndDownloadedPlaylist,
                     onCheckedChange = onShowLikedAndDownloadedPlaylistChange
                 )
@@ -151,7 +143,7 @@ fun LibrarySettings(
                 SwitchPreference(
                     title = { Text(stringResource(R.string.flat_subfolders_title)) },
                     description = stringResource(R.string.flat_subfolders_description),
-                    icon = { Icon(Icons.Rounded.FolderCopy, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.FolderCopy, contentDescription = null) },
                     checked = flatSubfolders,
                     onCheckedChange = onFlatSubfoldersChange
                 )
@@ -196,8 +188,8 @@ fun LibrarySettings(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

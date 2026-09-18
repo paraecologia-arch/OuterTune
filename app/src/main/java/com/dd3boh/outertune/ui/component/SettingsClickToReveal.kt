@@ -15,11 +15,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,8 +57,8 @@ fun ColumnScope.SettingsClickToReveal(
             title = title,
             modifier = Modifier
         )
-        Icon(
-            imageVector = if (showContent) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = if (showContent) com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ExpandLess else com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ExpandMore,
             contentDescription = null,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
         )

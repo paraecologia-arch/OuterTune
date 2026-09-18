@@ -57,15 +57,6 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FastForward
-import androidx.compose.material.icons.rounded.FastRewind
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Replay
-import androidx.compose.material.icons.rounded.SkipNext
-import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
@@ -89,7 +80,6 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -398,7 +388,7 @@ fun BottomSheetPlayer(
                         .background(MaterialTheme.colorScheme.primary)
                 ) {
                     ResizableIconButton(
-                        icon = Icons.Rounded.MoreVert,
+                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .size(24.dp)
@@ -578,7 +568,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = Icons.Rounded.SkipPrevious,
+                            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.SkipPrevious,
                             enabled = canSkipPrevious,
                             modifier = Modifier
                                 .size(32.dp)
@@ -597,7 +587,7 @@ fun BottomSheetPlayer(
                     if (seekIncrement != SeekIncrement.OFF) {
                         Box(modifier = Modifier.weight(1f)) {
                             ResizableIconButton(
-                                icon = Icons.Rounded.FastRewind,
+                                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.FastRewind,
                                 modifier = Modifier
                                     .size(32.dp)
                                     .align(Alignment.Center),
@@ -632,10 +622,10 @@ fun BottomSheetPlayer(
                                 haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                             }
                     ) {
-                        Image(
-                            imageVector = if (playbackState == STATE_ENDED) Icons.Rounded.Replay else if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = if (playbackState == STATE_ENDED) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Replay else if (isPlaying) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Pause else com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                            tint = (MaterialTheme.colorScheme.onPrimary),
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .size(36.dp)
@@ -647,7 +637,7 @@ fun BottomSheetPlayer(
                     if (seekIncrement != SeekIncrement.OFF) {
                         Box(modifier = Modifier.weight(1f)) {
                             ResizableIconButton(
-                                icon = Icons.Rounded.FastForward,
+                                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.FastForward,
                                 modifier = Modifier
                                     .size(32.dp)
                                     .align(Alignment.Center),
@@ -666,7 +656,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = Icons.Rounded.SkipNext,
+                            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.SkipNext,
                             enabled = canSkipNext,
                             modifier = Modifier
                                 .size(32.dp)

@@ -20,12 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.List
-import androidx.compose.material.icons.rounded.FilterAlt
-import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -163,11 +158,10 @@ fun LibraryArtistsScreen(
                     },
                     modifier = Modifier.padding(end = 6.dp)
                 ) {
-                    Icon(
-                        imageVector =
-                            when (artistViewType) {
-                                LibraryViewType.LIST -> Icons.AutoMirrored.Rounded.List
-                                LibraryViewType.GRID -> Icons.Rounded.GridView
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = when (artistViewType) {
+                                LibraryViewType.LIST -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.List
+                                LibraryViewType.GRID -> com.dd3boh.outertune.ui.icons.XenoNavigationIcons.GridView
                             },
                         contentDescription = null
                     )
@@ -208,7 +202,7 @@ fun LibraryArtistsScreen(
                     actions = listOf(
                         DropdownItem(
                             title = stringResource(R.string.library_filter),
-                            leadingIcon = { Icon(Icons.Rounded.FilterAlt, null) },
+                            leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.FilterAlt, contentDescription = null) },
                             action = {},
                             secondaryDropdown =
                                 listOf(

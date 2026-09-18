@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowForward
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,8 +58,8 @@ fun NavigationTitle(
         }
 
         if (onClick != null) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowForward,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )

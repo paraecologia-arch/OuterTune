@@ -15,14 +15,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDownward
-import androidx.compose.material.icons.rounded.ArrowUpward
-import androidx.compose.material.icons.rounded.RadioButtonChecked
-import androidx.compose.material.icons.rounded.RadioButtonUnchecked
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -84,8 +78,8 @@ inline fun <reified T : Enum<T>> SortHeader(
                         )
                     },
                     trailingIcon = {
-                        Icon(
-                            imageVector = if (sortType == type) Icons.Rounded.RadioButtonChecked else Icons.Rounded.RadioButtonUnchecked,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = if (sortType == type) com.dd3boh.outertune.ui.icons.XenoSystemIcons.RadioButtonChecked else com.dd3boh.outertune.ui.icons.XenoSystemIcons.RadioButtonUnchecked,
                             contentDescription = null
                         )
                     },
@@ -99,7 +93,7 @@ inline fun <reified T : Enum<T>> SortHeader(
 
         if (sortType != PlaylistSongSortType.CUSTOM) {
             ResizableIconButton(
-                icon = if (sortDescending) Icons.Rounded.ArrowDownward else Icons.Rounded.ArrowUpward,
+                icon = if (sortDescending) com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ArrowDownward else com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ArrowUpward,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(32.dp)

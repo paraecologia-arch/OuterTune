@@ -27,13 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -124,8 +117,8 @@ fun MiniPlayer(
                     }
                 }
             ) {
-                Icon(
-                    imageVector = if (playbackState == Player.STATE_ENDED) Icons.Rounded.Replay else if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = if (playbackState == Player.STATE_ENDED) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Replay else if (isPlaying) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Pause else com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
                     tint = iconButtonColor,
                     contentDescription = null
                 )
@@ -141,8 +134,8 @@ fun MiniPlayer(
                     playerConnection.player.seekToNext()
                 }
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.skip_next),
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = (R.drawable.skip_next),
                     tint = iconButtonColor.copy(alpha = (if (canSkipNext) 1f else 0.5f)),
                     contentDescription = null
                 )
@@ -203,8 +196,8 @@ fun MiniMediaInfo(
                             color = Color.White
                         )
                     } else {
-                        Icon(
-                            imageVector = Icons.Rounded.Info,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Info,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.error,
                             modifier = Modifier

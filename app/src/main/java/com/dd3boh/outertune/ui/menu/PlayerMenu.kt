@@ -22,23 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.automirrored.rounded.VolumeUp
-import androidx.compose.material.icons.rounded.AddCircleOutline
-import androidx.compose.material.icons.rounded.Equalizer
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.LibraryAdd
-import androidx.compose.material.icons.rounded.LibraryAddCheck
-import androidx.compose.material.icons.rounded.Lyrics
-import androidx.compose.material.icons.rounded.MoreTime
-import androidx.compose.material.icons.rounded.Radio
-import androidx.compose.material.icons.rounded.RemoveCircleOutline
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.SlowMotionVideo
-import androidx.compose.material.icons.rounded.Timer
-import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -66,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -206,7 +188,7 @@ fun PlayerMenu(
                 .padding(16.dp),
             properties = DialogProperties(usePlatformDefaultWidth = false),
             onDismissRequest = { showSleepTimerDialog = false },
-            icon = { Icon(imageVector = Icons.Rounded.Timer, contentDescription = null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Timer, contentDescription = null) },
             title = { Text(stringResource(R.string.sleep_timer)) },
             confirmButton = {
                 TextButton(
@@ -295,7 +277,7 @@ fun PlayerMenu(
                             onValueChange = onTextFieldValueChange,
                             placeholder = { pluralString },
                             singleLine = true,
-                            leadingIcon = { Icon(Icons.Rounded.MoreTime, null) },
+                            leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.MoreTime, contentDescription = null) },
                             colors = OutlinedTextFieldDefaults.colors(),
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Done,
@@ -396,8 +378,8 @@ fun PlayerMenu(
             .padding(horizontal = 24.dp)
             .padding(top = 24.dp, bottom = 6.dp)
     ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.VolumeUp,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.VolumeUp,
             contentDescription = null,
             modifier = Modifier.size(28.dp)
         )
@@ -419,20 +401,20 @@ fun PlayerMenu(
     ) {
         if (!mediaMetadata.isLocal)
             GridMenuItem(
-                icon = Icons.Rounded.Radio,
+                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Radio,
                 title = R.string.start_radio
             ) {
                 playerConnection.playQueue(YouTubeQueue.radio(mediaMetadata), isRadio = true)
                 onDismiss()
             }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.QueueMusic,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
             title = R.string.add_to_queue
         ) {
             showChooseQueueDialog = true
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd,
             title = R.string.add_to_playlist
         ) {
             showChoosePlaylistDialog = true
@@ -457,7 +439,7 @@ fun PlayerMenu(
             )
         if (librarySong?.song?.inLibrary != null && !librarySong!!.song.isLocal) {
             GridMenuItem(
-                icon = Icons.Rounded.LibraryAddCheck,
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAddCheck,
                 title = R.string.remove_from_library,
             ) {
                 database.query {
@@ -466,7 +448,7 @@ fun PlayerMenu(
             }
         } else if (!mediaMetadata.isLocal) {
             GridMenuItem(
-                icon = Icons.Rounded.LibraryAdd,
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAdd,
                 title = R.string.add_to_library,
             ) {
                 database.transaction {
@@ -500,7 +482,7 @@ fun PlayerMenu(
 
         if (!mediaMetadata.isLocal)
             GridMenuItem(
-                icon = Icons.Rounded.Share,
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Share,
                 title = R.string.share
             ) {
                 val intent = Intent().apply {
@@ -512,14 +494,14 @@ fun PlayerMenu(
                 onDismiss()
             }
         GridMenuItem(
-            icon = Icons.Rounded.Lyrics,
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Lyrics,
             title = R.string.toggle_lyrics
         ) {
             onDismiss()
             showLyrics = !showLyrics
         }
         GridMenuItem(
-            icon = Icons.Rounded.Info,
+            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Info,
             title = R.string.details
         ) {
             showDetailsDialog = true
@@ -532,7 +514,7 @@ fun PlayerMenu(
             else showSleepTimerDialog = true
         }
         GridMenuItem(
-            icon = Icons.Rounded.Equalizer,
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Equalizer,
             title = R.string.equalizer
         ) {
             val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
@@ -546,7 +528,7 @@ fun PlayerMenu(
             onDismiss()
         }
         GridMenuItem(
-            icon = Icons.Rounded.Tune,
+            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Tune,
             title = R.string.advanced
         ) {
             showPitchTempoDialog = true
@@ -650,7 +632,7 @@ fun PitchTempoDialog(
         text = {
             Column {
                 ValueAdjuster(
-                    icon = Icons.Rounded.SlowMotionVideo,
+                    icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.SlowMotionVideo,
                     currentValue = tempo,
                     values = (0..35).map { round((0.25f + it * 0.05f) * 100) / 100 },
                     onValueUpdate = {
@@ -661,7 +643,7 @@ fun PitchTempoDialog(
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
                 ValueAdjuster(
-                    icon = Icons.Rounded.Tune,
+                    icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Tune,
                     currentValue = transposeValue,
                     values = (-12..12).toList(),
                     onValueUpdate = {
@@ -677,7 +659,7 @@ fun PitchTempoDialog(
 
 @Composable
 fun <T> ValueAdjuster(
-    icon: ImageVector,
+    icon: Int,
     currentValue: T,
     values: List<T>,
     onValueUpdate: (T) -> Unit,
@@ -701,8 +683,8 @@ fun <T> ValueAdjuster(
                 onValueUpdate(values[values.indexOf(currentValue) - 1])
             }
         ) {
-            Icon(
-                imageVector = Icons.Rounded.RemoveCircleOutline,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.RemoveCircleOutline,
                 contentDescription = null
             )
         }
@@ -720,8 +702,8 @@ fun <T> ValueAdjuster(
                 onValueUpdate(values[values.indexOf(currentValue) + 1])
             }
         ) {
-            Icon(
-                imageVector = Icons.Rounded.AddCircleOutline,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.AddCircleOutline,
                 contentDescription = null
             )
         }

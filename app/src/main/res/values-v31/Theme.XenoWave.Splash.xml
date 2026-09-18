@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.XenoWave.Splash" parent="Theme.OuterTune">
+        <item name="android:windowSplashScreenBackground">@color/xenowave_space_background</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/xenowave_space_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/xenowave_splash_icon</item>
+        <item name="android:windowSplashScreenAnimationDuration">400</item>
+    </style>
+</resources>

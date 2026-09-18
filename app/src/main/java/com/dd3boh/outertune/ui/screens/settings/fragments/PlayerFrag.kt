@@ -1,14 +1,5 @@
 package com.dd3boh.outertune.ui.screens.settings.fragments
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.VolumeUp
-import androidx.compose.material.icons.rounded.Autorenew
-import androidx.compose.material.icons.rounded.ClearAll
-import androidx.compose.material.icons.rounded.FastForward
-import androidx.compose.material.icons.rounded.GraphicEq
-import androidx.compose.material.icons.rounded.SkipNext
-import androidx.compose.material.icons.rounded.Sync
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.dd3boh.outertune.R
 import com.dd3boh.outertune.constants.AudioNormalizationKey
@@ -50,13 +40,13 @@ fun PlayerGeneralFrag() {
     SwitchPreference(
         title = { Text(stringResource(R.string.auto_load_more)) },
         description = stringResource(R.string.auto_load_more_desc),
-        icon = { Icon(Icons.Rounded.Autorenew, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Autorenew, contentDescription = null) },
         checked = autoLoadMore,
         onCheckedChange = onAutoLoadMoreChange
     )
     EnumListPreference(
         title = { Text(stringResource(R.string.seek_increment))},
-        icon = { Icon(Icons.Rounded.FastForward, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.FastForward, contentDescription = null) },
         selectedValue = seekIncrement,
         onValueSelected = onSeekIncrementChange,
         valueText = {
@@ -79,7 +69,7 @@ fun AudioQualityFrag() {
 
     EnumListPreference(
         title = { Text(stringResource(R.string.audio_quality)) },
-        icon = { Icon(Icons.Rounded.GraphicEq, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.GraphicEq, contentDescription = null) },
         selectedValue = audioQuality,
         onValueSelected = onAudioQualityChange,
         valueText = {
@@ -104,13 +94,13 @@ fun AudioEffectsFrag() {
 
     SwitchPreference(
         title = { Text(stringResource(R.string.audio_normalization)) },
-        icon = { Icon(Icons.AutoMirrored.Rounded.VolumeUp, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.VolumeUp, contentDescription = null) },
         checked = audioNormalization,
         onCheckedChange = onAudioNormalizationChange
     )
     SwitchPreference(
         title = { Text(stringResource(R.string.skip_silence)) },
-        icon = { Icon(painterResource(R.drawable.skip_next), null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = (R.drawable.skip_next), contentDescription = null) },
         checked = skipSilence,
         onCheckedChange = onSkipSilenceChange
     )
@@ -133,19 +123,19 @@ fun PlaybackBehaviourFrag() {
 
     PreferenceEntry(
         title = { Text(stringResource(R.string.min_playback_duration)) },
-        icon = { Icon(Icons.Rounded.Sync, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync, contentDescription = null) },
         onClick = { showMinPlaybackDur = true }
     )
     SwitchPreference(
         title = { Text(stringResource(R.string.auto_skip_next_on_error)) },
         description = stringResource(R.string.auto_skip_next_on_error_desc),
-        icon = { Icon(Icons.Rounded.SkipNext, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.SkipNext, contentDescription = null) },
         checked = skipOnErrorKey,
         onCheckedChange = onSkipOnErrorChange
     )
     SwitchPreference(
         title = { Text(stringResource(R.string.stop_music_on_task_clear)) },
-        icon = { Icon(Icons.Rounded.ClearAll, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.ClearAll, contentDescription = null) },
         isEnabled = !keepAlive,
         checked = stopMusicOnTaskClear,
         onCheckedChange = onStopMusicOnTaskClearChange,

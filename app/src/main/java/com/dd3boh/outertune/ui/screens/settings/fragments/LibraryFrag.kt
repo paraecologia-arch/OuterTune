@@ -2,11 +2,6 @@ package com.dd3boh.outertune.ui.screens.settings.fragments
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ManageSearch
-import androidx.compose.material.icons.rounded.ClearAll
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -54,20 +49,20 @@ fun ColumnScope.ListenHistoryFrag() {
 
     SwitchPreference(
         title = { Text(stringResource(R.string.pause_listen_history)) },
-        icon = { Icon(Icons.Rounded.History, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.History, contentDescription = null) },
         checked = pauseListenHistory,
         onCheckedChange = onPauseListenHistoryChange
     )
     SwitchPreference(
         title = { Text(stringResource(R.string.pause_remote_listen_history)) },
-        icon = { Icon(Icons.Rounded.History, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.History, contentDescription = null) },
         checked = pauseRemoteListenHistory,
         onCheckedChange = onPauseRemoteListenHistoryChange,
         isEnabled = !pauseListenHistory && isLoggedIn
     )
     PreferenceEntry(
         title = { Text(stringResource(R.string.clear_listen_history)) },
-        icon = { Icon(Icons.Rounded.ClearAll, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.ClearAll, contentDescription = null) },
         onClick = { showClearListenHistoryDialog = true }
     )
 
@@ -123,13 +118,13 @@ fun ColumnScope.SearchHistoryFrag() {
 
     SwitchPreference(
         title = { Text(stringResource(R.string.pause_search_history)) },
-        icon = { Icon(Icons.AutoMirrored.Rounded.ManageSearch, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ManageSearch, contentDescription = null) },
         checked = pauseSearchHistory,
         onCheckedChange = onPauseSearchHistoryChange
     )
     PreferenceEntry(
         title = { Text(stringResource(R.string.clear_search_history)) },
-        icon = { Icon(Icons.Rounded.ClearAll, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.ClearAll, contentDescription = null) },
         onClick = { showClearSearchHistoryDialog = true }
     )
 

@@ -22,24 +22,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.LockOpen
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.OfflinePin
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -247,7 +233,7 @@ fun LocalPlaylistScreen(
     if (showEditDialog) {
         playlistWithSongs.first?.playlist?.let { playlistEntity ->
             TextFieldDialog(
-                icon = { Icon(imageVector = Icons.Rounded.Edit, contentDescription = null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit, contentDescription = null) },
                 title = { Text(text = stringResource(R.string.edit_playlist)) },
                 onDismiss = { showEditDialog = false },
                 initialTextFieldValue = TextFieldValue(playlistEntity.name, TextRange(playlistEntity.name.length)),
@@ -445,7 +431,7 @@ fun LocalPlaylistScreen(
                 if (playlist.songCount == 0) {
                     item {
                         EmptyPlaceholder(
-                            icon = Icons.Rounded.MusicNote,
+                            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
                             text = stringResource(R.string.playlist_is_empty),
                             modifier = Modifier.animateItem()
                         )
@@ -499,8 +485,8 @@ fun LocalPlaylistScreen(
                                     onClick = { locked = !locked },
                                     modifier = Modifier.padding(horizontal = 6.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = if (locked) Icons.Rounded.Lock else Icons.Rounded.LockOpen,
+                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                        icon = if (locked) com.dd3boh.outertune.ui.icons.XenoSystemIcons.Lock else com.dd3boh.outertune.ui.icons.XenoSystemIcons.LockOpen,
                                         contentDescription = null
                                     )
                                 }
@@ -604,8 +590,8 @@ fun LocalPlaylistScreen(
                             isSearching = true
                         }
                     ) {
-                        Icon(
-                            Icons.Rounded.Search,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
                             contentDescription = null
                         )
                     }
@@ -627,8 +613,8 @@ fun LocalPlaylistScreen(
                         }
                     }
                 ) {
-                    Icon(
-                        Icons.AutoMirrored.Rounded.ArrowBack,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -728,8 +714,8 @@ fun LocalPlaylistHeader(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (playlist.downloadCount > 0) {
-                        Icon(
-                            imageVector = Icons.Rounded.OfflinePin,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(18.dp)
@@ -754,8 +740,8 @@ fun LocalPlaylistHeader(
                     IconButton(
                         onClick = onShowEditDialog
                     ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Edit,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit,
                             contentDescription = null
                         )
                     }
@@ -773,8 +759,8 @@ fun LocalPlaylistHeader(
                             },
                             enabled = isNetworkConnected
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Sync,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync,
                                 contentDescription = null
                             )
                         }
@@ -786,8 +772,8 @@ fun LocalPlaylistHeader(
                                 IconButton(
                                     onClick = onShowRemoveDownloadDialog
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.OfflinePin,
+                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                                         contentDescription = null
                                     )
                                 }
@@ -819,8 +805,8 @@ fun LocalPlaylistHeader(
                                         downloadUtil.download(songs.map { it.song.toMediaMetadata() })
                                     }
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Download,
+                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Download,
                                         contentDescription = null
                                     )
                                 }
@@ -834,8 +820,8 @@ fun LocalPlaylistHeader(
                                 )
                             }
                         ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
                                 contentDescription = null
                             )
                         }
@@ -857,8 +843,8 @@ fun LocalPlaylistHeader(
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                 modifier = Modifier.weight(1f)
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.PlayArrow,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
                     contentDescription = null,
                     modifier = Modifier.size(ButtonDefaults.IconSize)
                 )
@@ -879,8 +865,8 @@ fun LocalPlaylistHeader(
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                 modifier = Modifier.weight(1f)
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.Shuffle,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Shuffle,
                     contentDescription = null,
                     modifier = Modifier.size(ButtonDefaults.IconSize)
                 )

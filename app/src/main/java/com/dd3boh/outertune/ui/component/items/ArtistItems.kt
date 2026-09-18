@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CloudOff
-import androidx.compose.material.icons.rounded.OfflinePin
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,8 +34,8 @@ fun ArtistListItem(
 
         // assume if they have a non local artist ID, they are not local
         if (artist.artist.isLocal) {
-            Icon(
-                Icons.Rounded.CloudOff,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.CloudOff,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
@@ -49,8 +45,8 @@ fun ArtistListItem(
         }
 
         if (artist.downloadCount > 0) {
-            Icon(
-                imageVector = Icons.Rounded.OfflinePin,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -87,8 +83,8 @@ fun ArtistGridItem(
 
         // assume if they have a non local artist ID, they are not local
         if (artist.artist.isLocal) {
-            Icon(
-                Icons.Rounded.CloudOff,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.CloudOff,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
@@ -98,8 +94,8 @@ fun ArtistGridItem(
         }
 
         if (artist.downloadCount > 0) {
-            Icon(
-                imageVector = Icons.Rounded.OfflinePin,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)

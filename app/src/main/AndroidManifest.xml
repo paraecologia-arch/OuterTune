@@ -26,9 +26,9 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:appCategory="audio"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/xeno_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/xeno_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OuterTune"
         android:enableOnBackInvokedCallback="true"
@@ -41,7 +41,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.OuterTune"
+            android:theme="@style/Theme.XenoWave.Splash"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

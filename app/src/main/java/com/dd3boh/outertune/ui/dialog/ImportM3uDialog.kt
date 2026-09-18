@@ -25,13 +25,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Input
-import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -127,12 +123,12 @@ fun ImportM3uDialog(
 
     DefaultDialog(
         onDismiss = onDismiss,
-        icon = { Icon(Icons.AutoMirrored.Rounded.Input, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.Input, contentDescription = null) },
         title = { Text(stringResource(R.string.import_playlist)) },
     ) {
         EnumListPreference(
             title = { Text(stringResource(R.string.scanner_sensitivity_title)) },
-            icon = { Icon(Icons.Rounded.GraphicEq, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.GraphicEq, contentDescription = null) },
             selectedValue = scannerSensitivity,
             onValueSelected = { scannerSensitivity = it },
             valueText = {

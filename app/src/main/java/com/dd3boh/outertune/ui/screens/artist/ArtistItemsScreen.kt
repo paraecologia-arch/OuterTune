@@ -15,12 +15,8 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -198,8 +194,8 @@ fun ArtistItemsScreen(
                                         }
                                     }
                                 ) {
-                                    Icon(
-                                        Icons.Rounded.MoreVert,
+                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                         contentDescription = null
                                     )
                                 }
@@ -345,8 +341,8 @@ fun ArtistItemsScreen(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

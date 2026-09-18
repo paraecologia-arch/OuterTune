@@ -13,9 +13,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -63,8 +60,8 @@ fun LibraryArtistListItem(
                 haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
             }
         ) {
-            Icon(
-                Icons.Rounded.MoreVert,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                 contentDescription = null
             )
         }
@@ -131,8 +128,8 @@ fun LibraryAlbumListItem(
                 haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
             }
         ) {
-            Icon(
-                Icons.Rounded.MoreVert,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                 contentDescription = null
             )
         }
@@ -232,8 +229,8 @@ fun LibraryPlaylistListItem(
                 haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
             }
         ) {
-            Icon(
-                Icons.Rounded.MoreVert,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                 contentDescription = null
             )
         }

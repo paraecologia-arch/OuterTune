@@ -14,15 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.EditOff
-import androidx.compose.material.icons.rounded.Error
-import androidx.compose.material.icons.rounded.OfflinePin
-import androidx.compose.material.icons.rounded.SdCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -53,7 +43,7 @@ import kotlin.math.roundToInt
 @Composable
 fun AutoPlaylistListItem(
     playlist: PlaylistEntity,
-    thumbnail: ImageVector,
+    thumbnail: Int,
     modifier: Modifier = Modifier,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) = ListItem(
@@ -84,7 +74,7 @@ fun AutoPlaylistListItem(
 @Composable
 fun AutoPlaylistGridItem(
     playlist: PlaylistEntity,
-    thumbnail: ImageVector,
+    thumbnail: Int,
     modifier: Modifier = Modifier,
     fillMaxWidth: Boolean = false,
 ) = GridItem(
@@ -130,8 +120,8 @@ fun PlaylistListItem(
     badges = {
         PlaylistIcon(playlist.playlist) // always show
         if (!showBadges) return@ListItem
-        Icon(
-            imageVector = if (playlist.playlist.isEditable) Icons.Rounded.Edit else Icons.Rounded.EditOff,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = if (playlist.playlist.isEditable) com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit else com.dd3boh.outertune.ui.icons.XenoActionIcons.EditOff,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)
@@ -139,8 +129,8 @@ fun PlaylistListItem(
         )
 
         if (playlist.playlist.isLocal) {
-            Icon(
-                imageVector = Icons.Rounded.SdCard,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -149,8 +139,8 @@ fun PlaylistListItem(
         }
 
         if (playlist.downloadCount > 0) {
-            Icon(
-                imageVector = Icons.Rounded.OfflinePin,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -183,8 +173,8 @@ fun PlaylistGridItem(
     badges = {
         PlaylistIcon(playlist.playlist)
         if (playlist.downloadCount > 0) {
-            Icon(
-                imageVector = Icons.Rounded.OfflinePin,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -248,13 +238,13 @@ fun PlaylistThumbnail(
             if ((playlist.playEndpointParams ?: playlist.radioEndpointParams
                 ?: playlist.shuffleEndpointParams) != null
             ) features += 1
-            Icon(
-                imageVector = when {
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = when {
                     // TODO: Icons that actually goddamn match with each other wth is this google???
-                    features >= 8 -> Icons.AutoMirrored.Rounded.QueueMusic
-                    features >= 4 -> Icons.AutoMirrored.Rounded.PlaylistAdd
-                    features >= 2 -> Icons.AutoMirrored.Rounded.PlaylistPlay
-                    else -> Icons.Rounded.Error
+                    features >= 8 -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic
+                    features >= 4 -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd
+                    features >= 2 -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay
+                    else -> com.dd3boh.outertune.ui.icons.XenoSystemIcons.Error
                 },
                 contentDescription = null,
                 tint = iconTint,

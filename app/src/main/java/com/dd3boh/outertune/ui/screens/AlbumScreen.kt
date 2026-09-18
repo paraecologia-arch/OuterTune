@@ -23,17 +23,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Album
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.OfflinePin
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -61,7 +54,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
@@ -208,7 +200,7 @@ fun AlbumScreen(
                             // TODO: use painter fallback
                             AsyncImageLocal(
                                 image = { null },
-                                placeholderIcon = Icons.Rounded.Album,
+                                placeholderIcon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Album,
                                 modifier = Modifier
                                     .size(AlbumThumbnailSize)
                                     .clip(RoundedCornerShape(ThumbnailCornerRadius))
@@ -277,8 +269,8 @@ fun AlbumScreen(
                                         }
                                     }
                                 ) {
-                                    Icon(
-                                        painter = painterResource(if (albumWithSongsLocal.album.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                        icon = (if (albumWithSongsLocal.album.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
                                         contentDescription = null,
                                         tint = if (albumWithSongsLocal.album.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current
                                     )
@@ -299,8 +291,8 @@ fun AlbumScreen(
                                                     }
                                                 }
                                             ) {
-                                                Icon(
-                                                    imageVector = Icons.Rounded.OfflinePin,
+                                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                    icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                                                     contentDescription = null
                                                 )
                                             }
@@ -337,8 +329,8 @@ fun AlbumScreen(
                                                     )
                                                 }
                                             ) {
-                                                Icon(
-                                                    Icons.Rounded.Download,
+                                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                    icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Download,
                                                     contentDescription = null
                                                 )
                                             }
@@ -361,8 +353,8 @@ fun AlbumScreen(
                                         }
                                     }
                                 ) {
-                                    Icon(
-                                        Icons.Rounded.MoreVert,
+                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                         contentDescription = null
                                     )
                                 }
@@ -387,8 +379,8 @@ fun AlbumScreen(
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                             modifier = Modifier.weight(1f)
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.play),
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = (R.drawable.play),
                                 contentDescription = null,
                                 modifier = Modifier.size(ButtonDefaults.IconSize)
                             )
@@ -413,8 +405,8 @@ fun AlbumScreen(
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                             modifier = Modifier.weight(1f)
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.shuffle_on),
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = (R.drawable.shuffle_on),
                                 contentDescription = null,
                                 modifier = Modifier.size(ButtonDefaults.IconSize)
                             )
@@ -557,8 +549,8 @@ fun AlbumScreen(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

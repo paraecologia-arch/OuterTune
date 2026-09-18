@@ -24,12 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -149,7 +145,7 @@ fun AboutScreen(
 
             IconLabelButton(
                 text = stringResource(R.string.wiki),
-                icon = Icons.Outlined.Info,
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OutlinedInfo,
                 onClick = { uriHandler.openUri("https://github.com/OuterTune/OuterTune/wiki") },
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
@@ -292,8 +288,8 @@ fun AboutScreen(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

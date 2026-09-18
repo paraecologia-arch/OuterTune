@@ -16,16 +16,9 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Language
-import androidx.compose.material.icons.rounded.LibraryMusic
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -190,8 +183,8 @@ fun SearchBarContainer(
                         }
                     },
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -202,8 +195,8 @@ fun SearchBarContainer(
                         IconButton(
                             onClick = { onQueryChange(TextFieldValue("")) }
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Close,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                                 contentDescription = null
                             )
                         }
@@ -214,10 +207,10 @@ fun SearchBarContainer(
                                 if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
                         }
                     ) {
-                        Icon(
-                            imageVector = when (searchSource) {
-                                SearchSource.LOCAL -> Icons.Rounded.LibraryMusic
-                                SearchSource.ONLINE -> Icons.Rounded.Language
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = when (searchSource) {
+                                SearchSource.LOCAL -> com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryMusic
+                                SearchSource.ONLINE -> com.dd3boh.outertune.ui.icons.XenoSystemIcons.Language
                             },
                             contentDescription = null
                         )
@@ -232,8 +225,8 @@ fun SearchBarContainer(
                                 navController.navigate("settings")
                             }
                     ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Settings,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Settings,
                             contentDescription = null
                         )
                     }

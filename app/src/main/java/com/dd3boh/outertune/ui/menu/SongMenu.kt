@@ -7,22 +7,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Album
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.LibraryAdd
-import androidx.compose.material.icons.rounded.LibraryAddCheck
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.PlaylistRemove
-import androidx.compose.material.icons.rounded.Radio
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -154,8 +138,8 @@ fun SongMenu(
                     }
                 }
             ) {
-                Icon(
-                    painter = painterResource(if (song.song.liked) R.drawable.favorite else R.drawable.favorite_border),
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = (if (song.song.liked) R.drawable.favorite else R.drawable.favorite_border),
                     tint = if (song.song.liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null
                 )
@@ -175,7 +159,7 @@ fun SongMenu(
     ) {
         if (!song.song.isLocal)
             GridMenuItem(
-                icon = Icons.Rounded.Radio,
+                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Radio,
                 title = R.string.start_radio
             ) {
                 onDismiss()
@@ -183,7 +167,7 @@ fun SongMenu(
             }
 
         GridMenuItem(
-            icon = Icons.Rounded.PlayArrow,
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
             title = R.string.play
         ) {
             playerConnection.playQueue(
@@ -195,26 +179,26 @@ fun SongMenu(
             onDismiss()
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay,
             title = R.string.play_next
         ) {
             onDismiss()
             playerConnection.enqueueNext(song.toMediaItem())
         }
         GridMenuItem(
-            icon = Icons.Rounded.Edit,
+            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit,
             title = R.string.edit
         ) {
             showEditDialog = true
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.QueueMusic,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
             title = R.string.add_to_queue
         ) {
             showChooseQueueDialog = true
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd,
             title = R.string.add_to_playlist
         ) {
             showChoosePlaylistDialog = true
@@ -224,7 +208,7 @@ fun SongMenu(
                     || (playlistSong.song.song.isLocal || syncMode == SyncMode.RW))
         ) {
             GridMenuItem(
-                icon = Icons.Rounded.PlaylistRemove,
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.PlaylistRemove,
                 title = R.string.remove_from_playlist
             ) {
                 database.transaction {
@@ -283,7 +267,7 @@ fun SongMenu(
         }
         if (song.song.albumId != null && !song.song.isLocal) {
             GridMenuItem(
-                icon = Icons.Rounded.Album,
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Album,
                 title = R.string.view_album
             ) {
                 onDismiss()
@@ -292,7 +276,7 @@ fun SongMenu(
         }
         if (!song.song.isLocal)
             GridMenuItem(
-                icon = Icons.Rounded.Share,
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Share,
                 title = R.string.share
             ) {
                 onDismiss()
@@ -304,7 +288,7 @@ fun SongMenu(
                 context.startActivity(Intent.createChooser(intent, null))
             }
         GridMenuItem(
-            icon = Icons.Rounded.Info,
+            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Info,
             title = R.string.details
         ) {
             showDetailsDialog = true
@@ -312,7 +296,7 @@ fun SongMenu(
         if (!song.song.isLocal) {
             if (song.song.inLibrary == null) {
                 GridMenuItem(
-                    icon = Icons.Rounded.LibraryAdd,
+                    icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAdd,
                     title = R.string.add_to_library
                 ) {
                     database.query {
@@ -321,7 +305,7 @@ fun SongMenu(
                 }
             } else {
                 GridMenuItem(
-                    icon = Icons.Rounded.LibraryAddCheck,
+                    icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAddCheck,
                     title = R.string.remove_from_library
                 ) {
                     database.query {
@@ -332,7 +316,7 @@ fun SongMenu(
         }
         if (event != null) {
             GridMenuItem(
-                icon = Icons.Rounded.Delete,
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Delete,
                 title = R.string.remove_from_history
             ) {
                 onDismiss()
@@ -351,7 +335,7 @@ fun SongMenu(
 
     if (showEditDialog) {
         TextFieldDialog(
-            icon = { Icon(imageVector = Icons.Rounded.Edit, contentDescription = null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit, contentDescription = null) },
             title = { Text(text = stringResource(R.string.edit_song)) },
             onDismiss = { showEditDialog = false },
             initialTextFieldValue = TextFieldValue(song.song.title, TextRange(song.song.title.length)),

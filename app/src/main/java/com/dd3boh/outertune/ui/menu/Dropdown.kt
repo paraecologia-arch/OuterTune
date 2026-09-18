@@ -14,12 +14,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ChevronLeft
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,8 +55,8 @@ fun ActionDropdown(
     ) {
 
         if (extraContent == null) {
-            Icon(
-                imageVector = Icons.Rounded.MoreVert,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                 contentDescription = null,
                 modifier = modifier
                     .padding(4.dp),
@@ -89,7 +85,7 @@ fun ActionDropdown(
                                     .fillMaxWidth()
                             ) {
 //                                item.leadingIcon?.invoke()
-                                Icon(Icons.Rounded.ChevronLeft, null)
+                                com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ChevronLeft, contentDescription = null)
                                 Text(
                                     text = item.title,
                                     fontSize = 16.sp,

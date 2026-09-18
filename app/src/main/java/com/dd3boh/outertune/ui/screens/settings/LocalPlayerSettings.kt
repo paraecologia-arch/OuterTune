@@ -17,13 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Autorenew
-import androidx.compose.material.icons.rounded.SdCard
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -95,7 +90,7 @@ fun LocalPlayerSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.local_library_enable_title)) },
             description = stringResource(R.string.local_library_enable_description),
-            icon = { Icon(Icons.Rounded.SdCard, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard, contentDescription = null) },
             checked = localLibEnable,
             onCheckedChange = {
                 if (localLibEnable) {
@@ -113,7 +108,7 @@ fun LocalPlayerSettings(
             SwitchPreference(
                 title = { Text(stringResource(R.string.auto_scanner_title)) },
                 description = stringResource(R.string.auto_scanner_description),
-                icon = { Icon(Icons.Rounded.Autorenew, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Autorenew, contentDescription = null) },
                 checked = autoScan,
                 onCheckedChange = onAutoScanChange
             )
@@ -192,8 +187,8 @@ fun LocalPlayerSettings(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

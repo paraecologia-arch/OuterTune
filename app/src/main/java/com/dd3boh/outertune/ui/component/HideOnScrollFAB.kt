@@ -26,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.dd3boh.outertune.LocalPlayerAwareWindowInsets
@@ -97,7 +96,7 @@ fun BoxScope.HideOnScrollFAB(
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
     lazyListState: LazyGridState,
-    icon: ImageVector,
+    icon: Int,
     onClick: () -> Unit,
 ) {
     AnimatedVisibility(
@@ -157,7 +156,7 @@ fun BoxScope.HideOnScrollFAB(
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
     lazyListState: LazyListState,
-    icon: ImageVector,
+    icon: Int,
     onClick: () -> Unit,
 ) {
     AnimatedVisibility(
@@ -187,7 +186,7 @@ fun BoxScope.HideOnScrollFAB(
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
     scrollState: ScrollState,
-    icon: ImageVector,
+    icon: Int,
     onClick: () -> Unit,
 ) {
     AnimatedVisibility(

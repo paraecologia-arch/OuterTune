@@ -16,14 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.AudioFile
-import androidx.compose.material.icons.rounded.NoCell
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -121,7 +115,7 @@ fun PlayerSettings(
                 SwitchPreference(
                     title = { Text(stringResource(R.string.persistent_queue)) },
                     description = stringResource(R.string.persistent_queue_desc_ot),
-                    icon = { Icon(Icons.AutoMirrored.Rounded.QueueMusic, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic, contentDescription = null) },
                     checked = persistentQueue,
                     onCheckedChange = onPersistentQueueChange
                 )
@@ -134,7 +128,7 @@ fun PlayerSettings(
                 if (ENABLE_FFMETADATAEX) {
                     ListPreference(
                         title = { Text(stringResource(R.string.audio_decoder_preference)) },
-                        icon = { Icon(Icons.Rounded.AudioFile, null) },
+                        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.AudioFile, contentDescription = null) },
                         selectedValue = audioDecoder,
                         onValueSelected = onAudioDecoderChange,
                         values = listOf(
@@ -156,7 +150,7 @@ fun PlayerSettings(
                 SwitchPreference(
                     title = { Text(stringResource(R.string.keep_alive_title)) },
                     description = stringResource(R.string.keep_alive_description),
-                    icon = { Icon(Icons.Rounded.NoCell, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.NoCell, contentDescription = null) },
                     checked = keepAlive,
                     onCheckedChange = {
                         if (it) {
@@ -178,8 +172,8 @@ fun PlayerSettings(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

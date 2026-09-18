@@ -13,11 +13,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -158,7 +154,7 @@ fun ArtistSongsScreen(
                             actions = listOf(
                                 DropdownItem(
                                     title = stringResource(R.string.shuffle),
-                                    leadingIcon = { Icon(Icons.Rounded.Shuffle, null) },
+                                    leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Shuffle, contentDescription = null) },
                                     action = {
                                         playerConnection.playQueue(
                                             ListQueue(
@@ -235,8 +231,8 @@ fun ArtistSongsScreen(
                     onClick = navController::navigateUp,
                     onLongClick = navController::backToMain
                 ) {
-                    Icon(
-                        Icons.AutoMirrored.Rounded.ArrowBack,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                         contentDescription = null
                     )
                 }

@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
@@ -48,7 +47,7 @@ fun EmptyPlaceholder(
 
 @Composable
 fun EmptyPlaceholder(
-    icon: ImageVector,
+    icon: Int,
     text: String,
     modifier: Modifier = Modifier,
 ) {

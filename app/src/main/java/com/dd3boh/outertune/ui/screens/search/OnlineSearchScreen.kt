@@ -14,14 +14,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowOutward
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -224,8 +217,8 @@ fun OnlineSearchScreen(
                                 }
                             }
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.MoreVert,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                 contentDescription = null
                             )
                         }
@@ -314,8 +307,8 @@ fun SuggestionItem(
             .clickable(onClick = onClick)
             .padding(end = SearchBarIconOffsetX)
     ) {
-        Icon(
-            if (online) Icons.Rounded.Search else Icons.Rounded.History,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = if (online) com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search else com.dd3boh.outertune.ui.icons.XenoLibraryIcons.History,
             contentDescription = null,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -334,8 +327,8 @@ fun SuggestionItem(
                 onClick = onDelete,
                 modifier = Modifier.alpha(0.5f)
             ) {
-                Icon(
-                    Icons.Rounded.Close,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                     contentDescription = null
                 )
             }
@@ -345,8 +338,8 @@ fun SuggestionItem(
             onClick = onFillTextField,
             modifier = Modifier.alpha(0.5f)
         ) {
-            Icon(
-                Icons.Rounded.ArrowOutward,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ArrowOutward,
                 contentDescription = null
             )
         }

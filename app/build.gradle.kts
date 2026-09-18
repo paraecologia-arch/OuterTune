@@ -215,8 +215,6 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.compose.animation)
     implementation(libs.compose.reorderable)
-    implementation(libs.compose.icons.extended)
-
     // ui
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)

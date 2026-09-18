@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -104,8 +103,8 @@ fun PlayingIndicatorBox(
                     modifier = Modifier.height(24.dp)
                 )
             } else {
-                Icon(
-                    painter = painterResource(R.drawable.play),
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = R.drawable.play,
                     contentDescription = null,
                     tint = color
                 )

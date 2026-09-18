@@ -7,16 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.LibraryAdd
-import androidx.compose.material.icons.rounded.LibraryAddCheck
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -33,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.offline.Download.STATE_STOPPED
 import androidx.media3.exoplayer.offline.DownloadService
@@ -138,8 +128,8 @@ fun AlbumMenu(
                     }
                 }
             ) {
-                Icon(
-                    painter = painterResource(if (album.album.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = (if (album.album.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
                     tint = if (album.album.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null
                 )
@@ -158,27 +148,27 @@ fun AlbumMenu(
         )
     ) {
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay,
             title = R.string.play_next
         ) {
             onDismiss()
             playerConnection.enqueueNext(songs.map { it.toMediaItem() })
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.QueueMusic,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
             title = R.string.add_to_queue
         ) {
             showChooseQueueDialog = true
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd,
             title = R.string.add_to_playlist
         ) {
             showChoosePlaylistDialog = true
         }
         if (allInLibrary) {
             GridMenuItem(
-                icon = Icons.Rounded.LibraryAddCheck,
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAddCheck,
                 title = R.string.remove_all_from_library
             ) {
                 database.transaction {
@@ -189,7 +179,7 @@ fun AlbumMenu(
             }
         } else {
             GridMenuItem(
-                icon = Icons.Rounded.LibraryAdd,
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAdd,
                 title = R.string.add_all_to_library
             ) {
                 database.transaction {
@@ -233,8 +223,8 @@ fun AlbumMenu(
         }
         GridMenuItem(
             icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Sync,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync,
                     contentDescription = null,
                     modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation)
                 )
@@ -252,7 +242,7 @@ fun AlbumMenu(
             }
         }
         GridMenuItem(
-            icon = Icons.Rounded.Share,
+            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Share,
             title = R.string.share
         ) {
             onDismiss()

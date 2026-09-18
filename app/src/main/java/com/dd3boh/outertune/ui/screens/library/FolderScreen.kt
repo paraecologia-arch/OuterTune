@@ -21,17 +21,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.List
-import androidx.compose.material.icons.rounded.AccountTree
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.SdCard
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -323,8 +315,8 @@ fun FolderScreen(
                                     isSearching = true
                                 }
                             ) {
-                                Icon(
-                                    Icons.Rounded.Search,
+                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                    icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
                                     contentDescription = null
                                 )
                             }
@@ -358,7 +350,7 @@ fun FolderScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 ) {
-                                    IconTextButton(R.string.scanner_local_title, Icons.Rounded.SdCard) {
+                                    IconTextButton(R.string.scanner_local_title, com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard) {
                                         navController.navigate("settings/local")
                                     }
                                 }
@@ -367,7 +359,7 @@ fun FolderScreen(
                             if (!isSearching) {
                                 // tree/list view
                                 ResizableIconButton(
-                                    icon = if (flatSubfolders) Icons.AutoMirrored.Rounded.List else Icons.Rounded.AccountTree,
+                                    icon = if (flatSubfolders) com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.List else com.dd3boh.outertune.ui.icons.XenoLibraryIcons.AccountTree,
                                     onClick = {
                                         onFlatSubfoldersChange(!flatSubfolders)
                                     },
@@ -424,8 +416,8 @@ fun FolderScreen(
                                     haptic.performHapticFeedback(HapticFeedbackType.Companion.ContextClick)
                                 }
                             ) {
-                                Icon(
-                                    Icons.Rounded.MoreVert,
+                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                    icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                     contentDescription = null
                                 )
                             }
@@ -586,8 +578,8 @@ fun FolderScreen(
                         }
                     },
                 ) {
-                    Icon(
-                        Icons.AutoMirrored.Rounded.ArrowBack,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                         contentDescription = null
                     )
                 }

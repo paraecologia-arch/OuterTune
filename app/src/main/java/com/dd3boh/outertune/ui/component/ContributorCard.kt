@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +57,7 @@ fun ContributorCard(
                 .width(48.dp)
                 .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
         ) {
-            ResizableIconButton(icon = Icons.Rounded.Person)
+            ResizableIconButton(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Person)
         }
         Column(
             modifier = Modifier

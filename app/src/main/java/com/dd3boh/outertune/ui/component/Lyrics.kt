@@ -31,10 +31,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.MoreHoriz
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -442,8 +438,8 @@ fun Lyrics(
                 IconButton(
                     onClick = { onShowLyricsChange(false) }
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Close,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                         contentDescription = null,
                         tint = textColor
                     )
@@ -473,8 +469,8 @@ fun Lyrics(
                         }
                     }
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.MoreHoriz,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreHoriz,
                         contentDescription = null,
                         tint = textColor
                     )

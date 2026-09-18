@@ -23,20 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Backup
-import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.ConfirmationNumber
-import androidx.compose.material.icons.rounded.Coronavirus
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.DeveloperMode
-import androidx.compose.material.icons.rounded.Devices
-import androidx.compose.material.icons.rounded.ErrorOutline
-import androidx.compose.material.icons.rounded.Queue
-import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -135,13 +122,13 @@ fun ExperimentalSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.tablet_ui_title)) },
             description = stringResource(R.string.tablet_ui_title),
-            icon = { Icon(Icons.Rounded.Devices, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Devices, contentDescription = null) },
             checked = tabletUi,
             onCheckedChange = onTabletUiChange
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.max_queues_title)) },
-            icon = { Icon(Icons.Rounded.Queue, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Queue, contentDescription = null) },
             onClick = { showMaxQueuesDialog = true }
         )
 
@@ -176,7 +163,7 @@ fun ExperimentalSettings(
 
         PreferenceEntry(
             title = { Text("Flush local image cache") },
-            icon = { Icon(Icons.Rounded.Delete, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Delete, contentDescription = null) },
             onClick = {
                 context.imageLoader.memoryCache?.clear()
             }
@@ -186,7 +173,7 @@ fun ExperimentalSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.dev_settings_title)) },
             description = stringResource(R.string.dev_settings_description),
-            icon = { Icon(Icons.Rounded.DeveloperMode, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.DeveloperMode, contentDescription = null) },
             checked = devSettings,
             onCheckedChange = onDevSettingsChange
         )
@@ -195,14 +182,14 @@ fun ExperimentalSettings(
             SwitchPreference(
                 title = { Text(stringResource(R.string.audio_offload)) },
                 description = stringResource(R.string.audio_offload_description),
-                icon = { Icon(Icons.Rounded.Bolt, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Bolt, contentDescription = null) },
                 checked = audioOffload,
                 onCheckedChange = onAudioOffloadChange
             )
             SwitchPreference(
                 title = { Text(stringResource(R.string.audio_gapless_offload)) },
                 description = stringResource(R.string.audio_gapless_offload_description),
-                icon = { Icon(Icons.Rounded.Coronavirus, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Coronavirus, contentDescription = null) },
                 checked = audioGaplessOffload,
                 onCheckedChange = onAudioGaplessOffloadChange,
                 isEnabled = audioOffload // media3 supports only > SDK 32
@@ -229,7 +216,7 @@ fun ExperimentalSettings(
 
             PreferenceEntry(
                 title = { Text("DEBUG: Force local to remote artist migration NOW") },
-                icon = { Icon(Icons.Rounded.Backup, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Backup, contentDescription = null) },
                 onClick = {
                     Toast.makeText(context, context.getString(R.string.scanner_ytm_link_start), Toast.LENGTH_SHORT)
                         .show()
@@ -249,7 +236,7 @@ fun ExperimentalSettings(
 
             PreferenceEntry(
                 title = { Text("Enter configurator") },
-                icon = { Icon(Icons.Rounded.ConfirmationNumber, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.ConfirmationNumber, contentDescription = null) },
                 onClick = {
                     onOobeStatusChange(0)
                     runBlocking { // hax. page loads before pref updates
@@ -531,7 +518,7 @@ fun ExperimentalSettings(
             Spacer(Modifier.height(100.dp))
             PreferenceEntry(
                 title = { Text("Tap to show nuke options") },
-                icon = { Icon(Icons.Rounded.ErrorOutline, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.ErrorOutline, contentDescription = null) },
                 onClick = {
                     nukeEnabled = !nukeEnabled
                 }
@@ -552,7 +539,7 @@ fun ExperimentalSettings(
 
                 PreferenceEntry(
                     title = { Text("DEBUG: Nuke local lib") },
-                    icon = { Icon(Icons.Rounded.ErrorOutline, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.ErrorOutline, contentDescription = null) },
                     onClick = {
                         Toast.makeText(context, "Nuking local files from database...", Toast.LENGTH_SHORT).show()
                         coroutineScope.launch(Dispatchers.IO) {
@@ -562,7 +549,7 @@ fun ExperimentalSettings(
                 )
                 PreferenceEntry(
                     title = { Text("DEBUG: Nuke local artists") },
-                    icon = { Icon(Icons.Rounded.WarningAmber, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.WarningAmber, contentDescription = null) },
                     onClick = {
                         Toast.makeText(context, "Nuking local artists from database...", Toast.LENGTH_SHORT).show()
                         coroutineScope.launch(Dispatchers.IO) {
@@ -572,7 +559,7 @@ fun ExperimentalSettings(
                 )
                 PreferenceEntry(
                     title = { Text("DEBUG: Nuke dangling format entities") },
-                    icon = { Icon(Icons.Rounded.WarningAmber, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.WarningAmber, contentDescription = null) },
                     onClick = {
                         Toast.makeText(context, "Nuking dangling format entities from database...", Toast.LENGTH_SHORT)
                             .show()
@@ -583,7 +570,7 @@ fun ExperimentalSettings(
                 )
                 PreferenceEntry(
                     title = { Text("DEBUG: Nuke local db lyrics") },
-                    icon = { Icon(Icons.Rounded.WarningAmber, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.WarningAmber, contentDescription = null) },
                     onClick = {
                         Toast.makeText(context, "Nuking local lyrics from database...", Toast.LENGTH_SHORT).show()
                         coroutineScope.launch(Dispatchers.IO) {
@@ -593,7 +580,7 @@ fun ExperimentalSettings(
                 )
                 PreferenceEntry(
                     title = { Text("DEBUG: Nuke dangling db lyrics") },
-                    icon = { Icon(Icons.Rounded.WarningAmber, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.WarningAmber, contentDescription = null) },
                     onClick = {
                         Toast.makeText(context, "Nuking dangling lyrics from database...", Toast.LENGTH_SHORT).show()
                         coroutineScope.launch(Dispatchers.IO) {
@@ -603,7 +590,7 @@ fun ExperimentalSettings(
                 )
                 PreferenceEntry(
                     title = { Text("DEBUG: Nuke remote playlists") },
-                    icon = { Icon(Icons.Rounded.WarningAmber, null) },
+                    icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.WarningAmber, contentDescription = null) },
                     onClick = {
                         Toast.makeText(context, "Nuking remote playlists from database...", Toast.LENGTH_SHORT).show()
                         coroutineScope.launch(Dispatchers.IO) {
@@ -622,8 +609,8 @@ fun ExperimentalSettings(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

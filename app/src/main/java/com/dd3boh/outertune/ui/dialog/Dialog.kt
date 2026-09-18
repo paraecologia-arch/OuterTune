@@ -33,15 +33,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Error
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -499,8 +494,8 @@ fun DetailsDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = { setVisibility(false) },
         icon = {
-            Icon(
-                imageVector = Icons.Rounded.Info,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Info,
                 contentDescription = null
             )
         },
@@ -622,8 +617,8 @@ fun InfoLabel(
     verticalAlignment = Alignment.CenterVertically,
     modifier = modifier.padding(horizontal = 8.dp)
 ) {
-    Icon(
-        if (isError) Icons.Outlined.Error else Icons.Outlined.Info,
+    com.dd3boh.outertune.ui.icons.XenoIcon(
+        icon = if (isError) com.dd3boh.outertune.ui.icons.XenoSystemIcons.OutlinedError else com.dd3boh.outertune.ui.icons.XenoSystemIcons.OutlinedInfo,
         contentDescription = null,
         tint = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,
         modifier = Modifier.padding(4.dp)

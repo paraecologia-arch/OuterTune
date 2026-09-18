@@ -3,8 +3,6 @@ package com.dd3boh.outertune.ui.component.items
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Album
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -83,7 +81,7 @@ fun AlbumListItem(
     thumbnailContent = {
         ItemThumbnail(
             thumbnailUrl = album.album.thumbnailUrl,
-            placeholderIcon = Icons.Outlined.Album,
+            placeholderIcon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.OutlinedAlbum,
             isActive = isActive,
             isPlaying = isPlaying,
             shape = RoundedCornerShape(ThumbnailCornerRadius),
@@ -143,7 +141,7 @@ fun AlbumGridItem(
 
         ItemThumbnail(
             thumbnailUrl = album.album.thumbnailUrl,
-            placeholderIcon = Icons.Outlined.Album,
+            placeholderIcon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.OutlinedAlbum,
             isActive = isActive,
             isPlaying = isPlaying,
             shape = androidx.compose.foundation.shape.RoundedCornerShape(ThumbnailCornerRadius),

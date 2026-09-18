@@ -46,26 +46,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.DragHandle
-import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material.icons.rounded.ExpandMore
-import androidx.compose.material.icons.rounded.FastForward
-import androidx.compose.material.icons.rounded.FastRewind
-import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.LockOpen
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Replay
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.SkipNext
-import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.SwipeToDismissBox
@@ -196,8 +177,8 @@ fun QueueSheet(
                     state.expandSoft()
                     haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
                 }) {
-                    Icon(
-                        imageVector = Icons.Rounded.ExpandLess,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ExpandLess,
                         tint = onBackgroundColor,
                         contentDescription = null,
                     )
@@ -473,7 +454,7 @@ fun BoxScope.QueueContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ResizableIconButton(
-                    icon = if (lockQueue) Icons.Rounded.Lock else Icons.Rounded.LockOpen,
+                    icon = if (lockQueue) com.dd3boh.outertune.ui.icons.XenoSystemIcons.Lock else com.dd3boh.outertune.ui.icons.XenoSystemIcons.LockOpen,
                     onClick = {
                         lockQueue = !lockQueue
                     },
@@ -481,7 +462,7 @@ fun BoxScope.QueueContent(
 
                 if (!landscape) {
                     ResizableIconButton(
-                        icon = Icons.Rounded.Close,
+                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                         onClick = {
                             mqExpand = false
                             exitDetachHead()
@@ -568,7 +549,7 @@ fun BoxScope.QueueContent(
                             ) {
                                 if (!lockQueue) {
                                     ResizableIconButton(
-                                        icon = Icons.Rounded.Close,
+                                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                                         onClick = {
                                             val remainingQueues =
                                                 qb.deleteQueue(mq)
@@ -591,8 +572,8 @@ fun BoxScope.QueueContent(
                             }
 
                             if (!lockQueue) {
-                                Icon(
-                                    imageVector = Icons.Rounded.DragHandle,
+                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                    icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.DragHandle,
                                     contentDescription = null,
                                     modifier = Modifier.draggableHandle()
                                 )
@@ -629,7 +610,7 @@ fun BoxScope.QueueContent(
             // play the detached queue
             if (detachedHead) {
                 ResizableIconButton(
-                    icon = Icons.Rounded.PlayArrow,
+                    icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
                     onClick = {
                         coroutineScope.launch(Dispatchers.Main) {
                             // change to this queue, seek to the item clicked on
@@ -642,7 +623,7 @@ fun BoxScope.QueueContent(
                 )
             } else if (!isSearching) {
                 ResizableIconButton(
-                    icon = Icons.Rounded.Search,
+                    icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
                     onClick = {
                         isSearching = true
                     }
@@ -661,7 +642,7 @@ fun BoxScope.QueueContent(
             if ((if (isSearching) filteredSongs else mutableSongs).isEmpty()) {
                 item {
                     EmptyPlaceholder(
-                        icon = Icons.Rounded.MusicNote,
+                        icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
                         text = stringResource(if (isSearching) R.string.no_results_found else R.string.queues_empty),
                         modifier = Modifier.animateItem()
                     )
@@ -745,14 +726,14 @@ fun BoxScope.QueueContent(
                                             haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
                                         }
                                     ) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.MoreVert,
+                                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                                            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                             contentDescription = null
                                         )
                                     }
                                     if (!lockQueue && !detachedHead) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.DragHandle,
+                                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                                            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.DragHandle,
                                             contentDescription = null,
                                             modifier = Modifier
                                                 .padding(end = 16.dp)
@@ -831,8 +812,8 @@ fun BoxScope.QueueContent(
                 },
                 modifier = Modifier.padding(start = 16.dp)
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }
@@ -923,7 +904,7 @@ fun BoxScope.QueueContent(
                                 .padding(horizontal = 8.dp)
                         )
                         ResizableIconButton(
-                            icon = if (mqExpand) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
+                            icon = if (mqExpand) com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ExpandLess else com.dd3boh.outertune.ui.icons.XenoNavigationIcons.ExpandMore,
                             enabled = !landscape && !queueWindows.isEmpty(),
                             onClick = {
                                 mqExpand = !mqExpand
@@ -997,7 +978,7 @@ fun BoxScope.QueueContent(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = Icons.Rounded.SkipPrevious,
+                            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.SkipPrevious,
                             modifier = Modifier
                                 .size(32.dp)
                                 .align(Alignment.Center),
@@ -1013,7 +994,7 @@ fun BoxScope.QueueContent(
                     if (seekIncrement != SeekIncrement.OFF) {
                         Box(modifier = Modifier.weight(1f)) {
                             ResizableIconButton(
-                                icon = Icons.Rounded.FastRewind,
+                                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.FastRewind,
                                 modifier = Modifier
                                     .size(32.dp)
                                     .align(Alignment.Center),
@@ -1028,7 +1009,7 @@ fun BoxScope.QueueContent(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = if (playbackState == STATE_ENDED) Icons.Rounded.Replay else if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                            icon = if (playbackState == STATE_ENDED) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Replay else if (isPlaying) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Pause else com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
                             modifier = Modifier
                                 .size(36.dp)
                                 .align(Alignment.Center),
@@ -1052,7 +1033,7 @@ fun BoxScope.QueueContent(
                     if (seekIncrement != SeekIncrement.OFF) {
                         Box(modifier = Modifier.weight(1f)) {
                             ResizableIconButton(
-                                icon = Icons.Rounded.FastForward,
+                                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.FastForward,
                                 modifier = Modifier
                                     .size(32.dp)
                                     .align(Alignment.Center),
@@ -1065,7 +1046,7 @@ fun BoxScope.QueueContent(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = Icons.Rounded.SkipNext,
+                            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.SkipNext,
                             modifier = Modifier
                                 .size(32.dp)
                                 .align(Alignment.Center),

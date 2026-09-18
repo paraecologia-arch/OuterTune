@@ -106,3 +106,6 @@ lint/tmp/
 .DS_Store
 
 /ffMetadataEx
+
+# Local Codex launcher
+/Codex_GLM.bat

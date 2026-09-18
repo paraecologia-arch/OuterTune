@@ -23,10 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Bedtime
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.OfflinePin
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -39,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -124,7 +119,7 @@ fun LazyGridScope.GridMenuItem(
 
 fun LazyGridScope.GridMenuItem(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
+    icon: Int,
     tint: @Composable () -> Color = { LocalContentColor.current },
     @StringRes title: Int,
     enabled: Boolean = true,
@@ -153,7 +148,7 @@ fun LazyGridScope.DownloadGridMenu(
     when (state) {
         Download.STATE_COMPLETED -> {
             GridMenuItem(
-                icon = Icons.Rounded.OfflinePin,
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 title = R.string.remove_download,
                 onClick = onRemoveDownload
             )
@@ -174,7 +169,7 @@ fun LazyGridScope.DownloadGridMenu(
 
         else -> {
             GridMenuItem(
-                icon = Icons.Rounded.Download,
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Download,
                 title = R.string.action_download,
                 onClick = onDownload
             )
@@ -191,7 +186,7 @@ fun LazyGridScope.DownloadGridMenu(
     when (state) {
         Download.STATE_COMPLETED -> {
             GridMenuItem(
-                icon = Icons.Rounded.OfflinePin,
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 title = R.string.remove_download,
                 onClick = onRemoveDownload
             )
@@ -212,7 +207,7 @@ fun LazyGridScope.DownloadGridMenu(
 
         else -> {
             GridMenuItem(
-                icon = Icons.Rounded.Download,
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Download,
                 title = R.string.action_download,
                 onClick = onDownload
             )
@@ -242,8 +237,8 @@ fun LazyGridScope.SleepTimerGridMenu(
                     .weight(1f),
                 contentAlignment = Alignment.Center,
                 content = {
-                    Icon(
-                        imageVector = Icons.Rounded.Bedtime,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Bedtime,
                         contentDescription = null,
                         modifier = Modifier.alpha(if (enabled) 1f else 0.5f)
                     )

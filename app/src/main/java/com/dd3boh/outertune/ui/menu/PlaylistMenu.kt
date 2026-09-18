@@ -9,19 +9,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Output
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.PlaylistRemove
-import androidx.compose.material.icons.rounded.Radio
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,7 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -163,8 +150,8 @@ fun PlaylistMenu(
                         }
                     }
                 ) {
-                    Icon(
-                        painter = painterResource(if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = (if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
                         tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                         contentDescription = null
                     )
@@ -185,7 +172,7 @@ fun PlaylistMenu(
         )
     ) {
         GridMenuItem(
-            icon = Icons.Rounded.PlayArrow,
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
             title = R.string.play
         ) {
             onDismiss()
@@ -199,7 +186,7 @@ fun PlaylistMenu(
         }
 
         GridMenuItem(
-            icon = Icons.Rounded.Shuffle,
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Shuffle,
             title = R.string.shuffle
         ) {
             onDismiss()
@@ -217,7 +204,7 @@ fun PlaylistMenu(
             playlist.playlist.browseId?.let { browseId ->
                 playlist.playlist.radioEndpointParams?.let { radioEndpointParams ->
                     GridMenuItem(
-                        icon = Icons.Rounded.Radio,
+                        icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Radio,
                         title = R.string.start_radio
                     ) {
                         playerConnection.playQueue(
@@ -235,7 +222,7 @@ fun PlaylistMenu(
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay,
             title = R.string.play_next
         ) {
             coroutineScope.launch {
@@ -245,14 +232,14 @@ fun PlaylistMenu(
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.QueueMusic,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
             title = R.string.add_to_queue
         ) {
             showChooseQueueDialog = true
         }
 
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd,
             title = R.string.add_to_playlist
         ) {
             showChoosePlaylistDialog = true
@@ -273,14 +260,14 @@ fun PlaylistMenu(
 
         if (editable) {
             GridMenuItem(
-                icon = Icons.Rounded.Edit,
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit,
                 title = R.string.edit
             ) {
                 showEditDialog = true
             }
         }
         GridMenuItem(
-            icon = Icons.Rounded.PlaylistRemove,
+            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.PlaylistRemove,
             title = R.string.delete
         ) {
             showDeletePlaylistDialog = true
@@ -288,7 +275,7 @@ fun PlaylistMenu(
 
         playlist.playlist.shareLink?.let { shareLink ->
             GridMenuItem(
-                icon = Icons.Rounded.Share,
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Share,
                 title = R.string.share
             ) {
                 val intent = Intent().apply {
@@ -301,7 +288,7 @@ fun PlaylistMenu(
             }
         }
         GridMenuItem(
-            icon = Icons.Rounded.Output,
+            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Output,
             title = R.string.m3u_export
         ) {
             m3uLauncher.launch("playlist.m3u")
@@ -310,7 +297,7 @@ fun PlaylistMenu(
 
     if (showEditDialog) {
         TextFieldDialog(
-            icon = { Icon(imageVector = Icons.Rounded.Edit, contentDescription = null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Edit, contentDescription = null) },
             title = { Text(text = stringResource(R.string.edit_playlist)) },
             onDismiss = { showEditDialog = false },
             initialTextFieldValue = TextFieldValue(

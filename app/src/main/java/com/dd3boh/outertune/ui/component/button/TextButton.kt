@@ -13,14 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.dd3boh.outertune.constants.MenuCornerRadius
 
 @Composable
 fun IconLabelButton(
     text: String,
-    icon: ImageVector,
+    icon: Int,
     background: Color = MaterialTheme.colorScheme.secondaryContainer,
     tint: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     modifier: Modifier = Modifier,

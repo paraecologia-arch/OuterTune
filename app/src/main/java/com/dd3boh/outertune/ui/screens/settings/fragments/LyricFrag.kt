@@ -11,16 +11,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Sort
-import androidx.compose.material.icons.rounded.ContentCut
-import androidx.compose.material.icons.rounded.Lyrics
-import androidx.compose.material.icons.rounded.Speed
-import androidx.compose.material.icons.rounded.TextFields
-import androidx.compose.material.icons.rounded.TextRotationAngledown
-import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,7 +56,7 @@ fun ColumnScope.LyricFormatFrag() {
 
     EnumListPreference(
         title = { Text(stringResource(R.string.lyrics_text_position)) },
-        icon = { Icon(Icons.Rounded.Lyrics, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Lyrics, contentDescription = null) },
         selectedValue = lyricsPosition,
         onValueSelected = onLyricsPositionChange,
         valueText = {
@@ -79,7 +70,7 @@ fun ColumnScope.LyricFormatFrag() {
     PreferenceEntry(
         title = { Text(stringResource(R.string.lyrics_font_Size)) },
         description = "$lyricFontSize sp",
-        icon = { Icon(Icons.Rounded.TextFields, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.TextFields, contentDescription = null) },
         onClick = { showFontSizeDialog = true }
     )
 
@@ -119,7 +110,7 @@ fun ColumnScope.LyricParserFrag() {
     SwitchPreference(
         title = { Text(stringResource(R.string.lyrics_multiline_title)) },
         description = stringResource(R.string.lyrics_multiline_description),
-        icon = { Icon(Icons.AutoMirrored.Rounded.Sort, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.Sort, contentDescription = null) },
         checked = multilineLrc,
         onCheckedChange = onMultilineLrcChange
     )
@@ -127,7 +118,7 @@ fun ColumnScope.LyricParserFrag() {
     // trim (remove spaces around) lyrics
     SwitchPreference(
         title = { Text(stringResource(R.string.lyrics_trim_title)) },
-        icon = { Icon(Icons.Rounded.ContentCut, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.ContentCut, contentDescription = null) },
         checked = lyricTrim,
         onCheckedChange = onLyricTrimChange
     )
@@ -141,13 +132,13 @@ fun ColumnScope.LyricSourceFrag() {
 
     SwitchPreference(
         title = { Text(stringResource(R.string.enable_lrclib)) },
-        icon = { Icon(Icons.Rounded.Lyrics, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Lyrics, contentDescription = null) },
         checked = enableLrcLib,
         onCheckedChange = onEnableLrcLibChange
     )
     SwitchPreference(
         title = { Text(stringResource(R.string.enable_kugou)) },
-        icon = { Icon(Icons.Rounded.Lyrics, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Lyrics, contentDescription = null) },
         checked = enableKugou,
         onCheckedChange = onEnableKugouChange
     )
@@ -155,7 +146,7 @@ fun ColumnScope.LyricSourceFrag() {
     SwitchPreference(
         title = { Text(stringResource(R.string.lyrics_prefer_local)) },
         description = stringResource(R.string.lyrics_prefer_local_description),
-        icon = { Icon(Icons.Rounded.ContentCut, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.ContentCut, contentDescription = null) },
         checked = preferLocalLyric,
         onCheckedChange = onPreferLocalLyric
     )
@@ -173,7 +164,7 @@ fun ColumnScope.LyricAdvancedFrag() {
         // clickable lyrics
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_synced_clickable)) },
-            icon = { Icon(Icons.Rounded.TouchApp, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.TouchApp, contentDescription = null) },
             checked = syncedLyricsClickable,
             onCheckedChange = onSyncedLyricsClickable
         )
@@ -186,14 +177,14 @@ fun ColumnScope.LyricAdvancedFrag() {
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_karaoke_title)) },
             description = stringResource(R.string.lyrics_karaoke_description),
-            icon = { Icon(Icons.Rounded.TextRotationAngledown, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.TextRotationAngledown, contentDescription = null) },
             checked = lyricsFancy,
             onCheckedChange = onLyricsFancyChange
         )
 
         ListPreference(
             title = { Text(stringResource(R.string.lyrics_karaoke_hz_title)) },
-            icon = { Icon(Icons.Rounded.Speed, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Speed, contentDescription = null) },
             selectedValue = lyricUpdateSpeed,
             onValueSelected = onLyricsUpdateSpeedChange,
             values = Speed.entries,

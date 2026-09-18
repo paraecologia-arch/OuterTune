@@ -11,12 +11,6 @@ package com.dd3boh.outertune.ui.component
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Deselect
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.SelectAll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,8 +63,8 @@ fun RowScope.SelectHeader(
                 }
             }
         ) {
-            Icon(
-                Icons.Rounded.MoreVert,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                 contentDescription = null,
                 tint = LocalContentColor.current
             )
@@ -82,8 +76,8 @@ fun RowScope.SelectHeader(
         IconButton(
             onClick = if (allSelected) onSelectAll else onDeselectAll
         ) {
-            Icon(
-                imageVector = if (allSelected) Icons.Rounded.SelectAll else Icons.Rounded.Deselect,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = if (allSelected) com.dd3boh.outertune.ui.icons.XenoSystemIcons.SelectAll else com.dd3boh.outertune.ui.icons.XenoSystemIcons.Deselect,
                 contentDescription = null,
                 tint = LocalContentColor.current
             )
@@ -93,8 +87,8 @@ fun RowScope.SelectHeader(
         IconButton(
             onClick = onDismiss,
         ) {
-            Icon(
-                Icons.Rounded.Close,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                 contentDescription = null
             )
         }

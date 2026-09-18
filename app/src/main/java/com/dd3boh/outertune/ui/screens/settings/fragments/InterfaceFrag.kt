@@ -16,15 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.rounded.DragHandle
-import androidx.compose.material.icons.rounded.Language
-import androidx.compose.material.icons.rounded.LocationOn
-import androidx.compose.material.icons.rounded.Reorder
-import androidx.compose.material.icons.rounded.Swipe
-import androidx.compose.material.icons.rounded.Tab
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -177,14 +168,14 @@ fun ColumnScope.TabArrangementFrag() {
 
     PreferenceEntry(
         title = { Text(stringResource(R.string.tab_arrangement)) },
-        icon = { Icon(Icons.Rounded.Reorder, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Reorder, contentDescription = null) },
         onClick = {
             showTabArrangement = true
         }
     )
     PreferenceEntry(
         title = { Text(stringResource(R.string.filter_arrangement)) },
-        icon = { Icon(Icons.Rounded.Reorder, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Reorder, contentDescription = null) },
         onClick = {
             showFilterArrangement = true
         }
@@ -271,8 +262,8 @@ fun ColumnScope.TabArrangementFrag() {
                                     )
                                 }
                             }
-                            Icon(
-                                imageVector = Icons.Rounded.DragHandle,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.DragHandle,
                                 contentDescription = null,
                                 modifier = Modifier.draggableHandle()
                             )
@@ -359,8 +350,8 @@ fun ColumnScope.TabArrangementFrag() {
                                     )
                                 }
                             }
-                            Icon(
-                                imageVector = Icons.Rounded.DragHandle,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.DragHandle,
                                 contentDescription = null,
                                 modifier = Modifier.draggableHandle()
                             )
@@ -379,7 +370,7 @@ fun ColumnScope.TabExtrasFrag() {
 
     ListPreference(
         title = { Text(stringResource(R.string.default_open_tab)) },
-        icon = { Icon(Icons.Rounded.Tab, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Tab, contentDescription = null) },
         selectedValue = Screens.getAllScreens().find { it.route == defaultOpenTab } ?: Screens.Home,
         onValueSelected = { screen ->
             onDefaultOpenTabChange(screen.route)
@@ -397,14 +388,14 @@ fun ColumnScope.SwipeGesturesFrag() {
     SwitchPreference(
         title = { Text(stringResource(R.string.swipe2Queue)) },
         description = stringResource(R.string.swipe2Queue_description),
-        icon = { Icon(Icons.AutoMirrored.Rounded.PlaylistAdd, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd, contentDescription = null) },
         checked = swipe2Queue,
         onCheckedChange = onSwipe2QueueChange
     )
     SwitchPreference(
         title = { Text(stringResource(R.string.swipe_to_skip_title)) },
         description = stringResource(R.string.swipe_to_skip_description),
-        icon = { Icon(Icons.Rounded.Swipe, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Swipe, contentDescription = null) },
         checked = swipeToSkip,
         onCheckedChange = onSwipeToSkipChange
     )
@@ -420,7 +411,7 @@ fun ColumnScope.LocalizationFrag() {
 
     ListPreference(
         title = { Text(stringResource(R.string.content_language)) },
-        icon = { Icon(Icons.Rounded.Language, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Language, contentDescription = null) },
         selectedValue = contentLanguage,
         values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
         valueText = {
@@ -444,7 +435,7 @@ fun ColumnScope.LocalizationFrag() {
     )
     ListPreference(
         title = { Text(stringResource(R.string.content_country)) },
-        icon = { Icon(Icons.Rounded.LocationOn, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.LocationOn, contentDescription = null) },
         selectedValue = contentCountry,
         values = listOf(SYSTEM_DEFAULT) + CountryCodeToName.keys.toList(),
         valueText = {

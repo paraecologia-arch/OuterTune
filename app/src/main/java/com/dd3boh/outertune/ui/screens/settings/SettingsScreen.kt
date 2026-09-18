@@ -17,24 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.LibraryBooks
-import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Interests
-import androidx.compose.material.icons.rounded.Palette
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Restore
-import androidx.compose.material.icons.rounded.SdCard
-import androidx.compose.material.icons.rounded.Storage
-import androidx.compose.material.icons.rounded.Update
-import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -92,17 +78,17 @@ fun SettingsScreen(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.grp_account_sync)) },
-                icon = { Icon(Icons.Rounded.AccountCircle, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.AccountCircle, contentDescription = null) },
                 onClick = { navController.navigate("settings/account_sync") }
             )
             PreferenceEntry(
                 title = { Text(stringResource(R.string.grp_library_and_content)) },
-                icon = { Icon(Icons.AutoMirrored.Rounded.LibraryBooks, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.LibraryBooks, contentDescription = null) },
                 onClick = { navController.navigate("settings/library") }
             )
             PreferenceEntry(
                 title = { Text(stringResource(R.string.local_player_settings_title)) },
-                icon = { Icon(Icons.Rounded.SdCard, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.SdCard, contentDescription = null) },
                 onClick = { navController.navigate("settings/local") }
             )
         }
@@ -113,12 +99,12 @@ fun SettingsScreen(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.appearance)) },
-                icon = { Icon(Icons.Rounded.Palette, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Palette, contentDescription = null) },
                 onClick = { navController.navigate("settings/appearance") }
             )
             PreferenceEntry(
                 title = { Text(stringResource(R.string.grp_interface)) },
-                icon = { Icon(Icons.Rounded.Interests, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Interests, contentDescription = null) },
                 onClick = { navController.navigate("settings/interface") }
             )
         }
@@ -129,7 +115,7 @@ fun SettingsScreen(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.player_and_audio)) },
-                icon = { Icon(Icons.Rounded.PlayArrow, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow, contentDescription = null) },
                 onClick = { navController.navigate("settings/player") }
             )
         }
@@ -140,12 +126,12 @@ fun SettingsScreen(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.backup_restore)) },
-                icon = { Icon(Icons.Rounded.Restore, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Restore, contentDescription = null) },
                 onClick = { navController.navigate("settings/backup_restore") }
             )
             PreferenceEntry(
                 title = { Text(stringResource(R.string.storage)) },
-                icon = { Icon(Icons.Rounded.Storage, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Storage, contentDescription = null) },
                 onClick = { navController.navigate("settings/storage") }
             )
         }
@@ -156,7 +142,7 @@ fun SettingsScreen(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.experimental_settings_title)) },
-                icon = { Icon(Icons.Rounded.WarningAmber, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.WarningAmber, contentDescription = null) },
                 onClick = { navController.navigate("settings/experimental") }
             )
         }
@@ -167,7 +153,7 @@ fun SettingsScreen(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.about)) },
-                icon = { Icon(Icons.Rounded.Info, null) },
+                icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Info, contentDescription = null) },
                 onClick = { navController.navigate("settings/about") }
             )
         }
@@ -180,8 +166,8 @@ fun SettingsScreen(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain
             ) {
-                Icon(
-                    Icons.AutoMirrored.Rounded.ArrowBack,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                     contentDescription = null
                 )
             }

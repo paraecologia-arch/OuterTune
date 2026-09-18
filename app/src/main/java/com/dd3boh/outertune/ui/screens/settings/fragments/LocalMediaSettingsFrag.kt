@@ -28,17 +28,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.GraphicEq
-import androidx.compose.material.icons.rounded.MoreHoriz
-import androidx.compose.material.icons.rounded.Speed
-import androidx.compose.material.icons.rounded.TextFields
-import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Switch
@@ -442,8 +434,8 @@ fun ColumnScope.LocalScannerFrag() {
         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            Icons.Rounded.WarningAmber,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.WarningAmber,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error,
         )
@@ -579,8 +571,8 @@ fun ColumnScope.LocalScannerFrag() {
                                 tempScanPaths.remove(it)
                             },
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Close,
+                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
                                 contentDescription = null,
                             )
                         }
@@ -632,7 +624,7 @@ fun ColumnScope.LocalScannerExtraFrag() {
     // scanner sensitivity
     EnumListPreference(
         title = { Text(stringResource(R.string.scanner_sensitivity_title)) },
-        icon = { Icon(Icons.Rounded.GraphicEq, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.GraphicEq, contentDescription = null) },
         selectedValue = scannerSensitivity,
         onValueSelected = onScannerSensitivityChange,
         valueText = {
@@ -648,7 +640,7 @@ fun ColumnScope.LocalScannerExtraFrag() {
     SwitchPreference(
         title = { Text(stringResource(R.string.scanner_strict_file_name_title)) },
         description = stringResource(R.string.scanner_strict_file_name_description),
-        icon = { Icon(Icons.Rounded.TextFields, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.TextFields, contentDescription = null) },
         isEnabled = !strictFilePaths,
         checked = strictExtensions,
         onCheckedChange = onStrictExtensionsChange
@@ -657,14 +649,14 @@ fun ColumnScope.LocalScannerExtraFrag() {
     SwitchPreference(
         title = { Text(stringResource(R.string.scanner_strict_file_paths_title)) },
         description = stringResource(R.string.scanner_strict_file_paths_description),
-        icon = { Icon(Icons.Rounded.MoreHoriz, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreHoriz, contentDescription = null) },
         checked = strictFilePaths,
         onCheckedChange = onStrictFilePathsChange,
     )
     // scanner type
     EnumListPreference(
         title = { Text(stringResource(R.string.scanner_type_title)) },
-        icon = { Icon(Icons.Rounded.Speed, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Speed, contentDescription = null) },
         selectedValue = scannerImpl,
         onValueSelected = onScannerImplChange,
         valueText = {

@@ -25,21 +25,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.OfflinePin
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -73,7 +63,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
@@ -401,8 +390,8 @@ fun OnlinePlaylistScreen(
                                                         }
                                                     }
                                                 ) {
-                                                    Icon(
-                                                        painter = painterResource(
+                                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                        icon = (
                                                             if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border
                                                         ),
                                                         contentDescription = null,
@@ -419,8 +408,8 @@ fun OnlinePlaylistScreen(
                                                                 showRemoveDownloadDialog = true
                                                             }
                                                         ) {
-                                                            Icon(
-                                                                Icons.Rounded.OfflinePin,
+                                                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                                                                 contentDescription = null
                                                             )
                                                         }
@@ -459,8 +448,8 @@ fun OnlinePlaylistScreen(
                                                                 downloadUtil.download(_songs)
                                                             }
                                                         ) {
-                                                            Icon(
-                                                                Icons.Rounded.Download,
+                                                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Download,
                                                                 contentDescription = null
                                                             )
                                                         }
@@ -483,8 +472,8 @@ fun OnlinePlaylistScreen(
                                                         strokeWidth = 2.dp
                                                     )
                                                 } else {
-                                                    Icon(
-                                                        imageVector = Icons.Rounded.Sync,
+                                                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Sync,
                                                         contentDescription = null
                                                     )
                                                 }
@@ -503,8 +492,8 @@ fun OnlinePlaylistScreen(
                                                     }
                                                 }
                                             ) {
-                                                Icon(
-                                                    Icons.Rounded.MoreVert,
+                                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                    icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                                     contentDescription = null
                                                 )
                                             }
@@ -529,8 +518,8 @@ fun OnlinePlaylistScreen(
                                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                                             modifier = Modifier.weight(1f)
                                         ) {
-                                            Icon(
-                                                Icons.Rounded.PlayArrow,
+                                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(ButtonDefaults.IconSize)
                                             )
@@ -554,8 +543,8 @@ fun OnlinePlaylistScreen(
                                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                                             modifier = Modifier.weight(1f)
                                         ) {
-                                            Icon(
-                                                Icons.Rounded.Shuffle,
+                                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Shuffle,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(ButtonDefaults.IconSize)
                                             )
@@ -608,8 +597,8 @@ fun OnlinePlaylistScreen(
                                                 }
                                             }
                                         ) {
-                                            Icon(
-                                                Icons.Rounded.MoreVert,
+                                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                                 contentDescription = null
                                             )
                                         }
@@ -748,8 +737,8 @@ fun OnlinePlaylistScreen(
                         }
                     }
                 ) {
-                    Icon(
-                        Icons.AutoMirrored.Rounded.ArrowBack,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -759,8 +748,8 @@ fun OnlinePlaylistScreen(
                     IconButton(
                         onClick = { isSearching = true }
                     ) {
-                        Icon(
-                            Icons.Rounded.Search,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
                             contentDescription = null
                         )
                     }

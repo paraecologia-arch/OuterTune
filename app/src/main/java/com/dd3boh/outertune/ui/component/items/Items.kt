@@ -35,20 +35,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.CloudOff
-import androidx.compose.material.icons.rounded.Error
-import androidx.compose.material.icons.rounded.Explicit
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FolderCopy
-import androidx.compose.material.icons.rounded.LibraryAddCheck
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.OfflinePin
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -63,10 +50,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -164,8 +149,8 @@ inline fun ListItem(
                             RoundedCornerShape(ThumbnailCornerRadius)
                         )
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.CloudOff,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.CloudOff,
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier
@@ -381,8 +366,8 @@ fun QueueListItem(
         makeTimeString(queue.getDuration() * 1000L)
     ),
     thumbnailContent = {
-        Icon(
-            Icons.AutoMirrored.Rounded.QueueMusic,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
             contentDescription = null,
             modifier = Modifier.size(48.dp)
         )
@@ -658,7 +643,7 @@ fun YouTubeCardItem(
 fun ItemThumbnail(
     thumbnailUrl: String?,
     preferredSize: Int = -1,
-    placeholderIcon: ImageVector = Icons.Rounded.MusicNote,
+    placeholderIcon: Int = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
     isActive: Boolean,
     isPlaying: Boolean,
     shape: Shape,
@@ -757,8 +742,8 @@ fun BoxScope.AlbumPlayButton(
                 .background(Color.Black.copy(alpha = ActiveBoxAlpha))
                 .clickable(onClick = onClick)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.play),
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = (R.drawable.play),
                 contentDescription = null,
                 tint = Color.White
             )
@@ -769,8 +754,8 @@ fun BoxScope.AlbumPlayButton(
 object Icon {
     @Composable
     fun Favorite() {
-        Icon(
-            imageVector = Icons.Rounded.Favorite,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Favorite,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error,
             modifier = Modifier
@@ -781,8 +766,8 @@ object Icon {
 
     @Composable
     fun FolderCopy() {
-        Icon(
-            imageVector = Icons.Rounded.FolderCopy,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.FolderCopy,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)
@@ -792,8 +777,8 @@ object Icon {
 
     @Composable
     fun Library() {
-        Icon(
-            imageVector = Icons.Rounded.LibraryAddCheck,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryAddCheck,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)
@@ -817,13 +802,13 @@ object Icon {
         if ((playlist.playEndpointParams ?: playlist.radioEndpointParams
             ?: playlist.shuffleEndpointParams) != null
         ) features += 1
-        Icon(
-            imageVector = when {
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = when {
                 // TODO: Icons that actually goddamn match with each other wth is this google???
-                features >= 8 -> Icons.AutoMirrored.Rounded.QueueMusic
-                features >= 4 -> Icons.AutoMirrored.Rounded.PlaylistAdd
-                features >= 2 -> Icons.AutoMirrored.Rounded.PlaylistPlay
-                else -> Icons.Rounded.Error
+                features >= 8 -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic
+                features >= 4 -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd
+                features >= 2 -> com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay
+                else -> com.dd3boh.outertune.ui.icons.XenoSystemIcons.Error
             },
             contentDescription = null,
             modifier = Modifier
@@ -836,8 +821,8 @@ object Icon {
     @Composable
     fun Download(state: Int?) {
         when (state) {
-            STATE_COMPLETED -> Icon(
-                imageVector = Icons.Rounded.OfflinePin,
+            STATE_COMPLETED -> com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -859,8 +844,8 @@ object Icon {
     fun Download(localDateTime: LocalDateTime?) {
         val state = getDownloadState(localDateTime)
         when (state) {
-            STATE_COMPLETED -> Icon(
-                imageVector = Icons.Rounded.OfflinePin,
+            STATE_COMPLETED -> com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.OfflinePin,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -880,8 +865,8 @@ object Icon {
 
     @Composable
     fun Explicit() {
-        Icon(
-            imageVector = Icons.Rounded.Explicit,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Explicit,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)

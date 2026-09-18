@@ -11,12 +11,6 @@ package com.dd3boh.outertune.ui.screens.settings.fragments
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.BlurOn
-import androidx.compose.material.icons.rounded.Contrast
-import androidx.compose.material.icons.rounded.DarkMode
-import androidx.compose.material.icons.rounded.Palette
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -44,7 +38,7 @@ fun ColumnScope.ThemeAppFrag() {
 
     SwitchPreference(
         title = { Text(stringResource(R.string.enable_dynamic_theme)) },
-        icon = { Icon(Icons.Rounded.Palette, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Palette, contentDescription = null) },
         checked = dynamicTheme,
         onCheckedChange = onDynamicThemeChange
     )
@@ -52,14 +46,14 @@ fun ColumnScope.ThemeAppFrag() {
         SwitchPreference(
             title = { Text(stringResource(R.string.high_contrast)) },
             description = stringResource(R.string.high_contrast_description),
-            icon = { Icon(Icons.Rounded.Contrast, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Contrast, contentDescription = null) },
             checked = highContrastCompat,
             onCheckedChange = onHccChange
         )
     }
     EnumListPreference(
         title = { Text(stringResource(R.string.dark_theme)) },
-        icon = { Icon(Icons.Rounded.DarkMode, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.DarkMode, contentDescription = null) },
         selectedValue = darkMode,
         onValueSelected = onDarkModeChange,
         valueText = {
@@ -72,7 +66,7 @@ fun ColumnScope.ThemeAppFrag() {
     )
     SwitchPreference(
         title = { Text(stringResource(R.string.pure_black)) },
-        icon = { Icon(Icons.Rounded.Contrast, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Contrast, contentDescription = null) },
         checked = pureBlack,
         onCheckedChange = onPureBlackChange
     )
@@ -91,7 +85,7 @@ fun ColumnScope.ThemePlayerFrag() {
 
     EnumListPreference(
         title = { Text(stringResource(R.string.player_background_style)) },
-        icon = { Icon(Icons.Rounded.BlurOn, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.BlurOn, contentDescription = null) },
         selectedValue = playerBackground,
         onValueSelected = onPlayerBackgroundChange,
         valueText = {

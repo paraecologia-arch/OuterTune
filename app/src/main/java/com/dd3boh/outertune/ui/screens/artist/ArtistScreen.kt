@@ -23,20 +23,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material.icons.rounded.Language
-import androidx.compose.material.icons.rounded.LibraryMusic
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Radio
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -228,8 +217,8 @@ fun ArtistScreen(
                         contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                         modifier = Modifier.weight(1f)
                     ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Shuffle,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Shuffle,
                             contentDescription = null,
                             modifier = Modifier.size(ButtonDefaults.IconSize)
                         )
@@ -252,8 +241,8 @@ fun ArtistScreen(
                                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Radio,
+                                com.dd3boh.outertune.ui.icons.XenoIcon(
+                                    icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Radio,
                                     contentDescription = null,
                                     modifier = Modifier.size(ButtonDefaults.IconSize)
                                 )
@@ -420,8 +409,8 @@ fun ArtistScreen(
                                                 }
                                             }
                                         ) {
-                                            Icon(
-                                                imageVector = Icons.Rounded.MoreVert,
+                                            com.dd3boh.outertune.ui.icons.XenoIcon(
+                                                icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                                                 contentDescription = null
                                             )
                                         }
@@ -545,7 +534,7 @@ fun ArtistScreen(
         HideOnScrollFAB(
             visible = librarySongs.isNotEmpty() && libraryArtist?.artist?.isLocal != true,
             lazyListState = lazyListState,
-            icon = if (showLocal) Icons.Rounded.LibraryMusic else Icons.Rounded.Language,
+            icon = if (showLocal) com.dd3boh.outertune.ui.icons.XenoLibraryIcons.LibraryMusic else com.dd3boh.outertune.ui.icons.XenoSystemIcons.Language,
             onClick = {
                 showLocal = showLocal.not()
                 if (!showLocal && artistPage == null) viewModel.fetchArtistsFromYTM()
@@ -559,8 +548,8 @@ fun ArtistScreen(
                     onClick = navController::navigateUp,
                     onLongClick = navController::backToMain
                 ) {
-                    Icon(
-                        Icons.AutoMirrored.Rounded.ArrowBack,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -587,8 +576,8 @@ fun ArtistScreen(
                         }
                     }
                 ) {
-                    Icon(
-                        imageVector = if (libraryArtist?.artist?.bookmarkedAt != null) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = if (libraryArtist?.artist?.bookmarkedAt != null) com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Favorite else com.dd3boh.outertune.ui.icons.XenoPlayerIcons.FavoriteBorder,
                         tint = if (libraryArtist?.artist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                         contentDescription = null
                     )
@@ -606,8 +595,8 @@ fun ArtistScreen(
                         }
                     }
                 ) {
-                    Icon(
-                        Icons.Rounded.Share,
+                    com.dd3boh.outertune.ui.icons.XenoIcon(
+                        icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Share,
                         contentDescription = null
                     )
                 }

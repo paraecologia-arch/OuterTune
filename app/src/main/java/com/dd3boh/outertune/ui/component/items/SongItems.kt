@@ -16,12 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DragHandle
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -39,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -161,8 +155,8 @@ fun SongListItem(
                             haptic.performHapticFeedback(HapticFeedbackType.Companion.ContextClick)
                         }
                     ) {
-                        Icon(
-                            Icons.Rounded.MoreVert,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                             contentDescription = null
                         )
                     }
@@ -173,8 +167,8 @@ fun SongListItem(
                         onClick = { },
                         modifier = dragHandleModifier
                     ) {
-                        Icon(
-                            Icons.Rounded.DragHandle,
+                        com.dd3boh.outertune.ui.icons.XenoIcon(
+                            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.DragHandle,
                             contentDescription = null
                         )
                     }
@@ -224,8 +218,8 @@ fun SongFolderItem(
     modifier: Modifier = Modifier,
 ) = ListItem(
     title = folderTitle, thumbnailContent = {
-        Icon(
-            Icons.Rounded.Folder,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Folder,
             contentDescription = null,
             modifier = modifier.size(48.dp)
         )
@@ -242,8 +236,8 @@ fun SongFolderItem(
     title = folderTitle,
     subtitle = subtitle,
     thumbnailContent = {
-        Icon(
-            Icons.Rounded.Folder,
+        com.dd3boh.outertune.ui.icons.XenoIcon(
+            icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Folder,
             contentDescription = null,
             modifier = modifier.size(48.dp)
         )
@@ -278,8 +272,8 @@ fun SongFolderItem(
         title = folderTitle ?: folder.currentDir,
         subtitle = subtitle ?: pluralStringResource(R.plurals.n_song, subDirSongCount, subDirSongCount),
         thumbnailContent = {
-            Icon(
-                Icons.Rounded.Folder,
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Folder,
                 contentDescription = null,
                 modifier = modifier.size(48.dp)
             )
@@ -299,8 +293,8 @@ fun SongFolderItem(
                     haptic.performHapticFeedback(HapticFeedbackType.Companion.ContextClick)
                 }
             ) {
-                Icon(
-                    Icons.Rounded.MoreVert,
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
                     contentDescription = null
                 )
             }
@@ -318,8 +312,8 @@ fun SongGridItem(
     showDownloadIcon: Boolean = true,
     badges: @Composable RowScope.() -> Unit = {
         if (showLikedIcon && song.song.liked) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = (R.drawable.favorite),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier
@@ -328,8 +322,8 @@ fun SongGridItem(
             )
         }
         if (showInLibraryIcon && song.song.inLibrary != null) {
-            Icon(
-                painter = painterResource(R.drawable.library_add_check),
+            com.dd3boh.outertune.ui.icons.XenoIcon(
+                icon = (R.drawable.library_add_check),
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)

@@ -7,17 +7,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Album
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Radio
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -31,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.offline.Download.STATE_COMPLETED
 import androidx.media3.exoplayer.offline.DownloadService
@@ -132,8 +121,8 @@ fun YouTubeSongMenu(
                     }
                 }
             ) {
-                Icon(
-                    painter = painterResource(if (librarySong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border),
+                com.dd3boh.outertune.ui.icons.XenoIcon(
+                    icon = (if (librarySong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border),
                     tint = if (librarySong?.song?.liked == true) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null
                 )
@@ -152,14 +141,14 @@ fun YouTubeSongMenu(
         )
     ) {
         GridMenuItem(
-            icon = Icons.Rounded.Radio,
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Radio,
             title = R.string.start_radio
         ) {
             playerConnection.playQueue(YouTubeQueue.radio(song.toMediaMetadata()), isRadio = true)
             onDismiss()
         }
         GridMenuItem(
-            icon = Icons.Rounded.PlayArrow,
+            icon = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.PlayArrow,
             title = R.string.play
         ) {
             playerConnection.playQueue(
@@ -171,20 +160,20 @@ fun YouTubeSongMenu(
             onDismiss()
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistPlay,
             title = R.string.play_next
         ) {
             playerConnection.enqueueNext(song.toMediaItem())
             onDismiss()
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.QueueMusic,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
             title = R.string.add_to_queue
         ) {
             showChooseQueueDialog = true
         }
         GridMenuItem(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.PlaylistAdd,
             title = R.string.add_to_playlist
         ) {
             showChoosePlaylistDialog = true
@@ -208,7 +197,7 @@ fun YouTubeSongMenu(
         )
         if (artists.isNotEmpty()) {
             GridMenuItem(
-                icon = Icons.Rounded.Person,
+                icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Person,
                 title = R.string.view_artist
             ) {
                 if (artists.size == 1) {
@@ -221,7 +210,7 @@ fun YouTubeSongMenu(
         }
         song.album?.let { album ->
             GridMenuItem(
-                icon = Icons.Rounded.Album,
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Album,
                 title = R.string.view_album
             ) {
                 navController.navigate("album/${album.id}")
@@ -229,7 +218,7 @@ fun YouTubeSongMenu(
             }
         }
         GridMenuItem(
-            icon = Icons.Rounded.Share,
+            icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Share,
             title = R.string.share
         ) {
             val intent = Intent().apply {

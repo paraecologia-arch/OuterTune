@@ -10,11 +10,7 @@ package com.dd3boh.outertune.ui.screens.settings.fragments
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Logout
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -76,13 +72,13 @@ fun ColumnScope.AccountFrag(navController: NavController) {
             accountEmail.takeIf { it.isNotEmpty() }
                 ?: accountChannelHandle.takeIf { it.isNotEmpty() }
         } else null,
-        icon = { Icon(Icons.Rounded.Person, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Person, contentDescription = null) },
         onClick = { navController.navigate("login") }
     )
     if (isLoggedIn) {
         PreferenceEntry(
             title = { Text(stringResource(R.string.action_logout)) },
-            icon = { Icon(Icons.AutoMirrored.Rounded.Logout, null) },
+            icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.Logout, contentDescription = null) },
             onClick = {
                 forgetAccount(context)
             }
@@ -173,7 +169,7 @@ fun ColumnScope.AccountExtrasFrag() {
     SwitchPreference(
         title = { Text(stringResource(R.string.use_login_for_browse)) },
         description = stringResource(R.string.use_login_for_browse_desc),
-        icon = { Icon(Icons.Rounded.Person, null) },
+        icon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Person, contentDescription = null) },
         checked = useLoginForBrowse,
         onCheckedChange = {
             YouTube.useLoginForBrowse = it

@@ -23,15 +23,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Input
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.CloudDownload
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -219,7 +211,7 @@ fun LibraryPlaylistsScreen(
                     actions = listOf(
                         DropdownItem(
                             title = stringResource(R.string.library_filter),
-                            leadingIcon = { Icon(Icons.Rounded.FilterAlt, null) },
+                            leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.FilterAlt, contentDescription = null) },
                             action = {},
                             secondaryDropdown =
                                 listOf(
@@ -237,12 +229,12 @@ fun LibraryPlaylistsScreen(
                         ),
                         DropdownItem(
                             title = stringResource(R.string.create_playlist),
-                            leadingIcon = { Icon(Icons.Rounded.Add, null) },
+                            leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Add, contentDescription = null) },
                             action = { showCreatePlaylistDialog = true }
                         ),
                         DropdownItem(
                             title = stringResource(R.string.import_playlist),
-                            leadingIcon = { Icon(Icons.AutoMirrored.Rounded.Input, null) },
+                            leadingIcon = { com.dd3boh.outertune.ui.icons.XenoIcon(icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.Input, contentDescription = null) },
                             action = { showImportM3uDialog = true }
                         ),
                     ),
@@ -290,7 +282,7 @@ fun LibraryPlaylistsScreen(
                         ) {
                             AutoPlaylistListItem(
                                 playlist = likedPlaylist,
-                                thumbnail = Icons.Rounded.Favorite,
+                                thumbnail = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Favorite,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
@@ -306,7 +298,7 @@ fun LibraryPlaylistsScreen(
                         ) {
                             AutoPlaylistListItem(
                                 playlist = downloadedPlaylist,
-                                thumbnail = Icons.Rounded.CloudDownload,
+                                thumbnail = com.dd3boh.outertune.ui.icons.XenoSystemIcons.CloudDownload,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
@@ -321,7 +313,7 @@ fun LibraryPlaylistsScreen(
                         if (playlists.isEmpty() && !showLikedAndDownloadedPlaylist) {
                             item {
                                 EmptyPlaceholder(
-                                    icon = Icons.AutoMirrored.Rounded.QueueMusic,
+                                    icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
                                     text = stringResource(R.string.library_playlist_empty),
                                     modifier = Modifier.animateItem()
                                 )
@@ -376,7 +368,7 @@ fun LibraryPlaylistsScreen(
                         ) {
                             AutoPlaylistGridItem(
                                 playlist = likedPlaylist,
-                                thumbnail = Icons.Rounded.Favorite,
+                                thumbnail = com.dd3boh.outertune.ui.icons.XenoPlayerIcons.Favorite,
                                 fillMaxWidth = true,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -393,7 +385,7 @@ fun LibraryPlaylistsScreen(
                         ) {
                             AutoPlaylistGridItem(
                                 playlist = downloadedPlaylist,
-                                thumbnail = Icons.Rounded.CloudDownload,
+                                thumbnail = com.dd3boh.outertune.ui.icons.XenoSystemIcons.CloudDownload,
                                 fillMaxWidth = true,
                                 modifier = Modifier
                                     .fillMaxWidth()

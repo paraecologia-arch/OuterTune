@@ -11,8 +11,6 @@ package com.dd3boh.outertune.ui.component
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
@@ -25,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.dd3boh.outertune.constants.MAX_COIL_JOBS
@@ -45,7 +42,7 @@ val imageSession = newFixedThreadPoolContext(MAX_COIL_JOBS, "ImageExtractor")
 fun AsyncImageLocal(
     image: () -> Bitmap?,
     modifier: Modifier = Modifier,
-    placeholderIcon: ImageVector? = Icons.Rounded.MusicNote,
+    placeholderIcon: Int? = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
     contentScale: ContentScale = ContentScale.Fit,
     contentDescription: String? = null,
 ) {
