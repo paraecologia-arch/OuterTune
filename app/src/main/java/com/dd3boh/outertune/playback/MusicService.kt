@@ -756,19 +756,28 @@ class MusicService : MediaLibraryService(),
             }
             val format = resolvedStream.format
 
-            database.query {
-                upsert(
-                    FormatEntity(
-                        id = mediaId,
-                        itag = format.itag,
-                        mimeType = format.mimeType,
-                        codecs = format.codecs,
-                        bitrate = format.bitrate,
-                        sampleRate = format.sampleRate,
-                        contentLength = format.contentLength!!,
-                        loudnessDb = format.loudnessDb,
-                        playbackTrackingUrl = resolvedStream.playbackTrackingUrl
+            val contentLength = format.contentLength
+            if (contentLength != null) {
+                database.query {
+                    upsert(
+                        FormatEntity(
+                            id = mediaId,
+                            itag = format.itag,
+                            mimeType = format.mimeType,
+                            codecs = format.codecs,
+                            bitrate = format.bitrate,
+                            sampleRate = format.sampleRate,
+                            contentLength = contentLength,
+                            loudnessDb = format.loudnessDb,
+                            playbackTrackingUrl = resolvedStream.playbackTrackingUrl
+                        )
                     )
+                }
+            } else {
+                Log.w(
+                    TAG,
+                    "Skipping format persistence because stream content length is unavailable " +
+                        "for mediaId=$mediaId client=${resolvedStream.clientName}",
                 )
             }
             offloadScope.launch { recoverSong(mediaId, resolvedStream.videoLengthSeconds) }

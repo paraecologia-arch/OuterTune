@@ -92,6 +92,29 @@ class InnerTubeXResolverTest {
     }
 
     @Test
+    fun extractedStreamPreservesUnknownContentLength() {
+        val resolved = mapExtractedStream(
+            url = "https://example.invalid/audio",
+            headers = emptyMap(),
+            clientName = "WEB_REMIX",
+            expiresAtEpochMs = 123456789L,
+            itag = 140,
+            mimeType = "audio/mp4",
+            codecs = "mp4a.40.2",
+            bitrate = 130000,
+            sampleRate = 44100,
+            contentLengthBytes = null,
+            loudnessDb = null,
+            perceptualLoudnessDb = null,
+            rangePolicy = RangePolicy.None,
+            playbackTrackingUrl = null,
+            videoLengthSeconds = null,
+        )
+
+        assertEquals(null, resolved.format.contentLength)
+    }
+
+    @Test
     fun nullExpirationUsesFallback() {
         assertEquals(
             1000L + FALLBACK_EXPIRY_MS,
