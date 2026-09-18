@@ -541,7 +541,8 @@ fun AutoPlaylistScreen(
                 item {
                     EmptyPlaceholder(
                         icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
-                        text = stringResource(R.string.playlist_is_empty)
+                        text = stringResource(R.string.playlist_is_empty),
+                        showBrandMark = true,
                     )
                 }
             }

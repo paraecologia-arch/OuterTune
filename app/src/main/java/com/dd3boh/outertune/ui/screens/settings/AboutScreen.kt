@@ -12,6 +12,7 @@ package com.dd3boh.outertune.ui.screens.settings
 import android.content.ClipData
 import android.os.Build
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,9 +32,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -59,12 +66,14 @@ import com.dd3boh.outertune.ui.component.ContributorInfo
 import com.dd3boh.outertune.ui.component.ContributorType.CUSTOM
 import com.dd3boh.outertune.ui.component.PreferenceEntry
 import com.dd3boh.outertune.ui.component.SettingsClickToReveal
+import com.dd3boh.outertune.ui.component.XenoBrandMark
 import com.dd3boh.outertune.ui.component.button.IconButton
 import com.dd3boh.outertune.ui.component.button.IconLabelButton
 import com.dd3boh.outertune.ui.utils.backToMain
 import com.dd3boh.outertune.utils.rememberPreference
 import com.dd3boh.outertune.utils.scanners.FFmpegScanner
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.FfmpegLibrary
+import kotlinx.coroutines.delay
 import java.text.DateFormat.getDateTimeInstance
 import java.util.Date
 
@@ -79,6 +88,16 @@ fun AboutScreen(
     val uriHandler = LocalUriHandler.current
 
     val showDebugInfo = BuildConfig.DEBUG || BuildConfig.BUILD_TYPE == "userdebug"
+    var signalTapCount by remember { mutableIntStateOf(0) }
+    var signalActive by remember { mutableStateOf(false) }
+
+    LaunchedEffect(signalActive) {
+        if (signalActive) {
+            delay(2_400)
+            signalActive = false
+            signalTapCount = 0
+        }
+    }
 
     ColumnWithContentPadding(
         modifier = Modifier.fillMaxHeight(),
@@ -88,6 +107,22 @@ fun AboutScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(24.dp))
+
+        XenoBrandMark(
+            size = 168.dp,
+            contentDescription = stringResource(R.string.app_name),
+            activated = signalActive,
+            modifier = Modifier.pointerInput(Unit) {
+                detectTapGestures {
+                    if (!signalActive) {
+                        signalTapCount += 1
+                        if (signalTapCount >= 7) {
+                            signalActive = true
+                        }
+                    }
+                }
+            },
+        )
 
         Row(
             verticalAlignment = Alignment.Top,

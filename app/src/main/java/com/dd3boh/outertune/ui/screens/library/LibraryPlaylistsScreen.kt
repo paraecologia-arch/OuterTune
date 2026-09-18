@@ -315,7 +315,8 @@ fun LibraryPlaylistsScreen(
                                 EmptyPlaceholder(
                                     icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.QueueMusic,
                                     text = stringResource(R.string.library_playlist_empty),
-                                    modifier = Modifier.animateItem()
+                                    modifier = Modifier.animateItem(),
+                                    showBrandMark = true,
                                 )
                             }
                         }
@@ -403,7 +404,8 @@ fun LibraryPlaylistsScreen(
                                 EmptyPlaceholder(
                                     icon = R.drawable.queue_music,
                                     text = stringResource(R.string.library_playlist_empty),
-                                    modifier = Modifier.animateItem()
+                                    modifier = Modifier.animateItem(),
+                                    showBrandMark = true,
                                 )
                             }
                         }

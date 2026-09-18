@@ -236,7 +236,8 @@ fun LocalSearchScreen(
                     EmptyPlaceholder(
                         icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
                         text = stringResource(R.string.no_results_found),
-                        modifier = Modifier.animateItem()
+                        modifier = Modifier.animateItem(),
+                        showBrandMark = true,
                     )
                 }
             }

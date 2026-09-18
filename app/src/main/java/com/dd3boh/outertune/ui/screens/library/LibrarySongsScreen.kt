@@ -323,7 +323,8 @@ fun LibrarySongsScreen(
                         EmptyPlaceholder(
                             icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
                             text = stringResource(R.string.library_song_empty),
-                            modifier = Modifier.animateItem()
+                            modifier = Modifier.animateItem(),
+                            showBrandMark = true,
                         )
                     }
                 }

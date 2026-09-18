@@ -384,7 +384,8 @@ fun LibraryScreen(
                                         EmptyPlaceholder(
                                             icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.List,
                                             text = stringResource(R.string.library_empty),
-                                            modifier = Modifier.animateItem()
+                                            modifier = Modifier.animateItem(),
+                                            showBrandMark = true,
                                         )
                                     }
                                 }
@@ -500,7 +501,8 @@ fun LibraryScreen(
                                         EmptyPlaceholder(
                                             icon = com.dd3boh.outertune.ui.icons.XenoIcons.AutoMirrored.List,
                                             text = stringResource(R.string.library_empty),
-                                            modifier = Modifier.animateItem()
+                                            modifier = Modifier.animateItem(),
+                                            showBrandMark = true,
                                         )
                                     }
                                 }

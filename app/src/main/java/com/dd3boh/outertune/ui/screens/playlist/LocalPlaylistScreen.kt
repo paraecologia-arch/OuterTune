@@ -433,7 +433,8 @@ fun LocalPlaylistScreen(
                         EmptyPlaceholder(
                             icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.MusicNote,
                             text = stringResource(R.string.playlist_is_empty),
-                            modifier = Modifier.animateItem()
+                            modifier = Modifier.animateItem(),
+                            showBrandMark = true,
                         )
                     }
                 } else {

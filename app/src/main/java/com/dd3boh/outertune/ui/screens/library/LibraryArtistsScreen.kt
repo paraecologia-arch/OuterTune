@@ -267,7 +267,8 @@ fun LibraryArtistsScreen(
                                 EmptyPlaceholder(
                                     icon = R.drawable.artist,
                                     text = stringResource(R.string.library_artist_empty),
-                                    modifier = Modifier.animateItem()
+                                    modifier = Modifier.animateItem(),
+                                    showBrandMark = true,
                                 )
                             }
                         }
@@ -320,7 +321,8 @@ fun LibraryArtistsScreen(
                                 EmptyPlaceholder(
                                     icon = R.drawable.artist,
                                     text = stringResource(R.string.library_artist_empty),
-                                    modifier = Modifier.animateItem()
+                                    modifier = Modifier.animateItem(),
+                                    showBrandMark = true,
                                 )
                             }
                         }
