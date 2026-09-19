@@ -190,7 +190,7 @@ class HomeViewModel @Inject constructor(
         chipRequestJob?.cancel()
         val requestId = chipRequestGuard.next()
         chipRequestJob = viewModelScope.launch(Dispatchers.IO) {
-            YouTube.home(params = chip.endpoint.params)
+            YouTube.home(params = chip.endpoint?.params)
                 .onSuccess { nextSections ->
                     if (!chipRequestGuard.isLatest(requestId)) return@onSuccess
                     homePage.value = nextSections.copy(
