@@ -45,6 +45,9 @@
     <string name="downloaded_songs">Músicas baixadas</string>
     <string name="playlist_is_empty">Esta lista está vazia</string>
     <string name="retry">Tentar novamente</string>
+    <string name="discovery_load_error">Não foi possível carregar esta categoria.</string>
+    <string name="discovery_empty">Nenhum conteúdo foi encontrado nesta categoria.</string>
+    <string name="playback_error_user">Não foi possível reproduzir esta faixa.</string>
     <string name="radio">Rádio</string>
     <string name="shuffle">Aleatório</string>
     <string name="reset">Redefinir</string>

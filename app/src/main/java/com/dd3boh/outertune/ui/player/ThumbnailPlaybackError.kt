@@ -100,16 +100,18 @@ fun ThumbnailPlaybackError(
                 tint = MaterialTheme.colorScheme.error
             )
             Text(
-                text = "${error.message} (${error.errorCode}): ${
-                    error.cause?.message ?: error.cause?.cause?.message ?: stringResource(
-                        R.string.error_unknown
-                    )
-                }",
+                text = stringResource(R.string.playback_error_user),
                 color = textColor,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
-        AnimatedVisibility(!showStackTrace) {
+        TextButton(onClick = retry) {
+            Text(
+                text = stringResource(R.string.retry),
+                color = textColor,
+            )
+        }
+        AnimatedVisibility(BuildConfig.DEBUG && !showStackTrace) {
             TextButton(
                 onClick = { showStackTrace = true }
             ) {
@@ -120,7 +122,7 @@ fun ThumbnailPlaybackError(
                 )
             }
         }
-        AnimatedVisibility(showStackTrace) {
+        AnimatedVisibility(BuildConfig.DEBUG && showStackTrace) {
             Text(
                 text = error.stackTraceToString(),
                 color = textColor,

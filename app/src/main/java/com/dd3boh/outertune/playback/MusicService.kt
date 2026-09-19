@@ -62,6 +62,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
+import com.dd3boh.outertune.BuildConfig
 import com.dd3boh.outertune.MainActivity
 import com.dd3boh.outertune.R
 import com.dd3boh.outertune.constants.AudioDecoderKey
@@ -514,9 +515,18 @@ class MusicService : MediaLibraryService(),
                 player.prepare()
                 player.playWhenReady = playWhenReady
             } catch (e: Exception) {
-                reportException(e)
-                Toast.makeText(this@MusicService, "plr: ${e.message}", Toast.LENGTH_LONG)
-                    .show()
+                if (BuildConfig.DEBUG) {
+                    Log.e(
+                        TAG,
+                        "Playback queue setup failed: exception=${e::class.java.simpleName} " +
+                            "provider=queue stage=prepare mediaId=${player.currentMediaItem?.mediaId}",
+                    )
+                }
+                Toast.makeText(
+                    this@MusicService,
+                    getString(R.string.playback_error_user),
+                    Toast.LENGTH_LONG,
+                ).show()
             }
 
             Log.d(TAG, "playQueue: Queue additional data resolution complete")
@@ -676,11 +686,7 @@ class MusicService : MediaLibraryService(),
                     Log.d(TAG, "PLAYING: local song")
                     val file = File(song.localPath)
                     if (!file.exists()) {
-                        throw PlaybackException(
-                            "File not found",
-                            Throwable(),
-                            PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND
-                        )
+                        throw java.io.FileNotFoundException("Local media file is unavailable")
                     }
 
                     return@Factory dataSpec.withUri(file.toUri())
@@ -729,28 +735,32 @@ class MusicService : MediaLibraryService(),
                 )
             }.getOrElse { throwable ->
                 when (throwable) {
-                    is PlaybackException -> throw throwable
+                    is PlaybackException -> throw StreamResolutionException(
+                        message = "Media stream resolution failed",
+                        cause = throwable,
+                        resolutionErrorCode = throwable.errorCode,
+                    )
 
                     is ConnectException, is UnknownHostException -> {
-                        throw PlaybackException(
-                            getString(R.string.error_no_internet),
-                            throwable,
-                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+                        throw StreamResolutionException(
+                            message = getString(R.string.error_no_internet),
+                            cause = throwable,
+                            resolutionErrorCode = PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
                         )
                     }
 
                     is SocketTimeoutException -> {
-                        throw PlaybackException(
-                            getString(R.string.error_timeout),
-                            throwable,
-                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT
+                        throw StreamResolutionException(
+                            message = getString(R.string.error_timeout),
+                            cause = throwable,
+                            resolutionErrorCode = PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
                         )
                     }
 
-                    else -> throw PlaybackException(
-                        getString(R.string.error_unknown),
-                        throwable,
-                        PlaybackException.ERROR_CODE_REMOTE_ERROR
+                    else -> throw StreamResolutionException(
+                        message = getString(R.string.error_unknown),
+                        cause = throwable,
+                        resolutionErrorCode = PlaybackException.ERROR_CODE_REMOTE_ERROR,
                     )
                 }
             }
@@ -926,8 +936,11 @@ class MusicService : MediaLibraryService(),
         super.onPlayerError(error)
 
         // wait for reconnection
-        val isConnectionError = (error.cause?.cause is PlaybackException)
-                && (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+        val isConnectionError = error.hasErrorCodeInCauseChain(
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+        ) || generateSequence(error as Throwable?) { it.cause }
+            .filterIsInstance<StreamResolutionException>()
+            .any { it.resolutionErrorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED }
         if (!isNetworkConnected.value || isConnectionError) {
             waitOnNetworkError()
             return
@@ -939,11 +952,17 @@ class MusicService : MediaLibraryService(),
             stopOnError()
         }
 
-        Toast.makeText(
-            this@MusicService,
-            "plr: ${error.message} (${error.errorCode}): ${error.cause?.message ?: ""} ",
-            Toast.LENGTH_LONG
-        ).show()
+        if (BuildConfig.DEBUG) {
+            val info = error.toPlaybackErrorInfo()
+            Log.e(
+                TAG,
+                "Playback failed: errorCode=${info.errorCode} " +
+                    "errorCodeName=${info.errorCodeName} exception=${info.rootExceptionType} " +
+                    "provider=InnerTubeX stage=playback mediaId=${player.currentMediaItem?.mediaId} " +
+                    "resolutionErrorCode=${info.resolutionErrorCode}",
+                error,
+            )
+        }
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {

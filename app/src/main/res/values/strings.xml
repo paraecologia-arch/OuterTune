@@ -79,6 +79,9 @@ We recycle translations from upstream, they are pulled periodically. -->
 
     <!-- Button -->
     <string name="retry">Retry</string>
+    <string name="discovery_load_error">Could not load this discovery category.</string>
+    <string name="discovery_empty">No content was found in this category.</string>
+    <string name="playback_error_user">Could not play this track.</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Shuffle</string>
     <string name="reset">Reset</string>

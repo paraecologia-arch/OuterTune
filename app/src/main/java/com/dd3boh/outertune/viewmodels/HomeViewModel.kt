@@ -23,6 +23,7 @@ import com.zionhuang.innertube.utils.completed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
@@ -46,7 +47,10 @@ class HomeViewModel @Inject constructor(
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
     val homePage = MutableStateFlow<HomePage?>(null)
     val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
+    val chipUiState = MutableStateFlow(HomeChipUiState())
     private val previousHomePage = MutableStateFlow<HomePage?>(null)
+    private var chipRequestJob: Job? = null
+    private val chipRequestGuard = LatestRequestGuard()
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val playlists = database.playlists(PlaylistFilter.LIBRARY, PlaylistSortType.NAME, true)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
@@ -167,9 +171,12 @@ class HomeViewModel @Inject constructor(
 
     fun toggleChip(chip: HomePage.Chip?) {
         if (chip == null || chip == selectedChip.value && previousHomePage.value != null) {
+            chipRequestJob?.cancel()
+            chipRequestGuard.invalidate()
             homePage.value = previousHomePage.value
             previousHomePage.value = null
             selectedChip.value = null
+            chipUiState.value = HomeChipUiState()
             return
         }
 
@@ -177,14 +184,33 @@ class HomeViewModel @Inject constructor(
             // store the actual homepage for deselecting chips
             previousHomePage.value = homePage.value
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            val nextSections = YouTube.home(params = chip?.endpoint?.params).getOrNull() ?: return@launch
-            homePage.value = nextSections.copy(
-                chips = homePage.value?.chips,
-                sections = nextSections.sections,
-                continuation = nextSections.continuation
-            )
-            selectedChip.value = chip
+        selectedChip.value = chip
+        chipUiState.value = HomeChipUiState(selectedChip = chip, isLoading = true)
+        homePage.value = homePage.value?.copy(sections = emptyList(), continuation = null)
+        chipRequestJob?.cancel()
+        val requestId = chipRequestGuard.next()
+        chipRequestJob = viewModelScope.launch(Dispatchers.IO) {
+            YouTube.home(params = chip.endpoint.params)
+                .onSuccess { nextSections ->
+                    if (!chipRequestGuard.isLatest(requestId)) return@onSuccess
+                    homePage.value = nextSections.copy(
+                        chips = homePage.value?.chips ?: previousHomePage.value?.chips,
+                        sections = nextSections.sections,
+                        continuation = nextSections.continuation
+                    )
+                    chipUiState.value = HomeChipUiState(
+                        selectedChip = chip,
+                        isEmpty = nextSections.sections.isEmpty(),
+                    )
+                }
+                .onFailure { throwable ->
+                    if (!chipRequestGuard.isLatest(requestId)) return@onFailure
+                    reportException(throwable)
+                    chipUiState.value = HomeChipUiState(
+                        selectedChip = chip,
+                        hasError = true,
+                    )
+                }
         }
     }
 
@@ -203,4 +229,27 @@ class HomeViewModel @Inject constructor(
             syncUtils.tryAutoSync()
         }
     }
+}
+
+data class HomeChipUiState(
+    val selectedChip: HomePage.Chip? = null,
+    val isLoading: Boolean = false,
+    val hasError: Boolean = false,
+    val isEmpty: Boolean = false,
+)
+
+/** Small generation guard that prevents an older response from replacing a newer selection. */
+internal class LatestRequestGuard {
+    private var generation = 0L
+
+    @Synchronized
+    fun next(): Long = ++generation
+
+    @Synchronized
+    fun invalidate() {
+        generation++
+    }
+
+    @Synchronized
+    fun isLatest(candidate: Long): Boolean = candidate == generation
 }

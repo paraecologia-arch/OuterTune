@@ -134,6 +134,8 @@ import com.dd3boh.outertune.playback.MediaControllerViewModel
 import com.dd3boh.outertune.playback.MusicService
 import com.dd3boh.outertune.playback.PlayerConnection
 import com.dd3boh.outertune.ui.component.rememberBottomSheetState
+import com.dd3boh.outertune.ui.component.XenoWaveStartupGate
+import com.dd3boh.outertune.ui.component.XenoWaveStartupSplash
 import com.dd3boh.outertune.ui.component.shimmer.ShimmerTheme
 import com.dd3boh.outertune.ui.menu.BottomSheetMenu
 import com.dd3boh.outertune.ui.menu.MenuState
@@ -259,6 +261,14 @@ class MainActivity : ComponentActivity() {
         activityLauncher = ActivityLauncherHelper(this)
 
         setContent {
+            var showStartupSplash by remember {
+                mutableStateOf(savedInstanceState == null && XenoWaveStartupGate.acquire())
+            }
+            if (showStartupSplash) {
+                XenoWaveStartupSplash(onFinished = { showStartupSplash = false })
+                return@setContent
+            }
+
             Log.v(MAIN_TAG, "RC-1")
             val coroutineScope = rememberCoroutineScope()
             val haptic = LocalHapticFeedback.current

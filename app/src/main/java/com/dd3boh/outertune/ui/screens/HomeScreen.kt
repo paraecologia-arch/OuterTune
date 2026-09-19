@@ -75,6 +75,7 @@ import com.dd3boh.outertune.playback.queues.ListQueue
 import com.dd3boh.outertune.playback.queues.YouTubeAlbumRadio
 import com.dd3boh.outertune.playback.queues.YouTubeQueue
 import com.dd3boh.outertune.ui.component.ChipsRow
+import com.dd3boh.outertune.ui.component.EmptyPlaceholder
 import com.dd3boh.outertune.ui.component.HideOnScrollFAB
 import com.dd3boh.outertune.ui.component.LazyColumnScrollbar
 import com.dd3boh.outertune.ui.component.NavigationTile
@@ -136,6 +137,7 @@ fun HomeScreen(
     val explorePage by viewModel.explorePage.collectAsState()
 
     val selectedChip by viewModel.selectedChip.collectAsState()
+    val chipUiState by viewModel.chipUiState.collectAsState()
 
     val allLocalItems by viewModel.allLocalItems.collectAsState()
     val allYtItems by viewModel.allYtItems.collectAsState()
@@ -415,8 +417,27 @@ fun HomeScreen(
                     currentValue = selectedChip,
                     onValueUpdate = {
                         viewModel.toggleChip(it)
-                    }
+                    },
+                    isLoading = { chipUiState.isLoading && chipUiState.selectedChip == it },
                 )
+            }
+
+            if (chipUiState.hasError) {
+                item {
+                    EmptyPlaceholder(
+                        icon = com.dd3boh.outertune.ui.icons.XenoSystemIcons.Error,
+                        text = stringResource(R.string.discovery_load_error),
+                        modifier = Modifier.fillMaxWidth().height(180.dp),
+                    )
+                }
+            } else if (chipUiState.isEmpty) {
+                item {
+                    EmptyPlaceholder(
+                        icon = com.dd3boh.outertune.ui.icons.XenoNavigationIcons.Search,
+                        text = stringResource(R.string.discovery_empty),
+                        modifier = Modifier.fillMaxWidth().height(180.dp),
+                    )
+                }
             }
 
 
