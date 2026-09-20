@@ -57,11 +57,12 @@ data class HomePage(
                 )
             }
 
-            private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
+            internal fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
                 return when {
                     renderer.isSong -> {
+                        val endpoint = renderer.navigationEndpoint.anyWatchEndpoint ?: return null
                         SongItem(
-                            id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
+                            id = endpoint.videoId ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
                             artists = listOfNotNull(renderer.subtitle?.runs?.firstOrNull()?.let {
                                 Artist(
@@ -74,7 +75,8 @@ data class HomePage(
                             thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                             explicit = renderer.subtitleBadges?.find {
                                 it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
-                            } != null
+                            } != null,
+                            endpoint = endpoint,
                         )
                     }
 
