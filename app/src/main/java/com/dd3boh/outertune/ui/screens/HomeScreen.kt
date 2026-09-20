@@ -442,7 +442,7 @@ fun HomeScreen(
 
 
 
-            quickPicks?.takeIf { it.isNotEmpty() }?.let { quickPicks ->
+            quickPicks?.takeIf { selectedChip == null && it.isNotEmpty() }?.let { quickPicks ->
                 item {
                     NavigationTitle(
                         title = stringResource(R.string.quick_picks),
@@ -492,7 +492,7 @@ fun HomeScreen(
                 }
             }
 
-            forgottenFavorites?.takeIf { it.isNotEmpty() }?.let { forgottenFavorites ->
+            forgottenFavorites?.takeIf { selectedChip == null && it.isNotEmpty() }?.let { forgottenFavorites ->
                 item {
                     NavigationTitle(
                         title = stringResource(R.string.forgotten_favorites),
@@ -548,7 +548,7 @@ fun HomeScreen(
                 }
             }
 
-            keepListening?.takeIf { it.isNotEmpty() }?.let { keepListening ->
+            keepListening?.takeIf { selectedChip == null && it.isNotEmpty() }?.let { keepListening ->
                 item {
                     NavigationTitle(
                         title = stringResource(R.string.keep_listening),
@@ -576,7 +576,7 @@ fun HomeScreen(
                 }
             }
 
-            accountPlaylists?.takeIf { it.isNotEmpty() }?.let { accountPlaylists ->
+            accountPlaylists?.takeIf { selectedChip == null && it.isNotEmpty() }?.let { accountPlaylists ->
                 item {
                     NavigationTitle(
                         title = stringResource(R.string.your_youtube_playlists),
@@ -604,7 +604,7 @@ fun HomeScreen(
                 }
             }
 
-            similarRecommendations?.forEach {
+            similarRecommendations?.takeIf { selectedChip == null }?.forEach {
                 item {
                     NavigationTitle(
                         label = stringResource(R.string.similar_to),
@@ -716,7 +716,7 @@ fun HomeScreen(
                 }
             }
 
-            explorePage?.moodAndGenres?.let { moodAndGenres ->
+            explorePage?.moodAndGenres?.takeIf { selectedChip == null }?.let { moodAndGenres ->
                 item {
                     NavigationTitle(
                         title = stringResource(R.string.mood_and_genres),

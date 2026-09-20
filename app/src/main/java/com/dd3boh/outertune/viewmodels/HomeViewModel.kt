@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
     val chipUiState = MutableStateFlow(HomeChipUiState())
     private val previousHomePage = MutableStateFlow<HomePage?>(null)
     private var chipRequestJob: Job? = null
-    private val chipRequestGuard = LatestRequestGuard()
+    private val chipRequestTracker = ChipRequestTracker<HomePage.Chip>()
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val playlists = database.playlists(PlaylistFilter.LIBRARY, PlaylistSortType.NAME, true)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
@@ -172,7 +172,7 @@ class HomeViewModel @Inject constructor(
     fun toggleChip(chip: HomePage.Chip?) {
         if (chip == null || chip == selectedChip.value && previousHomePage.value != null) {
             chipRequestJob?.cancel()
-            chipRequestGuard.invalidate()
+            chipRequestTracker.deselect()
             homePage.value = previousHomePage.value
             previousHomePage.value = null
             selectedChip.value = null
@@ -185,31 +185,31 @@ class HomeViewModel @Inject constructor(
             previousHomePage.value = homePage.value
         }
         selectedChip.value = chip
-        chipUiState.value = HomeChipUiState(selectedChip = chip, isLoading = true)
+        val requestId = chipRequestTracker.select(chip)
+        chipUiState.value = chipRequestTracker.state.toUiState()
         homePage.value = homePage.value?.copy(sections = emptyList(), continuation = null)
         chipRequestJob?.cancel()
-        val requestId = chipRequestGuard.next()
+        val params = chip.endpoint?.params
+        if (params == null) {
+            chipRequestTracker.failed(requestId)
+            chipUiState.value = chipRequestTracker.state.toUiState()
+            return
+        }
         chipRequestJob = viewModelScope.launch(Dispatchers.IO) {
-            YouTube.home(params = chip.endpoint?.params)
+            YouTube.home(params = params)
                 .onSuccess { nextSections ->
-                    if (!chipRequestGuard.isLatest(requestId)) return@onSuccess
-                    homePage.value = nextSections.copy(
-                        chips = homePage.value?.chips ?: previousHomePage.value?.chips,
-                        sections = nextSections.sections,
-                        continuation = nextSections.continuation
+                    if (!chipRequestTracker.succeeded(requestId, nextSections.sections.isEmpty())) return@onSuccess
+                    homePage.value = filteredHomePage(
+                        currentPage = homePage.value,
+                        basePage = previousHomePage.value,
+                        response = nextSections,
                     )
-                    chipUiState.value = HomeChipUiState(
-                        selectedChip = chip,
-                        isEmpty = nextSections.sections.isEmpty(),
-                    )
+                    chipUiState.value = chipRequestTracker.state.toUiState()
                 }
                 .onFailure { throwable ->
-                    if (!chipRequestGuard.isLatest(requestId)) return@onFailure
+                    if (!chipRequestTracker.failed(requestId)) return@onFailure
                     reportException(throwable)
-                    chipUiState.value = HomeChipUiState(
-                        selectedChip = chip,
-                        hasError = true,
-                    )
+                    chipUiState.value = chipRequestTracker.state.toUiState()
                 }
         }
     }
@@ -238,18 +238,60 @@ data class HomeChipUiState(
     val isEmpty: Boolean = false,
 )
 
-/** Small generation guard that prevents an older response from replacing a newer selection. */
-internal class LatestRequestGuard {
+private fun ChipRequestState<HomePage.Chip>.toUiState() = HomeChipUiState(
+    selectedChip = selected,
+    isLoading = isLoading,
+    hasError = hasError,
+    isEmpty = isEmpty,
+)
+
+internal data class ChipRequestState<T>(
+    val selected: T? = null,
+    val isLoading: Boolean = false,
+    val hasError: Boolean = false,
+    val isEmpty: Boolean = false,
+)
+
+internal fun filteredHomePage(
+    currentPage: HomePage?,
+    basePage: HomePage?,
+    response: HomePage,
+): HomePage = response.copy(
+    chips = currentPage?.chips ?: basePage?.chips,
+    sections = response.sections,
+    continuation = response.continuation,
+)
+
+/** Owns the chip request generation and its valid UI-state transitions. */
+internal class ChipRequestTracker<T> {
     private var generation = 0L
+    @Volatile
+    var state = ChipRequestState<T>()
+        private set
 
     @Synchronized
-    fun next(): Long = ++generation
-
-    @Synchronized
-    fun invalidate() {
-        generation++
+    fun select(chip: T): Long {
+        state = ChipRequestState(selected = chip, isLoading = true)
+        return ++generation
     }
 
     @Synchronized
-    fun isLatest(candidate: Long): Boolean = candidate == generation
+    fun deselect() {
+        generation++
+        state = ChipRequestState()
+    }
+
+    @Synchronized
+    fun succeeded(candidate: Long, isEmpty: Boolean): Boolean {
+        if (candidate != generation) return false
+        state = state.copy(isLoading = false, isEmpty = isEmpty)
+        return true
+    }
+
+    @Synchronized
+    fun failed(candidate: Long): Boolean {
+        if (candidate != generation) return false
+        state = state.copy(isLoading = false, hasError = true)
+        return true
+    }
 }
