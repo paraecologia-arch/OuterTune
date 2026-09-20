@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,6 +51,8 @@ class HomeViewModel @Inject constructor(
     val chipUiState = MutableStateFlow(HomeChipUiState())
     private val previousHomePage = MutableStateFlow<HomePage?>(null)
     private var chipRequestJob: Job? = null
+    private var homeContinuationJob: Job? = null
+    private val homeContinuationGeneration = AtomicLong()
     private val chipRequestTracker = ChipRequestTracker<HomePage.Chip>()
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val playlists = database.playlists(PlaylistFilter.LIBRARY, PlaylistSortType.NAME, true)
@@ -155,21 +158,31 @@ class HomeViewModel @Inject constructor(
     fun loadMoreYouTubeItems(continuation: String?) {
         if (continuation == null || _isLoadingMore.value) return
 
-        viewModelScope.launch(Dispatchers.IO) {
-            _isLoadingMore.value = true
-            val nextSections = YouTube.home(continuation).getOrNull() ?: run {
-                _isLoadingMore.value = false
-                return@launch
+        val expectedPage = homePage.value ?: return
+        if (continuation != expectedPage.continuation) return
+        val requestId = homeContinuationGeneration.incrementAndGet()
+        _isLoadingMore.value = true
+        homeContinuationJob = viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val nextSections = YouTube.home(continuation).getOrNull() ?: return@launch
+                if (homeContinuationGeneration.get() != requestId) return@launch
+                homePage.value = appendHomeContinuation(
+                    currentPage = homePage.value,
+                    expectedPage = expectedPage,
+                    response = nextSections,
+                ) ?: return@launch
+            } finally {
+                if (homeContinuationGeneration.get() == requestId) {
+                    _isLoadingMore.value = false
+                }
             }
-            homePage.value = nextSections.copy(
-                chips = homePage.value?.chips,
-                sections = homePage.value?.sections.orEmpty() + nextSections.sections
-            )
-            _isLoadingMore.value = false
         }
     }
 
     fun toggleChip(chip: HomePage.Chip?) {
+        homeContinuationGeneration.incrementAndGet()
+        homeContinuationJob?.cancel()
+        _isLoadingMore.value = false
         if (chip == null || chip == selectedChip.value && previousHomePage.value != null) {
             chipRequestJob?.cancel()
             chipRequestTracker.deselect()
@@ -198,13 +211,14 @@ class HomeViewModel @Inject constructor(
         chipRequestJob = viewModelScope.launch(Dispatchers.IO) {
             YouTube.home(params = params)
                 .onSuccess { nextSections ->
-                    if (!chipRequestTracker.succeeded(requestId, nextSections.sections.isEmpty())) return@onSuccess
-                    homePage.value = filteredHomePage(
-                        currentPage = homePage.value,
-                        basePage = previousHomePage.value,
-                        response = nextSections,
-                    )
-                    chipUiState.value = chipRequestTracker.state.toUiState()
+                    chipRequestTracker.succeeded(requestId, nextSections.sections.isEmpty()) {
+                        homePage.value = filteredHomePage(
+                            currentPage = homePage.value,
+                            basePage = previousHomePage.value,
+                            response = nextSections,
+                        )
+                        chipUiState.value = chipRequestTracker.state.toUiState()
+                    }
                 }
                 .onFailure { throwable ->
                     if (!chipRequestTracker.failed(requestId)) return@onFailure
@@ -262,6 +276,19 @@ internal fun filteredHomePage(
     continuation = response.continuation,
 )
 
+internal fun appendHomeContinuation(
+    currentPage: HomePage?,
+    expectedPage: HomePage,
+    response: HomePage,
+): HomePage? {
+    if (currentPage !== expectedPage) return null
+    return response.copy(
+        chips = currentPage.chips,
+        sections = currentPage.sections + response.sections,
+        continuation = response.continuation,
+    )
+}
+
 /** Owns the chip request generation and its valid UI-state transitions. */
 internal class ChipRequestTracker<T> {
     private var generation = 0L
@@ -282,9 +309,10 @@ internal class ChipRequestTracker<T> {
     }
 
     @Synchronized
-    fun succeeded(candidate: Long, isEmpty: Boolean): Boolean {
+    fun succeeded(candidate: Long, isEmpty: Boolean, publish: () -> Unit = {}): Boolean {
         if (candidate != generation) return false
         state = state.copy(isLoading = false, isEmpty = isEmpty)
+        publish()
         return true
     }
 

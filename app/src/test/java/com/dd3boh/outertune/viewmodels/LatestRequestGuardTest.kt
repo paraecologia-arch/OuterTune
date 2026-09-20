@@ -24,14 +24,41 @@ class LatestRequestGuardTest {
     }
 
     @Test
+    fun continuationAppendsOnlyToThePageThatRequestedIt() {
+        val firstSection = HomePage.Section("first", null, null, null, emptyList())
+        val nextSection = HomePage.Section("next", null, null, null, emptyList())
+        val selectedPage = HomePage(null, listOf(firstSection), continuation = "page-2")
+        val continuation = HomePage(null, listOf(nextSection), continuation = null)
+
+        val result = appendHomeContinuation(selectedPage, selectedPage, continuation)
+
+        assertEquals(listOf(firstSection, nextSection), result?.sections)
+        assertEquals(null, result?.continuation)
+    }
+
+    @Test
+    fun continuationFromPreviousSelectionCannotModifyCurrentPage() {
+        val oldPage = HomePage(null, emptyList(), continuation = "old-page-2")
+        val currentPage = HomePage(null, emptyList(), continuation = "current-page-2")
+        val oldContinuation = HomePage(null, emptyList(), continuation = null)
+
+        val result = appendHomeContinuation(currentPage, oldPage, oldContinuation)
+
+        assertEquals(null, result)
+    }
+
+    @Test
     fun latestSelectionOwnsLoadingAndOlderResultCannotPublish() {
         val tracker = ChipRequestTracker<String>()
         val first = tracker.select("A")
         val second = tracker.select("B")
+        var published = ""
 
-        assertFalse(tracker.succeeded(first, isEmpty = false))
+        assertFalse(tracker.succeeded(first, isEmpty = false) { published = "A" })
+        assertEquals("", published)
         assertTrue(tracker.state.isLoading)
-        assertTrue(tracker.succeeded(second, isEmpty = false))
+        assertTrue(tracker.succeeded(second, isEmpty = false) { published = "B" })
+        assertEquals("B", published)
         assertFalse(tracker.state.isLoading)
         assertTrue(tracker.state.selected == "B")
     }
