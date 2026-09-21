@@ -5,6 +5,7 @@ import com.zionhuang.innertube.models.Artist
 import com.zionhuang.innertube.models.ArtistItem
 import com.zionhuang.innertube.models.BrowseEndpoint
 import com.zionhuang.innertube.models.MusicCarouselShelfRenderer
+import com.zionhuang.innertube.models.MusicMultiRowListItemRenderer
 import com.zionhuang.innertube.models.MusicTwoRowItemRenderer
 import com.zionhuang.innertube.models.PlaylistItem
 import com.zionhuang.innertube.models.SectionListRenderer
@@ -47,10 +48,9 @@ data class HomePage(
                     label = renderer.header.musicCarouselShelfBasicHeaderRenderer.strapline?.runs?.firstOrNull()?.text,
                     thumbnail = renderer.header.musicCarouselShelfBasicHeaderRenderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl(),
                     endpoint = renderer.header.musicCarouselShelfBasicHeaderRenderer.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint,
-                    items = renderer.contents.mapNotNull {
-                        it.musicTwoRowItemRenderer
-                    }.mapNotNull {
-                        fromMusicTwoRowItemRenderer(it)
+                    items = renderer.contents.mapNotNull { content ->
+                        content.musicTwoRowItemRenderer?.let(::fromMusicTwoRowItemRenderer)
+                            ?: content.musicMultiRowListItemRenderer?.let(::fromMusicMultiRowListItemRenderer)
                     }.ifEmpty {
                         return null
                     }
@@ -141,6 +141,22 @@ data class HomePage(
 
                     else -> null
                 }
+            }
+
+            internal fun fromMusicMultiRowListItemRenderer(renderer: MusicMultiRowListItemRenderer): SongItem? {
+                val endpoint = renderer.onTap.anyWatchEndpoint ?: return null
+                return SongItem(
+                    id = endpoint.videoId ?: return null,
+                    title = renderer.title.runs?.firstOrNull()?.text ?: return null,
+                    artists = listOfNotNull(renderer.secondTitle?.runs?.firstOrNull()?.let {
+                        Artist(
+                            name = it.text,
+                            id = it.navigationEndpoint?.browseEndpoint?.browseId,
+                        )
+                    }),
+                    thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
+                    endpoint = endpoint,
+                )
             }
         }
     }
