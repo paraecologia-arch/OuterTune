@@ -7,7 +7,9 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
+import androidx.media3.common.C
 import androidx.media3.database.DatabaseProvider
+import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheSpan
@@ -34,11 +36,16 @@ import com.dd3boh.outertune.playback.DownloadUtil.Companion.STATE_DOWNLOADING
 import com.dd3boh.outertune.playback.DownloadUtil.Companion.STATE_INVALID
 import com.dd3boh.outertune.playback.downloadManager.DownloadDirectoryManagerOt
 import com.dd3boh.outertune.playback.downloadManager.DownloadManagerOt
+import com.dd3boh.outertune.playback.stream.DOWNLOAD_LOG_TAG
 import com.dd3boh.outertune.playback.stream.DownloadRangeDataSource
+import com.dd3boh.outertune.playback.stream.DownloadTransferListener
 import com.dd3boh.outertune.playback.stream.InnerTubeXResolver
 import com.dd3boh.outertune.playback.stream.ResolvedStream
+import com.dd3boh.outertune.playback.stream.StreamResolutionCoordinator
+import com.dd3boh.outertune.playback.stream.StreamResolutionEvent
 import com.dd3boh.outertune.playback.stream.StreamResolver
 import com.dd3boh.outertune.playback.stream.parseContentRangeTotalBytes
+import com.dd3boh.outertune.playback.stream.withKnownContentLength
 import com.dd3boh.outertune.utils.dataStore
 import com.dd3boh.outertune.utils.dlCoroutine
 import com.dd3boh.outertune.utils.enumPreference
@@ -56,6 +63,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -84,7 +92,7 @@ class DownloadUtil @Inject constructor(
     @DownloadCache val downloadCache: SimpleCache,
     @PlayerCache val playerCache: SimpleCache,
 ) {
-    val TAG = DownloadUtil::class.simpleName.toString()
+    val TAG = DOWNLOAD_LOG_TAG
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val downloadStatusWriter = CoroutineScope(Dispatchers.IO.limitedParallelism(1))
@@ -92,18 +100,32 @@ class DownloadUtil @Inject constructor(
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
     private val streamResolver: StreamResolver = InnerTubeXResolver()
-    private val resolvedStreamCache = ConcurrentHashMap<String, ResolvedStream>()
+    private val streamResolutionCoordinator = StreamResolutionCoordinator(
+        resolver = streamResolver,
+        onEvent = ::logResolutionEvent,
+    )
+    private val downloadTransferListener = DownloadTransferListener()
     private val downloadHttpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
         .build()
+    private val cacheDataSourceFactory = CacheDataSource.Factory()
+        .setCache(playerCache)
+        .setUpstreamDataSourceFactory(OkHttpDataSource.Factory(downloadHttpClient))
     private val dataSourceFactory = DownloadRangeDataSource.Factory(
-        CacheDataSource.Factory()
-            .setCache(playerCache)
-            .setUpstreamDataSourceFactory(OkHttpDataSource.Factory(downloadHttpClient)),
+        object : DataSource.Factory {
+            override fun createDataSource(): DataSource =
+                cacheDataSourceFactory.createDataSource().also { dataSource ->
+                    dataSource.addTransferListener(downloadTransferListener)
+                }
+        },
         ::resolveDownloadStream,
     )
 
-    private fun discoverContentLength(resolvedStream: ResolvedStream): Long? {
+    private fun discoverContentLength(
+        mediaId: String,
+        resolvedStream: ResolvedStream,
+    ): Long? {
+        val startedAtNs = System.nanoTime()
         val request = Request.Builder()
             .url(resolvedStream.url)
             .apply {
@@ -115,48 +137,82 @@ class DownloadUtil @Inject constructor(
             .build()
 
         return downloadHttpClient.newCall(request).execute().use { response ->
-            Log.d(TAG, "DOWNLOAD HTTP status=${response.code}")
             when (response.code) {
                 200 -> response.body?.contentLength()?.takeIf { it >= 0 }
                 206 -> response.header("Content-Range")?.let(::parseContentRangeTotalBytes)
                 else -> null
             }
+        }.also { contentLength ->
+            Log.i(
+                TAG,
+                "PROBE_END mediaId=$mediaId contentLengthKnown=${contentLength != null} " +
+                    "durationMs=${elapsedMs(startedAtNs)}",
+            )
         }
     }
 
     private fun resolveDownloadStream(mediaId: String): ResolvedStream {
-        val cachedStream = resolvedStreamCache[mediaId]
-        if (cachedStream != null && cachedStream.expiresAtEpochMs > System.currentTimeMillis()) {
-            Log.d(
-                TAG,
-                "DOWNLOAD resolve mediaId=$mediaId cacheHit=true " +
-                    "client=${cachedStream.clientName} rangePolicy=${cachedStream.rangePolicy}",
-            )
-            return cachedStream
-        }
-        if (cachedStream != null) {
-            resolvedStreamCache.remove(mediaId)
-        }
-
-        val resolvedStream = runBlocking(Dispatchers.IO) {
-            streamResolver.resolve(
+        val resolutionStartedAtNs = System.nanoTime()
+        val streamWithLength = runBlocking(Dispatchers.IO) {
+            streamResolutionCoordinator.resolve(
                 videoId = mediaId,
                 audioQuality = audioQuality,
                 isActiveNetworkMetered = connectivityManager.isActiveNetworkMetered,
+                transform = { resolvedStream ->
+                    prepareDownloadStream(mediaId, resolvedStream)
+                },
             )
-        }.getOrThrow()
+        }.getOrElse { throwable ->
+            Log.i(
+                TAG,
+                "RESOLVE_COMPLETE mediaId=$mediaId outcome=FAILED " +
+                    "durationMs=${elapsedMs(resolutionStartedAtNs)} " +
+                    "errorType=${throwable.javaClass.simpleName}",
+            )
+            throw throwable
+        }
+
+        Log.i(
+            TAG,
+            "RESOLVE_COMPLETE mediaId=$mediaId outcome=SUCCESS " +
+                "durationMs=${elapsedMs(resolutionStartedAtNs)} " +
+                "contentLengthKnown=${streamWithLength.format.contentLength != null} " +
+                "client=${streamWithLength.clientName} rangePolicy=${streamWithLength.rangePolicy}",
+        )
+        return streamWithLength
+    }
+
+    private suspend fun prepareDownloadStream(
+        mediaId: String,
+        resolvedStream: ResolvedStream,
+    ): ResolvedStream {
         val format = resolvedStream.format
-        val contentLength = format.contentLength
-            ?: runBlocking(Dispatchers.IO) {
-                runCatching { discoverContentLength(resolvedStream) }.getOrNull()
-            }
+        val persistedFormat = if (format.contentLength == null) {
+            runCatching {
+                database.format(mediaId).firstOrNull()
+            }.onFailure { throwable ->
+                Log.i(
+                    TAG,
+                    "FORMAT_LOOKUP_FAILED mediaId=$mediaId " +
+                        "errorType=${throwable.javaClass.simpleName}",
+                )
+            }.getOrNull()
+        } else {
+            null
+        }
+        val streamWithLength = resolvedStream.withKnownContentLength(persistedFormat) {
+            runCatching {
+                discoverContentLength(mediaId, resolvedStream)
+            }.onFailure { throwable ->
+                Log.i(
+                    TAG,
+                    "PROBE_FAILED mediaId=$mediaId errorType=${throwable.javaClass.simpleName}",
+                )
+            }.getOrNull()
+        }
+        val contentLength = streamWithLength.format.contentLength
 
         if (contentLength != null) {
-            val streamWithLength = if (format.contentLength == null) {
-                resolvedStream.copy(format = format.copy(contentLength = contentLength))
-            } else {
-                resolvedStream
-            }
             database.query {
                 upsert(
                     FormatEntity(
@@ -172,18 +228,40 @@ class DownloadUtil @Inject constructor(
                     )
                 )
             }
-            resolvedStreamCache[mediaId] = streamWithLength
-        } else {
-            resolvedStreamCache[mediaId] = resolvedStream
         }
 
-        Log.d(
-            TAG,
-            "DOWNLOAD resolve mediaId=$mediaId cacheHit=false " +
-                "client=${resolvedStream.clientName} rangePolicy=${resolvedStream.rangePolicy}",
-        )
-        return resolvedStreamCache.getValue(mediaId)
+        return streamWithLength
     }
+
+    private fun logResolutionEvent(event: StreamResolutionEvent) {
+        val message = when (event) {
+            is StreamResolutionEvent.CacheHit ->
+                "RESOLVE_CACHE_HIT mediaId=${event.mediaId} client=${event.clientName} " +
+                    "rangePolicy=${event.rangePolicy} remainingTtlMs=${event.remainingTtlMs}"
+
+            is StreamResolutionEvent.Expired ->
+                "RESOLVE_EXPIRED mediaId=${event.mediaId}"
+
+            is StreamResolutionEvent.Started ->
+                "RESOLVE_START mediaId=${event.mediaId}"
+
+            is StreamResolutionEvent.Joined ->
+                "RESOLVE_JOINED mediaId=${event.mediaId}"
+
+            is StreamResolutionEvent.Succeeded ->
+                "RESOLVE_SUCCESS mediaId=${event.mediaId} durationMs=${event.durationMs} " +
+                    "client=${event.clientName} rangePolicy=${event.rangePolicy} " +
+                    "contentLengthKnown=${event.contentLengthKnown}"
+
+            is StreamResolutionEvent.Failed ->
+                "RESOLVE_FAILED mediaId=${event.mediaId} durationMs=${event.durationMs} " +
+                    "errorType=${event.errorType}"
+        }
+        Log.i(TAG, message)
+    }
+
+    private fun elapsedMs(startedAtNs: Long): Long =
+        ((System.nanoTime() - startedAtNs).coerceAtLeast(0L) + 500_000L) / 1_000_000L
     val downloadNotificationHelper = DownloadNotificationHelper(context, ExoDownloadService.CHANNEL_ID)
     val downloadManager: DownloadManager =
         DownloadManager(context, databaseProvider, downloadCache, dataSourceFactory, Executor(Runnable::run)).apply {
@@ -199,6 +277,10 @@ class DownloadUtil @Inject constructor(
     val downloads = MutableStateFlow<Map<String, LocalDateTime>>(emptyMap())
     private val pendingDownloadRequests =
         Collections.newSetFromMap(ConcurrentHashMap<String, Boolean>())
+    private val downloadEntryStarts = ConcurrentHashMap<String, Long>()
+    private val downloadRequestStarts = ConcurrentHashMap<String, Long>()
+    private val downloadAttemptCounts = ConcurrentHashMap<String, Int>()
+    private val downloadLastStates = ConcurrentHashMap<String, Int>()
 
     var localMgr = DownloadDirectoryManagerOt(
         context,
@@ -308,12 +390,15 @@ class DownloadUtil @Inject constructor(
                         .build()
 
                     try {
+                        downloadEntryStarts[id] = System.nanoTime()
+                        downloadRequestStarts[id] = System.nanoTime()
                         DownloadService.sendAddDownload(
                             context,
                             ExoDownloadService::class.java,
                             downloadRequest,
                             false
                         )
+                        Log.i(TAG, "ENQUEUE_SENT mediaId=$id")
                         downloads.update { map ->
                             map.toMutableMap().apply {
                                 set(id, STATE_DOWNLOADING)
@@ -323,6 +408,8 @@ class DownloadUtil @Inject constructor(
                             database.updateDownloadStatus(id, STATE_DOWNLOADING)
                         }
                     } catch (e: Exception) {
+                        downloadEntryStarts.remove(id)
+                        downloadRequestStarts.remove(id)
                         downloads.update { map ->
                             map.toMutableMap().apply {
                                 remove(id)
@@ -374,6 +461,8 @@ class DownloadUtil @Inject constructor(
                 }
             }
             } catch (e: Exception) {
+                downloadEntryStarts.remove(id)
+                downloadRequestStarts.remove(id)
                 downloads.update { map ->
                     map.toMutableMap().apply {
                         remove(id)
@@ -690,6 +779,109 @@ class DownloadUtil @Inject constructor(
         }
     }
 
+    private fun logDownloadState(
+        downloadManager: DownloadManager,
+        download: Download,
+        finalException: Exception?,
+    ) {
+        val id = download.request.id
+        val state = download.state
+        val previousState = downloadLastStates.put(id, state)
+        val startedNewAttempt = state == Download.STATE_DOWNLOADING || state == Download.STATE_RESTARTING
+        val attempts = if (startedNewAttempt && previousState != state) {
+            downloadAttemptCounts.merge(id, 1, Int::plus)
+        } else {
+            downloadAttemptCounts[id] ?: 0
+        }
+
+        val requestStartNs = if (
+            requestStartNsShouldBeReleased(state) &&
+            downloadRequestStarts.containsKey(id)
+        ) {
+            downloadRequestStarts.remove(id)
+        } else {
+            null
+        }
+        if (requestStartNs != null) {
+            Log.i(
+                TAG,
+                "QUEUE_ACCEPTED mediaId=$id queueWaitMs=${elapsedMs(requestStartNs)}",
+            )
+        }
+
+        val activeDownloads = downloadManager.currentDownloads.count {
+            it.state == Download.STATE_DOWNLOADING
+        }
+        val queuedDownloads = downloadManager.currentDownloads.count {
+            it.state == Download.STATE_QUEUED
+        }
+        val entryStartNs = downloadEntryStarts[id]
+
+        when (state) {
+            Download.STATE_COMPLETED -> {
+                val transferSummary = removeDownloadTelemetry(id)
+                Log.i(
+                    TAG,
+                    "DOWNLOAD_COMPLETE mediaId=$id bytes=${download.bytesDownloaded} " +
+                        "contentLength=${formatMedia3Length(download.contentLength)} attempts=$attempts " +
+                        "durationMs=${entryStartNs?.let(::elapsedMs) ?: -1L} " +
+                        "activeDownloads=$activeDownloads queuedDownloads=$queuedDownloads " +
+                        "transfer=[$transferSummary]",
+                )
+            }
+
+            Download.STATE_FAILED -> {
+                val transferSummary = removeDownloadTelemetry(id)
+                Log.i(
+                    TAG,
+                    "DOWNLOAD_FAILED mediaId=$id bytes=${download.bytesDownloaded} " +
+                        "attempts=$attempts durationMs=${entryStartNs?.let(::elapsedMs) ?: -1L} " +
+                        "errorType=${finalException?.javaClass?.simpleName ?: "UNKNOWN"} " +
+                        "activeDownloads=$activeDownloads queuedDownloads=$queuedDownloads " +
+                        "transfer=[$transferSummary]",
+                )
+            }
+
+            Download.STATE_STOPPED -> {
+                val transferSummary = downloadTransferListener.remove(id)
+                Log.i(
+                    TAG,
+                    "DOWNLOAD_STOPPED mediaId=$id bytes=${download.bytesDownloaded} " +
+                        "attempts=$attempts durationMs=${entryStartNs?.let(::elapsedMs) ?: -1L} " +
+                        "activeDownloads=$activeDownloads queuedDownloads=$queuedDownloads " +
+                        "transfer=[$transferSummary]",
+                )
+            }
+
+            else -> {
+                Log.i(
+                    TAG,
+                    "DOWNLOAD_PROGRESS_STATE mediaId=$id media3State=${media3StateName(state)} " +
+                        "bytes=${download.bytesDownloaded} " +
+                        "contentLength=${formatMedia3Length(download.contentLength)} attempts=$attempts " +
+                        "activeDownloads=$activeDownloads queuedDownloads=$queuedDownloads",
+                )
+            }
+        }
+    }
+
+    private fun requestStartNsShouldBeReleased(state: Int): Boolean =
+        state == Download.STATE_QUEUED ||
+            state == Download.STATE_DOWNLOADING ||
+            state == Download.STATE_RESTARTING
+
+    private fun removeDownloadTelemetry(id: String): DownloadTransferListener.Summary? {
+        val summary = downloadTransferListener.remove(id)
+        downloadEntryStarts.remove(id)
+        downloadRequestStarts.remove(id)
+        downloadAttemptCounts.remove(id)
+        downloadLastStates.remove(id)
+        return summary
+    }
+
+    private fun formatMedia3Length(length: Long): String =
+        if (length == C.LENGTH_UNSET.toLong()) "UNSET" else length.toString()
+
 
     init {
         Log.i(TAG, "DownloadUtil init")
@@ -710,6 +902,7 @@ class DownloadUtil @Inject constructor(
                     download: Download,
                     finalException: Exception?
                 ) {
+                    logDownloadState(downloadManager, download, finalException)
                     Log.i(
                         TAG,
                         "DOWNLOAD_STATE mediaId=${download.request.id} " +
@@ -723,6 +916,11 @@ class DownloadUtil @Inject constructor(
                     downloadManager: DownloadManager,
                     download: Download,
                 ) {
+                    val transferSummary = removeDownloadTelemetry(download.request.id)
+                    Log.i(
+                        TAG,
+                        "DOWNLOAD_REMOVED mediaId=${download.request.id} transfer=[$transferSummary]",
+                    )
                     Log.i(
                         TAG,
                         "DOWNLOAD_STATE mediaId=${download.request.id} " +

@@ -135,6 +135,47 @@ class DownloadRangeDataSourceTest {
         cache.release()
     }
 
+    @Test
+    fun completedCacheHitDoesNotStartAnotherUpstreamTransfer() {
+        val cache = SimpleCache(temporaryFolder.newFolder(), LeastRecentlyUsedCacheEvictor(1024L))
+        val firstDataSource = CacheDataSource.Factory()
+            .setCache(cache)
+            .setUpstreamDataSourceFactory(
+                DownloadRangeDataSource.Factory(
+                    object : DataSource.Factory {
+                        override fun createDataSource() = RecordingDataSource(data)
+                    },
+                ) { stream(contentLength = null, rangePolicy = RangePolicy.Bounded(4L)) }
+            )
+            .createDataSource()
+
+        CacheWriter(
+            firstDataSource,
+            dataSpec(),
+            ByteArray(3),
+        ) { _, _, _ -> }.cache()
+
+        val cacheHitDataSource = CacheDataSource.Factory()
+            .setCache(cache)
+            .setUpstreamDataSourceFactory(
+                DownloadRangeDataSource.Factory(
+                    object : DataSource.Factory {
+                        override fun createDataSource() = FailingDataSource()
+                    },
+                ) { stream(contentLength = data.size.toLong(), rangePolicy = RangePolicy.Bounded(4L)) }
+            )
+            .createDataSource()
+
+        CacheWriter(
+            cacheHitDataSource,
+            dataSpec(),
+            ByteArray(3),
+        ) { _, _, _ -> }.cache()
+
+        assertEquals(data.size.toLong(), cache.getCachedBytes("mediaId", 0L, C.LENGTH_UNSET.toLong()))
+        cache.release()
+    }
+
     private fun dataSource(
         upstream: RecordingDataSource,
         contentLength: Long?,
@@ -214,6 +255,20 @@ class DownloadRangeDataSourceTest {
             position += count
             return count
         }
+
+        override fun getUri(): Uri? = null
+
+        override fun close() = Unit
+    }
+
+    private class FailingDataSource : DataSource {
+        override fun addTransferListener(transferListener: TransferListener) = Unit
+
+        override fun open(dataSpec: DataSpec): Long =
+            error("A complete cache hit must not open the upstream DataSource")
+
+        override fun read(buffer: ByteArray, offset: Int, length: Int): Int =
+            error("A complete cache hit must not read from the upstream DataSource")
 
         override fun getUri(): Uri? = null
 
