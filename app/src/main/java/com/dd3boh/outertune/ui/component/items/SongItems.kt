@@ -35,6 +35,9 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
@@ -135,7 +138,10 @@ fun SongListItem(
                 if (inSelectMode == true) {
                     Checkbox(
                         checked = isSelected,
-                        onCheckedChange = onSelectedChange
+                        onCheckedChange = onSelectedChange,
+                        modifier = Modifier.semantics {
+                            contentDescription = song.song.title
+                        }
                     )
                 } else {
                     IconButton(
@@ -157,7 +163,7 @@ fun SongListItem(
                     ) {
                         com.dd3boh.outertune.ui.icons.XenoIcon(
                             icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
-                            contentDescription = null
+                            contentDescription = stringResource(R.string.options)
                         )
                     }
                 }
@@ -169,7 +175,7 @@ fun SongListItem(
                     ) {
                         com.dd3boh.outertune.ui.icons.XenoIcon(
                             icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.DragHandle,
-                            contentDescription = null
+                            contentDescription = stringResource(R.string.reorder)
                         )
                     }
                 }

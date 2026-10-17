@@ -50,6 +50,7 @@ fun SelectionMediaMetadataMenu(
     onDismiss: () -> Unit,
     clearAction: () -> Unit,
     onRemoveFromHistory: (() -> Unit)? = null,
+    onRemoveFromPlaylist: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -155,6 +156,16 @@ fun SelectionMediaMetadataMenu(
             showChoosePlaylistDialog = true
         }
 
+        if (onRemoveFromPlaylist != null) {
+            GridMenuItem(
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.PlaylistRemove,
+                title = R.string.remove_from_playlist
+            ) {
+                onRemoveFromPlaylist()
+                onDismiss()
+            }
+        }
+
         if (!allLocal) {
             if (allInLibrary) {
                 GridMenuItem(
@@ -214,6 +225,8 @@ fun SelectionMediaMetadataMenu(
             onDownload = {
                 val songs = selection.filterNot { it.isLocal }
                 downloadUtil.download(songs)
+                onDismiss()
+                clearAction()
             },
             onRemoveDownload = {
                 showRemoveDownloadDialog = true
@@ -250,6 +263,8 @@ fun SelectionMediaMetadataMenu(
                 q?.let {
                     playerConnection.service.queueBoard.setCurrQueue(it)
                 }
+                onDismiss()
+                clearAction()
             },
             onDismiss = {
                 showChooseQueueDialog = false
@@ -268,7 +283,11 @@ fun SelectionMediaMetadataMenu(
                 }
                 emptyList()
             },
-            onDismiss = { showChoosePlaylistDialog = false }
+            onDismiss = {
+                showChoosePlaylistDialog = false
+                onDismiss()
+                clearAction()
+            }
         )
     }
 
@@ -302,6 +321,8 @@ fun SelectionMediaMetadataMenu(
                                 false
                             )
                         }
+                        onDismiss()
+                        clearAction()
                     }
                 ) {
                     Text(text = stringResource(android.R.string.ok))

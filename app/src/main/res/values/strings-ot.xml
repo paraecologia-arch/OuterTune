@@ -35,9 +35,49 @@ while also allowing users to translate our app as well. New, specific strings to
 
 <!-- Playlist -->
     <string name="auto_playlist">Auto playlist</string>
+    <string name="playlist_visual_order_note">Visual order only. Your manual order is preserved.</string>
+    <string name="playlist_restore_manual_order">Use manual order</string>
+    <string name="playlist_lock_order">Lock manual order</string>
+    <string name="playlist_unlock_order">Unlock manual order</string>
+    <string name="playlist_not_found">This playlist is no longer available</string>
+    <string name="playlist_load_failed">Could not load this playlist</string>
+    <string name="playlist_duplicates_title">Duplicate tracks</string>
+    <string name="playlist_duplicate_occurrence">Occurrence %1$d of %2$d</string>
+    <string name="playlist_remove_duplicate_confirm">Remove this occurrence of \"%1$s\"?</string>
+    <string name="playlist_remove_duplicate_success">Duplicate occurrence removed</string>
+    <string name="playlist_remove_duplicate_failed">Could not remove this duplicate occurrence</string>
+    <string name="playlist_remove_selected_failed">Could not remove the selected songs</string>
+    <string name="clear_search">Clear search</string>
+    <string name="suggest_songs">Suggest songs</string>
+    <string name="suggested_from">Based on \"%1$s\"</string>
+    <string name="suggested_songs_empty">No new suggestions found</string>
+    <string name="suggested_songs_error">Could not load suggestions</string>
+    <string name="suggestion_add_failed">Could not add the selected suggestions</string>
+    <string name="add_selected">Add selected</string>
+    <string name="loading">Loading…</string>
+    <plurals name="playlist_offline_count">
+        <item quantity="one">%d offline</item>
+        <item quantity="other">%d offline</item>
+    </plurals>
+    <plurals name="playlist_duplicate_count">
+        <item quantity="one">%d duplicate</item>
+        <item quantity="other">%d duplicates</item>
+    </plurals>
+    <plurals name="playlist_remove_selected_confirm">
+        <item quantity="one">Remove %d selected song from this playlist?</item>
+        <item quantity="other">Remove %d selected songs from this playlist?</item>
+    </plurals>
+    <plurals name="playlist_remove_selected_success">
+        <item quantity="one">Removed %d song from the playlist</item>
+        <item quantity="other">Removed %d songs from the playlist</item>
+    </plurals>
 
 <!-- Menu -->
     <string name="select">Selection mode</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="reorder">Reorder</string>
+    <string name="navigate_back">Back</string>
     <string name="like_all">Like all</string>
     <string name="more_settings">More settings</string>
     <string name="delete_lyric_confirm">Do you really want to delete the stored lyrics for \"%s\"?</string>
@@ -51,6 +91,7 @@ while also allowing users to translate our app as well. New, specific strings to
     <string name="wait_to_reconnect">Wait to reconnect</string>
 
 <!-- Sort menu -->
+    <string name="sort_by_album">Album</string>
     <string name="sort_by_date_modified">Date modified</string>
     <string name="sort_by_date_released">Date released</string>
     <string name="sort_by_like_date">Date liked</string>

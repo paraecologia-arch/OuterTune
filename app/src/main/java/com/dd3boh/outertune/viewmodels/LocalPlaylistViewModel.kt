@@ -8,28 +8,38 @@ import com.dd3boh.outertune.constants.PlaylistSongSortDescendingKey
 import com.dd3boh.outertune.constants.PlaylistSongSortType
 import com.dd3boh.outertune.constants.PlaylistSongSortTypeKey
 import com.dd3boh.outertune.db.MusicDatabase
-import com.dd3boh.outertune.extensions.reversed
 import com.dd3boh.outertune.extensions.toEnum
+import com.dd3boh.outertune.ui.screens.playlist.sortPlaylistSongs
 import com.dd3boh.outertune.utils.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class LocalPlaylistViewModel @Inject constructor(
     @ApplicationContext context: Context,
-    database: MusicDatabase,
+    private val database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     val playlistId = savedStateHandle.get<String>("playlistId")!!
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
+    private val _hasLoadError = MutableStateFlow(false)
+    val hasLoadError = _hasLoadError.asStateFlow()
+
     val playlistWithSongs = combine(
         database.playlist(playlistId),
         database.playlistSongs(playlistId),
@@ -40,31 +50,52 @@ class LocalPlaylistViewModel @Inject constructor(
             }
             .distinctUntilChanged()
     ) { playlist, songs, (sortType, sortDescending) ->
-        val sortedSongs = when (sortType) {
-            PlaylistSongSortType.CUSTOM -> songs
-            PlaylistSongSortType.NAME -> songs.sortedBy { it.song.song.title.lowercase() }
-            PlaylistSongSortType.ARTIST -> songs.sortedBy { song ->
-                song.song.artists.joinToString { it.name }.lowercase()
-            }
-            PlaylistSongSortType.ADDED_DATE -> songs.sortedBy { it.song.song.inLibrary }
-            PlaylistSongSortType.MODIFIED_DATE -> songs.sortedBy { it.song.song.dateModified }
-            PlaylistSongSortType.RELEASE_DATE -> songs.sortedBy { it.song.song.getDateLong() }
-        }.reversed(sortDescending && sortType != PlaylistSongSortType.CUSTOM)
+        val sortedSongs = sortPlaylistSongs(songs, sortType, sortDescending)
 
         Pair(playlist, sortedSongs)
+    }.catch {
+        _hasLoadError.value = true
+        emit(Pair(null, emptyList()))
     }.stateIn(viewModelScope, SharingStarted.Lazily, Pair(null, emptyList()))
 
     init {
         // Fix playlist song order
         viewModelScope.launch(Dispatchers.IO) {
-            val sortedSongs = playlistWithSongs.first().second.sortedWith(compareBy({ it.map.position }, { it.map.id }))
-            database.transaction {
-                sortedSongs.forEachIndexed { index, song ->
-                    if (song.map.position != index) {
-                        update(song.map.copy(position = index))
+            try {
+                val sortedSongs = playlistWithSongs.first().second.sortedWith(
+                    compareBy({ it.map.position }, { it.map.id })
+                )
+                database.transaction {
+                    sortedSongs.forEachIndexed { index, song ->
+                        if (song.map.position != index) {
+                            update(song.map.copy(position = index))
+                        }
                     }
                 }
+            } finally {
+                _isLoading.value = false
             }
+        }
+    }
+
+    suspend fun removeDuplicateOccurrence(mapId: Int): Boolean = withContext(Dispatchers.IO) {
+        try {
+            database.removeDuplicateOccurrence(playlistId, mapId)
+        } catch (error: CancellationException) {
+            throw error
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    suspend fun removePlaylistSongs(mapIds: Set<Int>): Boolean = withContext(Dispatchers.IO) {
+        try {
+            database.removePlaylistSongs(playlistId, mapIds)
+            true
+        } catch (error: CancellationException) {
+            throw error
+        } catch (_: Exception) {
+            false
         }
     }
 }

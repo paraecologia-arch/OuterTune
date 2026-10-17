@@ -16,7 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dd3boh.outertune.R
@@ -34,16 +35,21 @@ fun RowScope.SelectHeader(
     onDeselectAll: () -> Unit,
     menuState: MenuState,
     onDismiss: () -> Unit = {},
-    onRemoveFromHistory: (() -> Unit)? = null
+    onRemoveFromHistory: (() -> Unit)? = null,
+    onRemoveFromPlaylist: (() -> Unit)? = null,
 ) {
-    val context = LocalContext.current
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(top = 2.dp, bottom = 3.dp)
     ) {
         Text(
-            text = "${selectedItems.size}/${context.resources.getQuantityString(R.plurals.n_selected, totalItemCount, totalItemCount)}",
+            text = "${selectedItems.size}/${
+                pluralStringResource(
+                    R.plurals.n_selected,
+                    totalItemCount,
+                    totalItemCount,
+                )
+            }",
             modifier = Modifier
                 .padding(start = 8.dp)
                 .weight(1f, false)
@@ -58,14 +64,15 @@ fun RowScope.SelectHeader(
                         selection = selectedItems,
                         onDismiss = menuState::dismiss,
                         clearAction = onDeselectAll,
-                        onRemoveFromHistory = onRemoveFromHistory
+                        onRemoveFromHistory = onRemoveFromHistory,
+                        onRemoveFromPlaylist = onRemoveFromPlaylist,
                     )
                 }
             }
         ) {
             com.dd3boh.outertune.ui.icons.XenoIcon(
                 icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.MoreVert,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.options),
                 tint = LocalContentColor.current
             )
         }
@@ -78,7 +85,9 @@ fun RowScope.SelectHeader(
         ) {
             com.dd3boh.outertune.ui.icons.XenoIcon(
                 icon = if (allSelected) com.dd3boh.outertune.ui.icons.XenoSystemIcons.SelectAll else com.dd3boh.outertune.ui.icons.XenoSystemIcons.Deselect,
-                contentDescription = null,
+                contentDescription = stringResource(
+                    if (allSelected) R.string.select_all else R.string.deselect_all
+                ),
                 tint = LocalContentColor.current
             )
         }
@@ -89,7 +98,7 @@ fun RowScope.SelectHeader(
         ) {
             com.dd3boh.outertune.ui.icons.XenoIcon(
                 icon = com.dd3boh.outertune.ui.icons.XenoActionIcons.Close,
-                contentDescription = null
+                contentDescription = stringResource(R.string.dismiss)
             )
         }
     }

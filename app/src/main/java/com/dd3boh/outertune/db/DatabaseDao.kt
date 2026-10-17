@@ -22,6 +22,7 @@ import com.dd3boh.outertune.db.entities.EventWithSong
 import com.dd3boh.outertune.db.entities.FormatEntity
 import com.dd3boh.outertune.db.entities.GenreEntity
 import com.dd3boh.outertune.db.entities.LyricsEntity
+import com.dd3boh.outertune.db.entities.Playlist
 import com.dd3boh.outertune.db.entities.QueueEntity
 import com.dd3boh.outertune.db.entities.QueueSongMap
 import com.dd3boh.outertune.db.entities.RecentActivityEntity
@@ -378,6 +379,13 @@ interface DatabaseDao : SongsDao, AlbumsDao, ArtistsDao, PlaylistsDao, QueueDao 
             saveQueue(queue)
         }
         nukeAliens(queues.map { it.id })
+    }
+
+    @Transaction
+    fun addSuggestedSongsToPlaylist(playlist: Playlist, songs: List<MediaMetadata>) {
+        if (songs.isEmpty()) return
+        songs.forEach { insert(it) }
+        addSongToPlaylist(playlist, songs.map { it.id })
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

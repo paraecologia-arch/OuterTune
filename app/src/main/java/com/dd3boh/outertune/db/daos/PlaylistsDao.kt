@@ -75,7 +75,7 @@ interface PlaylistsDao {
     fun searchPlaylists(query: String, previewSize: Int = Int.MAX_VALUE): Flow<List<Playlist>>
 
     @Transaction
-    @Query("SELECT * FROM playlist_song_map WHERE playlistId = :playlistId ORDER BY position")
+    @Query("SELECT * FROM playlist_song_map WHERE playlistId = :playlistId ORDER BY position, id")
     fun playlistSongs(playlistId: String): Flow<List<PlaylistSong>>
 
     @Query("SELECT songId from playlist_song_map WHERE playlistId = :playlistId AND songId IN (:songIds)")
@@ -87,7 +87,10 @@ interface PlaylistsDao {
     @Query("SELECT * FROM playlist_song_map WHERE songId = :songId")
     fun songMapsToPlaylist(songId: String): List<PlaylistSongMap>
 
-    @Query("SELECT * FROM playlist_song_map WHERE playlistId = :playlistId AND position >= :from ORDER BY position")
+    @Query("SELECT * FROM playlist_song_map WHERE playlistId = :playlistId ORDER BY position, id")
+    fun playlistSongMaps(playlistId: String): List<PlaylistSongMap>
+
+    @Query("SELECT * FROM playlist_song_map WHERE playlistId = :playlistId AND position >= :from ORDER BY position, id")
     fun songMapsToPlaylist(playlistId: String, from: Int): List<PlaylistSongMap>
 
     @Query("""
@@ -193,6 +196,37 @@ interface PlaylistsDao {
     }
 
     @Transaction
+    fun removePlaylistSongs(playlistId: String, mapIds: Set<Int>) {
+        if (mapIds.isEmpty()) return
+
+        val maps = playlistSongMaps(playlistId)
+        val remaining = maps.filterNot { it.id in mapIds }
+        if (remaining.size == maps.size) return
+
+        deletePlaylistSongMaps(playlistId, mapIds.toList())
+        remaining.forEachIndexed { index, map ->
+            if (map.position != index) {
+                update(map.copy(position = index))
+            }
+        }
+    }
+
+    @Transaction
+    fun removeDuplicateOccurrence(playlistId: String, mapId: Int): Boolean {
+        val maps = playlistSongMaps(playlistId)
+        val target = maps.firstOrNull { it.id == mapId } ?: return false
+        if (maps.count { it.songId == target.songId } <= 1) return false
+
+        delete(target)
+        maps.filterNot { it.id == mapId }.forEachIndexed { index, map ->
+            if (map.position != index) {
+                update(map.copy(position = index))
+            }
+        }
+        return true
+    }
+
+    @Transaction
     @Query("UPDATE playlist SET isLocal = 1 WHERE id = :playlistId")
     fun playlistDesync(playlistId: String)
 
@@ -220,6 +254,9 @@ interface PlaylistsDao {
 
     @Query("DELETE FROM playlist_song_map WHERE playlistId = :playlistId")
     fun clearPlaylist(playlistId: String)
+
+    @Query("DELETE FROM playlist_song_map WHERE playlistId = :playlistId AND id IN (:ids)")
+    fun deletePlaylistSongMaps(playlistId: String, ids: List<Int>)
 
     @Delete
     fun delete(playlistSongMap: PlaylistSongMap)

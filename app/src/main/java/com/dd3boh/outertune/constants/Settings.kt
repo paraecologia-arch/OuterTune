@@ -185,7 +185,7 @@ enum class FolderSongSortType {
 }
 
 enum class PlaylistSongSortType {
-    CUSTOM, NAME, ARTIST, ADDED_DATE, MODIFIED_DATE, RELEASE_DATE
+    CUSTOM, NAME, ARTIST, ALBUM, DURATION, ADDED_DATE, MODIFIED_DATE, RELEASE_DATE
 }
 
 enum class ArtistSortType {

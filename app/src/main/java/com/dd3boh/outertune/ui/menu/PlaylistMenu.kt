@@ -51,7 +51,9 @@ import com.dd3boh.outertune.ui.component.items.PlaylistListItem
 import com.dd3boh.outertune.ui.dialog.AddToPlaylistDialog
 import com.dd3boh.outertune.ui.dialog.AddToQueueDialog
 import com.dd3boh.outertune.ui.dialog.DefaultDialog
+import com.dd3boh.outertune.ui.dialog.PlaylistSuggestionsDialog
 import com.dd3boh.outertune.ui.dialog.TextFieldDialog
+import com.dd3boh.outertune.models.MediaMetadata
 import com.dd3boh.outertune.utils.getDownloadState
 import com.dd3boh.outertune.utils.lmScannerCoroutine
 import com.dd3boh.outertune.utils.reportException
@@ -59,7 +61,10 @@ import com.dd3boh.outertune.utils.syncCoroutine
 import com.zionhuang.innertube.YouTube
 import com.zionhuang.innertube.models.WatchEndpoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 @Composable
@@ -128,6 +133,18 @@ fun PlaylistMenu(
     }
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
+    }
+    var showSuggestionsDialog by remember {
+        mutableStateOf(false)
+    }
+    var suggestionSeed by remember {
+        mutableStateOf<MediaMetadata?>(null)
+    }
+    var suggestionEndpoint by remember {
+        mutableStateOf<WatchEndpoint?>(null)
+    }
+    var suggestionSourceLabel by remember {
+        mutableStateOf("")
     }
 
     LaunchedEffect(songs) {
@@ -218,6 +235,36 @@ fun PlaylistMenu(
                         onDismiss()
                     }
                 }
+            }
+        }
+
+        val playlistRadioEndpoint = playlist.playlist.browseId?.let { browseId ->
+            playlist.playlist.radioEndpointParams?.let { radioEndpointParams ->
+                WatchEndpoint(
+                    playlistId = "RDAMPL$browseId",
+                    params = radioEndpointParams,
+                )
+            }
+        }
+        val localSuggestionSeed = songs.firstOrNull { !it.song.isLocal }?.toMediaMetadata()
+        if (
+            isNetworkConnected &&
+            playlist.playlist.isLocal &&
+            (playlistRadioEndpoint != null || localSuggestionSeed != null)
+        ) {
+            GridMenuItem(
+                icon = com.dd3boh.outertune.ui.icons.XenoLibraryIcons.Interests,
+                title = R.string.suggest_songs
+            ) {
+                suggestionEndpoint = playlistRadioEndpoint
+                suggestionSeed = localSuggestionSeed
+                suggestionSourceLabel = if (playlistRadioEndpoint != null) {
+                    playlist.playlist.name
+                } else {
+                    localSuggestionSeed?.title?.takeIf { it.isNotBlank() }
+                        ?: playlist.playlist.name
+                }
+                showSuggestionsDialog = true
             }
         }
 
@@ -434,5 +481,34 @@ fun PlaylistMenu(
             },
             onDismiss = { showChoosePlaylistDialog = false }
         )
+    }
+
+    if (showSuggestionsDialog) {
+        if (suggestionSourceLabel.isNotBlank()) {
+            PlaylistSuggestionsDialog(
+                seed = suggestionSeed,
+                playlistRadioEndpoint = suggestionEndpoint,
+                sourceLabel = suggestionSourceLabel,
+                existingSongIds = songs.map { it.id }.toSet(),
+                onAdd = { items ->
+                    withContext(Dispatchers.IO) {
+                        try {
+                            database.addSuggestedSongsToPlaylist(playlist, items)
+                            true
+                        } catch (error: CancellationException) {
+                            throw error
+                        } catch (_: Exception) {
+                            false
+                        }
+                    }
+                },
+                onDismiss = {
+                    showSuggestionsDialog = false
+                    suggestionSeed = null
+                    suggestionEndpoint = null
+                    suggestionSourceLabel = ""
+                }
+            )
+        }
     }
 }

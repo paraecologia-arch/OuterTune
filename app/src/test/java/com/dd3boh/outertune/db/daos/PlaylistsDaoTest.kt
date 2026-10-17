@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
@@ -123,6 +125,79 @@ class PlaylistsDaoTest {
         val maps = dao.playlistSongs(playlist.id).first().map { it.map }
         assertEquals(setOf("one", "two"), maps.map { it.songId }.toSet())
         assertEquals(listOf(0, 1), maps.map { it.position }.sorted())
+    }
+
+    @Test
+    fun removingSelectedMapsPreservesRemainingOrderAndReindexesPositions() = runBlocking {
+        val playlist = playlist()
+        dao.insert(playlist.playlist)
+        insertSongs("one", "two", "three", "four")
+        dao.insert(PlaylistSongMap(playlistId = playlist.id, songId = "one", position = 0))
+        dao.insert(PlaylistSongMap(playlistId = playlist.id, songId = "two", position = 3))
+        dao.insert(PlaylistSongMap(playlistId = playlist.id, songId = "three", position = 5))
+        dao.insert(PlaylistSongMap(playlistId = playlist.id, songId = "four", position = 9))
+        val before = dao.playlistSongs(playlist.id).first().map { it.map }
+
+        dao.removePlaylistSongs(
+            playlist.id,
+            setOf(before[1].id, before[3].id),
+        )
+
+        val after = dao.playlistSongs(playlist.id).first().map { it.map }
+        assertEquals(listOf("one", "three"), after.map { it.songId })
+        assertEquals(listOf(0, 1), after.map { it.position })
+    }
+
+    @Test
+    fun duplicateDiagnosticRemovalKeepsAtLeastOneOccurrence() = runBlocking {
+        val playlist = playlist()
+        dao.insert(playlist.playlist)
+        insertSongs("one", "two")
+        dao.insert(PlaylistSongMap(playlistId = playlist.id, songId = "one", position = 0))
+        dao.insert(PlaylistSongMap(playlistId = playlist.id, songId = "one", position = 1))
+        dao.insert(PlaylistSongMap(playlistId = playlist.id, songId = "two", position = 2))
+        val before = dao.playlistSongs(playlist.id).first().map { it.map }
+
+        assertTrue(dao.removeDuplicateOccurrence(playlist.id, before.first().id))
+
+        val afterFirstRemoval = dao.playlistSongs(playlist.id).first().map { it.map }
+        assertEquals(listOf("one", "two"), afterFirstRemoval.map { it.songId })
+        assertEquals(listOf(0, 1), afterFirstRemoval.map { it.position })
+
+        assertFalse(dao.removeDuplicateOccurrence(playlist.id, afterFirstRemoval.first().id))
+        assertEquals(
+            listOf("one", "two"),
+            dao.playlistSongs(playlist.id).first().map { it.map.songId },
+        )
+    }
+
+    @Test
+    fun addingSuggestedSongsInsertsMetadataAndAppendsInOrder() = runBlocking {
+        val playlist = playlist()
+        dao.insert(playlist.playlist)
+        dao.addSuggestedSongsToPlaylist(
+            playlist,
+            listOf(
+                MediaMetadata(
+                    id = "suggestion-one",
+                    title = "Suggestion one",
+                    artists = emptyList(),
+                    duration = 60,
+                    genre = null,
+                ),
+                MediaMetadata(
+                    id = "suggestion-two",
+                    title = "Suggestion two",
+                    artists = emptyList(),
+                    duration = 60,
+                    genre = null,
+                ),
+            ),
+        )
+
+        val maps = dao.playlistSongs(playlist.id).first().map { it.map }
+        assertEquals(listOf("suggestion-one", "suggestion-two"), maps.map { it.songId })
+        assertEquals(listOf(0, 1), maps.map { it.position })
     }
 
     private fun playlist(id: String = "playlist") = Playlist(
