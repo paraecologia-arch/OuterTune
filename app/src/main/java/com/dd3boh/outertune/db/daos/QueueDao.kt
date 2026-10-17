@@ -12,21 +12,26 @@ import com.dd3boh.outertune.db.entities.QueueSong
 import com.dd3boh.outertune.db.entities.QueueSongMap
 import com.dd3boh.outertune.models.MultiQueueObject
 import com.dd3boh.outertune.models.toMediaMetadata
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.dd3boh.outertune.playback.normalizeQueueState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 @Dao
 interface QueueDao {
 
     // region Gets
-    @Query("SELECT * from queue ORDER BY `index`")
+    @Query("SELECT * from queue ORDER BY `index`, id")
     fun getAllQueues(): Flow<List<QueueEntity>>
 
     @Transaction
-    @Query("SELECT song.*, queue_song_map.shuffledIndex from queue_song_map JOIN song ON queue_song_map.songId = song.id WHERE queueId = :queueId ORDER BY `index`")
+    @Query("""
+        SELECT song.*, queue_song_map.id AS mapId, queue_song_map.`index` AS queueIndex,
+            queue_song_map.shuffledIndex
+        FROM queue_song_map
+        JOIN song ON queue_song_map.songId = song.id
+        WHERE queueId = :queueId
+        ORDER BY queue_song_map.`index`, queue_song_map.id
+    """)
     fun getQueueSongs(queueId: Long): Flow<List<QueueSong>>
 
     suspend fun readQueue(): List<MultiQueueObject> {
@@ -36,8 +41,7 @@ interface QueueDao {
         queues.forEach { queue ->
             val shuffledSongs = getQueueSongs(queue.id).first()
             if (shuffledSongs.isEmpty()) return@forEach
-            resultQueues.add(
-                MultiQueueObject(
+            val queueObject = MultiQueueObject(
                     id = queue.id,
                     title = queue.title,
                     queue = shuffledSongs.map {
@@ -51,7 +55,7 @@ interface QueueDao {
                     index = queue.index,
                     playlistId = queue.playlistId
                 )
-            )
+            resultQueues.add(normalizePersistedQueue(queueObject, shuffledSongs))
         }
 
         return resultQueues
@@ -64,7 +68,8 @@ interface QueueDao {
         val shuffledSongs = getQueueSongs(q.id).first()
         if (shuffledSongs.isEmpty()) return null
 
-        return MultiQueueObject(
+        return normalizePersistedQueue(
+            MultiQueueObject(
             id = q.id,
             title = q.title,
             queue = shuffledSongs.map {
@@ -77,6 +82,8 @@ interface QueueDao {
             lastSongPos = q.lastSongPos,
             index = q.index,
             playlistId = q.playlistId
+            ),
+            shuffledSongs
         )
     }
     // endregion
@@ -110,12 +117,40 @@ interface QueueDao {
 
     @Transaction
     fun updateAllQueues(mqs: List<MultiQueueObject>) {
-        val mqs = mqs.toList() // please no more ConcurrentModificationException I beg you
-        mqs.forEachIndexed { index, q -> q.index = index }
-        CoroutineScope(Dispatchers.IO).launch {
-            nukeAliens(mqs.map { it.id })
-            mqs.forEach { updateQueue(it) }
+        val queues = mqs.toList()
+        if (queues.isEmpty()) {
+            deleteAllQueues()
+            return
         }
+        queues.forEachIndexed { index, q -> q.index = index }
+        nukeAliens(queues.map { it.id })
+        queues.forEach { updateQueue(it) }
+    }
+
+    @Transaction
+    fun normalizePersistedQueue(queue: MultiQueueObject, queueSongs: List<QueueSong>): MultiQueueObject {
+        if (!normalizeQueueState(queue)) return queue
+
+        update(
+            QueueEntity(
+                id = queue.id,
+                title = queue.title,
+                shuffled = queue.shuffled,
+                queuePos = queue.queuePos,
+                lastSongPos = queue.lastSongPos,
+                index = queue.index,
+                playlistId = queue.playlistId
+            )
+        )
+        queueSongs.forEachIndexed { index, persistedSong ->
+            val normalizedShuffleIndex = queue.queue[index].shuffleIndex
+            if (persistedSong.queueIndex != index.toLong() ||
+                persistedSong.shuffledIndex != normalizedShuffleIndex
+            ) {
+                updateQueueSongMap(persistedSong.mapId, index.toLong(), normalizedShuffleIndex.toLong())
+            }
+        }
+        return queue
     }
 
     // endregion
@@ -135,5 +170,8 @@ interface QueueDao {
 
     @Query("DELETE FROM queue WHERE id NOT IN (:ids)")
     fun nukeAliens(ids: List<Long>)
+
+    @Query("UPDATE queue_song_map SET `index` = :index, shuffledIndex = :shuffledIndex WHERE id = :id")
+    fun updateQueueSongMap(id: Int, index: Long, shuffledIndex: Long)
     // endregion
 }

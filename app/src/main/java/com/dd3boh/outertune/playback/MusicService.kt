@@ -134,6 +134,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -146,6 +147,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.io.File
@@ -187,6 +190,8 @@ class MusicService : MediaLibraryService(),
     val qbInit = MutableStateFlow(false)
     var queueBoard = QueueBoard(this, maxQueues = 1)
     var queuePlaylistId: String? = null
+    private var playbackPositionPersistenceJob: Job? = null
+    private val queueInitializationMutex = Mutex()
 
     @Inject
     @PlayerCache
@@ -458,9 +463,13 @@ class MusicService : MediaLibraryService(),
         title: String? = null
     ) {
         if (!qbInit.value) {
-            runBlocking(Dispatchers.IO) {
+            // Do not block the caller (normally the main thread) while the queue is restored.
+            // The restore path dispatches to Main, so a blocking call made from Main would deadlock.
+            scope.launch {
                 initQueue()
+                playQueue(queue, playWhenReady, shouldResume, replace, isRadio, title)
             }
+            return
         }
 
         var queueTitle = title
@@ -581,7 +590,8 @@ class MusicService : MediaLibraryService(),
         updateNotification()
     }
 
-    suspend fun initQueue() {
+    suspend fun initQueue() = queueInitializationMutex.withLock {
+        if (qbInit.value) return@withLock
         Log.i(TAG, "+initQueue()")
         val persistQueue = dataStore.get(PersistentQueueKey, true)
         val maxQueues = dataStore.get(MaxQueuesKey, 19)
@@ -591,16 +601,29 @@ class MusicService : MediaLibraryService(),
             queueBoard = QueueBoard(this, queueBoard.masterQueues, maxQueues = maxQueues)
         }
         Log.d(TAG, "Queue with $maxQueues queue limit. Persist queue = $persistQueue. Queues loaded = ${queueBoard.masterQueues.size}")
+        if (persistQueue && queueBoard.getCurrentQueue() != null) {
+            withContext(Dispatchers.Main) {
+                // Loading media items restores the session for the UI without preparing or starting playback.
+                queueBoard.setCurrQueue(shouldResume = true)
+                player.playWhenReady = false
+            }
+        }
         qbInit.value = true
         Log.i(TAG, "-initQueue()")
     }
 
     fun deInitQueue() {
         Log.i(TAG, "+deInitQueue()")
-        val pos = player.currentPosition
-        queueBoard.shutdown()
-        if (dataStore.get(PersistentQueueKey, true)) {
-            runBlocking(Dispatchers.IO) {
+        // A restored but not prepared player reports position 0. Do not overwrite the saved
+        // position in that case; there is no meaningful playback position to persist yet.
+        val pos = if (player.playbackState == Player.STATE_IDLE) {
+            C.TIME_UNSET
+        } else {
+            player.currentPosition
+        }
+        runBlocking(Dispatchers.IO) {
+            queueBoard.stopPersistence()
+            if (dataStore.get(PersistentQueueKey, true)) {
                 saveQueueToDisk(pos)
             }
         }
@@ -611,8 +634,11 @@ class MusicService : MediaLibraryService(),
 
     suspend fun saveQueueToDisk(currentPosition: Long) {
         val data = queueBoard.getAllQueues()
-        data.last().lastSongPos = currentPosition
-        database.updateAllQueues(data)
+        val currentQueue = queueBoard.getCurrentQueue() ?: return
+        if (currentPosition >= 0L) {
+            currentQueue.lastSongPos = currentPosition
+        }
+        database.saveAllQueueSnapshots(data)
     }
 
 
@@ -929,6 +955,31 @@ class MusicService : MediaLibraryService(),
         Toast.makeText(this@MusicService, getString(R.string.err_stop_on_error), Toast.LENGTH_LONG).show()
     }
 
+    private fun startPlaybackPositionPersistence() {
+        playbackPositionPersistenceJob?.cancel()
+        playbackPositionPersistenceJob = scope.launch {
+            while (player.isPlaying) {
+                delay(30_000L)
+                if (player.isPlaying) {
+                    persistCurrentQueuePosition()
+                }
+            }
+        }
+    }
+
+    private fun persistCurrentQueuePosition(immediate: Boolean = false) {
+        if (player.playbackState == Player.STATE_IDLE) {
+            // Before the player is prepared, currentPosition is not a restored position.
+            return
+        }
+        val queue = queueBoard.getCurrentQueue() ?: return
+        val currentPosition = player.currentPosition
+        if (currentPosition >= 0L) {
+            queue.lastSongPos = currentPosition
+        }
+        queueBoard.persistQueueState(queue, immediate)
+    }
+
 
 // Player overrides
 
@@ -966,10 +1017,12 @@ class MusicService : MediaLibraryService(),
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        if (!isPlaying) {
-            val pos = player.currentPosition
-            val q = queueBoard.getCurrentQueue()
-            q?.lastSongPos = pos
+        if (isPlaying) {
+            startPlaybackPositionPersistence()
+        } else {
+            playbackPositionPersistenceJob?.cancel()
+            playbackPositionPersistenceJob = null
+            persistCurrentQueuePosition(immediate = true)
         }
         super.onIsPlayingChanged(isPlaying)
     }
@@ -1010,6 +1063,9 @@ class MusicService : MediaLibraryService(),
         }
 
         queueBoard.setCurrQueuePosIndex(player.currentMediaItemIndex)
+        if (reason != Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED) {
+            persistCurrentQueuePosition(immediate = true)
+        }
 
         // reshuffle queue when shuffle AND repeat all are enabled
         // no, when repeat mode is on, player does not "STATE_ENDED"
@@ -1031,6 +1087,20 @@ class MusicService : MediaLibraryService(),
     override fun onPlaybackStateChanged(@Player.State playbackState: Int) {
         if (playbackState == STATE_IDLE) {
             queuePlaylistId = null
+        }
+        if (playbackState == Player.STATE_READY) {
+            val queue = queueBoard.getCurrentQueue()
+            val duration = player.duration
+            if (queue != null &&
+                queue.lastSongPos != C.TIME_UNSET &&
+                duration != C.TIME_UNSET &&
+                duration >= 0L &&
+                queue.lastSongPos > duration
+            ) {
+                // Media3 now has the real duration, unlike the database layer. Persist its valid result.
+                queue.lastSongPos = player.currentPosition.coerceIn(0L, duration)
+                queueBoard.persistQueueState(queue, immediate = true)
+            }
         }
     }
 
@@ -1128,6 +1198,7 @@ class MusicService : MediaLibraryService(),
 
     override fun onDestroy() {
         Log.i(TAG, "Terminating MusicService.")
+        playbackPositionPersistenceJob?.cancel()
         deInitQueue()
 
         mediaSession.player.stop()

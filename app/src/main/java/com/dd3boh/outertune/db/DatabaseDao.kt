@@ -330,6 +330,8 @@ interface DatabaseDao : SongsDao, AlbumsDao, ArtistsDao, PlaylistsDao, QueueDao 
     @Transaction
     fun saveQueue(mq: MultiQueueObject) {
         if (mq.queue.isEmpty()) {
+            deleteAllQueueSongs(mq.id)
+            deleteQueue(mq.id)
             return
         }
 
@@ -362,6 +364,20 @@ interface DatabaseDao : SongsDao, AlbumsDao, ArtistsDao, PlaylistsDao, QueueDao 
             )
             i ++
         }
+    }
+
+    @Transaction
+    fun saveAllQueueSnapshots(queues: List<MultiQueueObject>) {
+        if (queues.isEmpty()) {
+            // An empty snapshot is not evidence that the user deleted every queue. Initialization
+            // can legitimately have no in-memory queues while a persisted queue is still loading.
+            return
+        }
+        queues.forEachIndexed { index, queue ->
+            queue.index = index
+            saveQueue(queue)
+        }
+        nukeAliens(queues.map { it.id })
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

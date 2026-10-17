@@ -27,15 +27,10 @@ import com.dd3boh.outertune.utils.dataStore
 import com.dd3boh.outertune.utils.get
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import java.util.PriorityQueue
 import kotlin.math.max
 import kotlin.math.min
 
@@ -63,6 +58,8 @@ class QueueBoard(
         if (!queues.isEmpty()) {
             masterQueues.addAll(queues.subList((queues.size - maxQueues).coerceAtLeast(0), queues.size))
         }
+        masterIndex = masterQueues.lastIndex
+        regenerateIndexes()
     }
 
     /**
@@ -450,9 +447,8 @@ class QueueBoard(
                 masterIndex = -1
             }
 
-            CoroutineScope(Dispatchers.IO).launch {
-                player.database.deleteQueue(match.id)
-            }
+            regenerateIndexes()
+            saveAllQueues(masterQueues)
         } else {
             Log.w(TAG, "Cannot find queue to delete: ${item.title}")
         }
@@ -831,101 +827,110 @@ class QueueBoard(
      * ========================
      */
 
-    class PriorityJob(val priority: Int, val job: Job) : Comparable<PriorityJob> {
-        override fun compareTo(other: PriorityJob): Int = this.priority - other.priority
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val persistenceLock = Any()
+    private val pendingPersistence = QueuePersistenceBuffer()
+    private var persistenceWorker: Job? = null
+
+    private fun snapshot(queue: MultiQueueObject): MultiQueueObject = queue.copy(
+        queue = queue.queue.map { it.copy(shuffleIndex = it.shuffleIndex) }.toMutableList()
+    )
+
+    private fun snapshotAllQueues(): List<MultiQueueObject> = masterQueues.map(::snapshot)
+
+    private fun schedulePersistence(
+        fullQueue: MultiQueueObject? = null,
+        metadataQueue: MultiQueueObject? = null,
+        allQueues: List<MultiQueueObject>? = null,
+        immediate: Boolean = false,
+    ) {
+        if (!player.dataStore.get(PersistentQueueKey, true)) return
+
+        val fullSnapshot = fullQueue?.let(::snapshot)
+        val metadataSnapshot = metadataQueue?.let(::snapshot)
+        val allSnapshots = allQueues?.map(::snapshot)
+        synchronized(persistenceLock) {
+            pendingPersistence.enqueue(
+                fullQueue = fullSnapshot,
+                metadataQueue = metadataSnapshot,
+                allQueues = allSnapshots,
+                immediate = immediate,
+            )
+            if (persistenceWorker?.isActive != true) {
+                persistenceWorker = coroutineScope.launch { drainQueuePersistence() }
+            }
+        }
     }
 
-    var queueEntity = PriorityQueue<PriorityJob>()
-    var queueSongMap = PriorityQueue<PriorityJob>()
-    var jobActive = Mutex()
-    val coroutineScope = CoroutineScope(Dispatchers.IO)
-
     /**
-     * Execute the most recent save request, with a 5 second delay from function call
+     * A single worker writes snapshots in order. A newer request is merged before the next write,
+     * so stale coroutine work cannot overwrite a newer queue state.
      */
-    private suspend fun databaseDispatcher() {
-        Log.d(TAG, "Starting database save task")
-        if (jobActive.isLocked) {
-            Log.d(TAG, "Database save task is already active, aborting")
-            return
-        }
+    private suspend fun drainQueuePersistence() {
+        while (true) {
+            val shouldDelay = synchronized(persistenceLock) { !pendingPersistence.isImmediate() }
+            if (shouldDelay) delay(750L)
 
-        jobActive.withLock {
-            while (queueEntity.isNotEmpty() || queueSongMap.isNotEmpty()) {
-                runBlocking {
-                    delay(5000L)
+            val request = synchronized(persistenceLock) {
+                pendingPersistence.take().also {
+                    if (it == null) persistenceWorker = null
                 }
-                Log.d(TAG, "Running database save task")
+            } ?: return
 
-                // saving songs nukes the queue entity in the process, about it shouldn't matter since are same queue object
-                if (!queueSongMap.isEmpty()) {
-                    queueSongMap.last().job.start()
-                    queueSongMap.clear()
-                    continue
+            try {
+                request.fullQueues.forEach { player.database.saveQueue(it) }
+                // Metadata is written after full snapshots. When both exist for one queue,
+                // the metadata request is the newer one (a newer full request removes pending
+                // metadata in QueuePersistenceBuffer).
+                request.metadataQueues.forEach { player.database.updateQueue(it) }
+                request.allQueues?.let { player.database.updateAllQueues(it) }
+            } catch (error: Exception) {
+                Log.e(
+                    "XENOWAVE_PERSISTENCE",
+                    "Queue persistence failed: ${error::class.java.simpleName}",
+                )
+                synchronized(persistenceLock) {
+                    pendingPersistence.restoreFailed(request)
                 }
+                delay(1_000L)
+            }
 
-                if (!queueEntity.isEmpty()) {
-                    queueEntity.last().job.start()
-                    queueEntity.clear()
-                    continue
+            synchronized(persistenceLock) {
+                if (pendingPersistence.isEmpty()) {
+                    persistenceWorker = null
+                    return
                 }
             }
         }
-        Log.d(TAG, "Exiting database save task")
     }
 
-    fun shutdown() {
-        queueSongMap.clear()
-        queueEntity.clear()
+    suspend fun stopPersistence() {
+        val worker = synchronized(persistenceLock) {
+            pendingPersistence.clear()
+            persistenceWorker.also { persistenceWorker = null }
+        }
+        worker?.cancel()
+        worker?.join()
+    }
+
+    fun persistQueueState(queue: MultiQueueObject, immediate: Boolean = false) {
+        schedulePersistence(
+            metadataQueue = queue,
+            allQueues = snapshotAllQueues(),
+            immediate = immediate,
+        )
     }
 
     private fun saveQueueSongs(mq: MultiQueueObject) {
-        if (player.dataStore.get(PersistentQueueKey, true)) {
-            queueSongMap.add(
-                PriorityJob(
-                    0,
-                    coroutineScope.launch(start = CoroutineStart.DEFAULT) {
-                        player.database.saveQueue(mq)
-                    }
-                )
-            )
-            CoroutineScope(Dispatchers.IO).launch {
-                databaseDispatcher()
-            }
-        }
+        schedulePersistence(fullQueue = mq, allQueues = snapshotAllQueues())
     }
 
     private fun saveQueue(mq: MultiQueueObject) {
-        if (player.dataStore.get(PersistentQueueKey, true)) {
-            queueEntity.add(
-                PriorityJob(
-                    0,
-                    coroutineScope.launch(start = CoroutineStart.DEFAULT) {
-                        player.database.updateQueue(mq)
-                    }
-                )
-            )
-            CoroutineScope(Dispatchers.IO).launch {
-                databaseDispatcher()
-            }
-        }
+        persistQueueState(mq)
     }
 
     private fun saveAllQueues(mq: MutableList<MultiQueueObject>) {
-        if (player.dataStore.get(PersistentQueueKey, true)) {
-            queueEntity.add(
-                // we select most recent task, therefore "lowest" numeric priority at the end of the list == "highest" priority
-                PriorityJob(
-                    -1,
-                    coroutineScope.launch(start = CoroutineStart.DEFAULT) {
-                        player.database.updateAllQueues(mq)
-                    }
-                )
-            )
-            CoroutineScope(Dispatchers.IO).launch {
-                databaseDispatcher()
-            }
-        }
+        schedulePersistence(allQueues = mq)
     }
 
     companion object {

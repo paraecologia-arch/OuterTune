@@ -60,5 +60,7 @@ data class Song @JvmOverloads constructor(
 
 data class QueueSong(
     @Embedded val song: Song,
+    @ColumnInfo(name = "mapId") val mapId: Int,
+    @ColumnInfo(name = "queueIndex") val queueIndex: Long,
     @ColumnInfo(name = "shuffledIndex") val shuffledIndex: Int
 )

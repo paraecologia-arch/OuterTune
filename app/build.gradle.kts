@@ -2,6 +2,7 @@
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -19,6 +20,9 @@ val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+val unitTestJavaLauncher = javaToolchains.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 android {
@@ -183,6 +187,9 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
         unitTests.isReturnDefaultValues = true
+        unitTests.all {
+            it.javaLauncher.set(unitTestJavaLauncher)
+        }
     }
 
     lint {

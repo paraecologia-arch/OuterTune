@@ -81,6 +81,9 @@ interface PlaylistsDao {
     @Query("SELECT songId from playlist_song_map WHERE playlistId = :playlistId AND songId IN (:songIds)")
     fun playlistDuplicates(playlistId: String, songIds: List<String>,): List<String>
 
+    @Query("SELECT COALESCE(MAX(position) + 1, 0) FROM playlist_song_map WHERE playlistId = :playlistId")
+    fun nextPlaylistPosition(playlistId: String): Int
+
     @Query("SELECT * FROM playlist_song_map WHERE songId = :songId")
     fun songMapsToPlaylist(songId: String): List<PlaylistSongMap>
 
@@ -174,7 +177,10 @@ interface PlaylistsDao {
 
     @Transaction
     fun addSongToPlaylist(playlist: Playlist, songIds: List<String>) {
-        var position = playlist.songCount
+        // The caller deliberately decides whether duplicate entries are allowed. In particular,
+        // AddToPlaylistDialog's "add anyway" action must remain able to add an existing song.
+        // MAX(position) rather than songCount keeps appends ordered if old data contains gaps.
+        var position = nextPlaylistPosition(playlist.id)
         songIds.forEach { id ->
             insert(
                 PlaylistSongMap(
