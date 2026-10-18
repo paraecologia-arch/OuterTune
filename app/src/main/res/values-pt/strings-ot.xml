@@ -267,4 +267,49 @@
     <string name="scanner_strict_file_paths_title">Corresponder aos caminhos dos arquivos em vez dos metadados</string>
     <string name="scanner_strict_file_paths_description">Desativa toda a correspondência inteligente de metadados. Isso pode causar problemas se os arquivos forem movidos no seu armazenamento local, mas permite que a mesma música esteja em pastas diferentes</string>
     <string name="scanner_type_tooltip">O scanner do sistema é mais rápido, mas pode extrair metadados incorretamente em comparação com outros extratores. Observe que a troca de scanners não recarrega automaticamente os metadados das músicas existentes.</string>
+    <string name="playlist_visual_order_note">A ordenação é apenas visual. A sua ordem manual é preservada.</string>
+    <string name="playlist_restore_manual_order">Usar ordem manual</string>
+    <string name="playlist_lock_order">Bloquear ordem manual</string>
+    <string name="playlist_unlock_order">Desbloquear ordem manual</string>
+    <string name="playlist_not_found">Esta playlist já não está disponível</string>
+    <string name="playlist_load_failed">Não foi possível carregar esta playlist</string>
+    <string name="playlist_duplicates_title">Faixas duplicadas</string>
+    <string name="playlist_duplicate_occurrence">Ocorrência %1$d de %2$d</string>
+    <string name="playlist_remove_duplicate_confirm">Remover esta ocorrência de \"%1$s\"?</string>
+    <string name="playlist_remove_duplicate_success">Ocorrência duplicada removida</string>
+    <string name="playlist_remove_duplicate_failed">Não foi possível remover esta ocorrência duplicada</string>
+    <string name="playlist_remove_selected_failed">Não foi possível remover as músicas selecionadas</string>
+    <string name="clear_search">Limpar pesquisa</string>
+    <string name="suggest_songs">Sugerir músicas</string>
+    <string name="suggested_from">Com base em \"%1$s\"</string>
+    <string name="suggested_songs_empty">Não foram encontradas novas sugestões</string>
+    <string name="suggested_songs_error">Não foi possível carregar as sugestões</string>
+    <string name="suggestion_add_failed">Não foi possível adicionar as sugestões selecionadas</string>
+    <string name="add_selected">Adicionar selecionadas</string>
+    <string name="loading">A carregar…</string>
+    <string name="select_all">Selecionar tudo</string>
+    <string name="deselect_all">Desmarcar tudo</string>
+    <string name="reorder">Reordenar</string>
+    <string name="navigate_back">Voltar</string>
+    <string name="sort_by_album">Álbum</string>
+    <plurals name="playlist_offline_count">
+        <item quantity="one">%d offline</item>
+        <item quantity="many">%d offline</item>
+        <item quantity="other">%d offline</item>
+    </plurals>
+    <plurals name="playlist_duplicate_count">
+        <item quantity="one">%d duplicata</item>
+        <item quantity="many">%d duplicatas</item>
+        <item quantity="other">%d duplicatas</item>
+    </plurals>
+    <plurals name="playlist_remove_selected_confirm">
+        <item quantity="one">Remover %d música selecionada desta playlist?</item>
+        <item quantity="many">Remover %d músicas selecionadas desta playlist?</item>
+        <item quantity="other">Remover %d músicas selecionadas desta playlist?</item>
+    </plurals>
+    <plurals name="playlist_remove_selected_success">
+        <item quantity="one">%d música removida da playlist</item>
+        <item quantity="many">%d músicas removidas da playlist</item>
+        <item quantity="other">%d músicas removidas da playlist</item>
+    </plurals>
 </resources>
